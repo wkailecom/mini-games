@@ -1,0 +1,51 @@
+pluginManagement {
+    repositories {
+        **ARTIFACTORYREPOSITORY**
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+
+include ':launcher', ':unityLibrary'
+**INCLUDES**
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        **ARTIFACTORYREPOSITORY**
+        google()
+        mavenCentral()
+// Android Resolver Repos Start
+        def unityProjectPath = $/file:///**DIR_UNITYPROJECT**/$.replace("\\", "/")
+        maven {
+            url "https://android-sdk.is.com/" // Assets/Editor/ADDependencies.xml:11
+        }
+        maven {
+            url "https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea/" // Assets/Editor/ADDependencies.xml:15
+        }
+        maven {
+            url "https://artifact.bytedance.com/repository/pangle" // Assets/Editor/ADDependencies.xml:19
+        }
+        maven {
+            url "https://s3.amazonaws.com/smaato-sdk-releases/" // Assets/Editor/ADDependencies.xml:23
+        }
+        maven {
+            url "https://sdk.tapjoy.com/" // Assets/Editor/ADDependencies.xml:27
+        }
+        maven {
+            url "https://repo.pubmatic.com/artifactory/public-repos/" // Assets/Editor/ADDependencies.xml:31
+        }
+        maven {
+            url "https://cboost.jfrog.io/artifactory/chartboost-ads/" // Assets/Editor/ADDependencies.xml:35
+        }
+        maven {
+            url (unityProjectPath + "/Assets/GeneratedLocalRepo/Firebase/m2repository") // Packages/com.google.firebase.app/Firebase/Editor/AppDependencies.xml:22, Packages/com.google.firebase.messaging/Firebase/Editor/MessagingDependencies.xml:24, Packages/com.google.firebase.crashlytics/Firebase/Editor/CrashlyticsDependencies.xml:20, Packages/com.google.firebase.analytics/Firebase/Editor/AnalyticsDependencies.xml:18
+        }
+        mavenLocal()
+// Android Resolver Repos End
+        flatDir {
+            dirs "${project(':unityLibrary').projectDir}/libs"
+        }
+    }
+}

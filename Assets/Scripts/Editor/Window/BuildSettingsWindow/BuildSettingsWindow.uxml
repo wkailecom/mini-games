@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="BuildSettingsWindow.uss" />
+    <uie:Toolbar />
+    <ui:VisualElement style="height: 100%; align-items: center; display: none;">
+        <ui:VisualElement style="width: 98%; background-color: rgb(66, 71, 77);">
+            <uie:EnumField label="构建平台" value="Center" name="BuildPlatform" />
+            <uie:EnumField label="构建模式" value="Center" name="BuildMode" />
+            <ui:TextField picking-mode="Ignore" label="版本" value="1.0" text="1.0" name="Version" />
+            <uie:IntegerField label="Version Code" name="VersionCode" />
+            <ui:Toggle label="是否增量构建" name="IsHotAssets" />
+            <ui:Toggle label="是否上传服务器" name="IsUploading" />
+        </ui:VisualElement>
+        <ui:Button text="构建" name="BuildBut" display-tooltip-when-elided="true" style="font-size: 18px; height: 30px; -unity-font-style: bold; width: 98%;" />
+    </ui:VisualElement>
+</ui:UXML>
