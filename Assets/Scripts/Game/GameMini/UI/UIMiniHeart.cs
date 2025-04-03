@@ -34,7 +34,7 @@ public class UIMiniHeart : MonoBehaviour
     void OnPropCountChange(EventData pEventData)
     {
         var tEventData = pEventData as PropCountChange;
-        if (tEventData.propID == PropID.Health && tEventData.changedCount > 0)
+        if (tEventData.propID == PropID.Energy && tEventData.changedCount > 0)
         {
             CheckCountDown();
         }
@@ -42,7 +42,7 @@ public class UIMiniHeart : MonoBehaviour
 
     void CheckCountDown()
     {
-        var tIsFull = GameMethod.IsFullHealth();
+        var tIsFull = GameMethod.IsFullEnergy();
         if (tIsFull)
         {
             addRoot.SetActive(false);
@@ -57,14 +57,14 @@ public class UIMiniHeart : MonoBehaviour
 
     public void OpenGetADHealth()
     {
-        //if (GameMethod.IsFullHealth())
-        //{
-        //    MessageHelp.Instance.ShowMessage("Your lives are full.");
-        //}
-        //else
-        //{
-            PageManager.Instance.OpenPage(PageID.AdsPropPopup, new AdsPropPageParam(PropID.Health, null));
-        //}
+        if (GameMethod.IsFullEnergy())
+        {
+            MessageHelp.Instance.ShowMessage("Your lives are full.");
+        }
+        else
+        {
+            PageManager.Instance.OpenPage(PageID.AdsPropPopup, new AdsPropPageParam(PropID.Energy, null));
+        }
     }
 
 }

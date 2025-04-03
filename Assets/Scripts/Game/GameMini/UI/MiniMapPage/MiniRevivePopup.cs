@@ -178,7 +178,7 @@ namespace Game.MiniGame
 
             if (mParam.isReturn)
             {
-                ModuleManager.Prop.ExpendProp(PropID.Health);
+                ModuleManager.Prop.ExpendProp(PropID.Energy);
                 if (ModuleManager.MiniGame.IsUnderway())
                 {
                     if (mParam.level >= MiniGameConst.AD_OPEN_LEVEL)

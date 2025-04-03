@@ -70,9 +70,9 @@ public class UserInfoModule : ModuleBase
             FirstLoginTime = DateTime.Now;
             Data.FirstLoginTime = FirstLoginTime.Ticks;
             //临时初始生命体力
-            if (!ModuleManager.Prop.HasProp(PropID.Health))
+            if (!ModuleManager.Prop.HasProp(PropID.Energy))
             {
-                ModuleManager.Prop.AddProp(PropID.Health, CommonDefine.healthFunllCount, PropSource.Dfault);
+                ModuleManager.Prop.AddProp(PropID.Energy, CommonDefine.energyFunllCount, PropSource.Dfault);
             }
             Serialize();
         }
@@ -105,22 +105,22 @@ public class UserInfoModule : ModuleBase
     void OnPropCountChange(EventData pEventData)
     {
         var tEventData = pEventData as PropCountChange;
-        if (tEventData.propID == PropID.Health && tEventData.changedCount < 0)
+        if (tEventData.propID == PropID.Energy && tEventData.changedCount < 0)
         {
             //改变前满血(即没有恢复计时存在)
-            if ((tEventData.currentCount + Mathf.Abs(tEventData.changedCount)) == CommonDefine.healthFunllCount)
+            if ((tEventData.currentCount + Mathf.Abs(tEventData.changedCount)) == CommonDefine.energyFunllCount)
             {
-                ScheduleNextHealthHarvest(CommonDefine.healthHarvestInterval);
+                ScheduleNextHealthHarvest(CommonDefine.energyHarvestInterval);
             }
         }
     }
 
     void HarvestHealth()
     {
-        if (GameMethod.IsFullHealth()) return;
+        if (GameMethod.IsFullEnergy()) return;
 
         var tHarvestTime = HealthHarvestTime;
-        var tCurHealth = ModuleManager.Prop.GetPropCount(PropID.Health);
+        var tCurHealth = ModuleManager.Prop.GetPropCount(PropID.Energy);
         var tTimeSpan = DateTime.Now - tHarvestTime;
 
         if (tTimeSpan.TotalSeconds < 0)//未到收获时间
@@ -130,21 +130,21 @@ public class UserInfoModule : ModuleBase
         else
         {
             int tAddHealth = CalculateHealthToAdd(tTimeSpan.TotalMinutes, tCurHealth);
-            if (tAddHealth + tCurHealth < CommonDefine.healthFunllCount)
+            if (tAddHealth + tCurHealth < CommonDefine.energyFunllCount)
             {
-                var tResidueMinutes = CommonDefine.healthHarvestInterval - tTimeSpan.TotalMinutes % CommonDefine.healthHarvestInterval;
+                var tResidueMinutes = CommonDefine.energyHarvestInterval - tTimeSpan.TotalMinutes % CommonDefine.energyHarvestInterval;
                 ScheduleNextHealthHarvest(tResidueMinutes);
             }
-            ModuleManager.Prop.AddProp(PropID.Health, tAddHealth, PropSource.TimeRecover);
+            ModuleManager.Prop.AddProp(PropID.Energy, tAddHealth, PropSource.TimeRecover);
         }
     }
 
     int CalculateHealthToAdd(double totalMinutes, int currentHealth)
     {
-        int tAddHealth = (int)(totalMinutes / CommonDefine.healthHarvestInterval) + 1;
-        if (tAddHealth + currentHealth >= CommonDefine.healthFunllCount)
+        int tAddHealth = (int)(totalMinutes / CommonDefine.energyHarvestInterval) + 1;
+        if (tAddHealth + currentHealth >= CommonDefine.energyFunllCount)
         {
-            tAddHealth = CommonDefine.healthFunllCount - currentHealth;
+            tAddHealth = CommonDefine.energyFunllCount - currentHealth;
         }
         return tAddHealth;
     }
@@ -157,13 +157,13 @@ public class UserInfoModule : ModuleBase
             yield return TimerManager.WaitOneSecond;
         }
 
-        if (ModuleManager.Prop.GetPropCount(PropID.Health) < CommonDefine.healthFunllCount - 1)
+        if (ModuleManager.Prop.GetPropCount(PropID.Energy) < CommonDefine.energyFunllCount - 1)
         {
-            ScheduleNextHealthHarvest(CommonDefine.healthHarvestInterval);
+            ScheduleNextHealthHarvest(CommonDefine.energyHarvestInterval);
         }
-        if (!GameMethod.IsFullHealth())
+        if (!GameMethod.IsFullEnergy())
         {
-            ModuleManager.Prop.AddProp(PropID.Health, 1, PropSource.TimeRecover);
+            ModuleManager.Prop.AddProp(PropID.Energy, 1, PropSource.TimeRecover);
         }
     }
 

@@ -19,20 +19,28 @@ namespace Config
 		///</summary>
 		public static int loopStartLevelID = 900000;
 		///<summary>
+		///商店免费金币数
+		///</summary>
+		public static int shopFreeCoinCount = 100;
+		///<summary>
 		///商店免费奖励次数
 		///</summary>
 		public static int shopFreeCount = 10;
 		///<summary>
 		///商店免费领取间隔(分钟)
 		///</summary>
-		public static int shopFreeTimeInterval = 1440;
+		public static int shopFreeTimeInterval = 5;
 		///<summary>
 		///体力满值
 		///</summary>
-		public static int healthFunllCount = 5;
+		public static int energyFunllCount = 5;
 		///<summary>
 		///体力恢复间隔(分钟)
 		///</summary>
-		public static int healthHarvestInterval = 30;
+		public static int energyHarvestInterval = 30;
+		///<summary>
+		///体力金币购买数
+		///</summary>
+		public static int energyCoinCount = 1000;
 	}
 }

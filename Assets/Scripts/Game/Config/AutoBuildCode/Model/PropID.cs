@@ -4,10 +4,8 @@ namespace Config
 	{
 		Invalid = -1,
 		RemoveAD = 101,
-		Health = 102,
-		Hint = 1001,
-		Energy = 2001,
-		GoldCoin = 2002,
+		Energy = 102,
+		Coin = 103,
 		ScrewExtraSlot = 2101,
 		ScrewHammer = 2102,
 		ScrewExtraBox = 2103,
@@ -17,5 +15,13 @@ namespace Config
 		TileRecall = 2301,
 		TileMagnet = 2302,
 		TileShuffle = 2303,
+		BusCarshift = 2401,
+		BusChopper = 2402,
+		BusMinionshift = 2403,
+		BusAddspot = 2404,
+		TripleEraser = 2501,
+		TripleRecall3 = 2502,
+		TripleCompass = 2503,
+		TripleHourglass = 2504,
 	}
 }

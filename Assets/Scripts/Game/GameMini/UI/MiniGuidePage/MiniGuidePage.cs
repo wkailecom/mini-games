@@ -16,7 +16,6 @@ namespace Game.UI
 {
     public class MiniGuidePage : PageBase
     {
-        [SerializeField] private Image _imgMask;
         [SerializeField] private Button _btnNext;
         [SerializeField] private GuideMask _guideMask;
         [SerializeField] private RectTransform _fingerTran;

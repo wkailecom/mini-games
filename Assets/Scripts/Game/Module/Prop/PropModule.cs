@@ -162,8 +162,8 @@ public class PropModule : ModuleBase
         var tEventData = pEventData as ADEvent;
         PropID tPropID = tEventData.showReason switch
         {
-            ADShowReason.Video_GetPropHint => PropID.Hint,
-            ADShowReason.Video_GetPropHealth => PropID.Health,
+            //ADShowReason.Video_GetPropHint => PropID.Hint,
+            ADShowReason.Video_GetPropHealth => PropID.Energy,
             ADShowReason.Video_GetScrewExtraSlot => PropID.ScrewExtraSlot,
             ADShowReason.Video_GetScrewHammer => PropID.ScrewHammer,
             ADShowReason.Video_GetScrewExtraBox => PropID.ScrewExtraBox,

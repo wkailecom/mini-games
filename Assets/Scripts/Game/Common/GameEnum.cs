@@ -17,18 +17,19 @@ namespace Game
         Tournament,      //排行榜
         MiniGameOver,    //小游戏关卡完成
         IngamePurchase,  //游戏内购买
+        CoinSwap,        //金币置换
     }
 
     /// <summary>
     /// 商品种类
     /// </summary>
-    public enum ShopItemCategory
+    public enum ProductPack
     {
         RemoveAD = 1,
         Single = 2,   //单个商品
         Bundle = 3,  //礼包商品
     }
-     
+
     /// <summary>
     /// 游戏类型
     /// </summary>
@@ -46,6 +47,8 @@ namespace Game
         Screw = 1,
         Jam3d = 2,
         Tile = 3,
+        Bus = 4,
+        Triple = 5,
     }
 
 

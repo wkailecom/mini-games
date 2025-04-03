@@ -11,10 +11,12 @@ namespace Config
 			CommonDefine.dailyStartLevelID = int.Parse(tFileReader.ReadLine()[0]);
 			CommonDefine.activityStartLevelID = int.Parse(tFileReader.ReadLine()[0]);
 			CommonDefine.loopStartLevelID = int.Parse(tFileReader.ReadLine()[0]);
+			CommonDefine.shopFreeCoinCount = int.Parse(tFileReader.ReadLine()[0]);
 			CommonDefine.shopFreeCount = int.Parse(tFileReader.ReadLine()[0]);
 			CommonDefine.shopFreeTimeInterval = int.Parse(tFileReader.ReadLine()[0]);
-			CommonDefine.healthFunllCount = int.Parse(tFileReader.ReadLine()[0]);
-			CommonDefine.healthHarvestInterval = int.Parse(tFileReader.ReadLine()[0]);
+			CommonDefine.energyFunllCount = int.Parse(tFileReader.ReadLine()[0]);
+			CommonDefine.energyHarvestInterval = int.Parse(tFileReader.ReadLine()[0]);
+			CommonDefine.energyCoinCount = int.Parse(tFileReader.ReadLine()[0]);
 		}
 	}
 }

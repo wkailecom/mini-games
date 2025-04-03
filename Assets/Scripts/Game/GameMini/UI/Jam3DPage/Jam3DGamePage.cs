@@ -128,7 +128,7 @@ namespace Game.MiniGame
                     }
                     else
                     {
-                        ModuleManager.Prop.ExpendProp(PropID.Health, 1);
+                        ModuleManager.Prop.ExpendProp(PropID.Energy, 1);
                         PageManager.Instance.OpenPage(PageID.MiniGameOverPage, tOverParam); 
                     }
                 };

@@ -35,7 +35,7 @@ namespace Game.MiniGame
             {
                 return;
             }
-            string tPropName = mParam.propID == PropID.Health ? "ui_heart" : mConfig.icon;
+            string tPropName = mParam.propID == PropID.Energy ? "ui_heart" : mConfig.icon;
             _imgProp.SetPropIcon(tPropName, false);
             _txtCount.text = $"x{mParam.PropCount}";
             _txtDesc.text = $"Watch a video to Get 1 free Hint.";
@@ -69,9 +69,8 @@ namespace Game.MiniGame
         ADShowReason GetADShowReason(PropID pPropID)
         {
             return pPropID switch
-            {
-                PropID.Hint => ADShowReason.Video_GetPropHint,
-                PropID.Health => ADShowReason.Video_GetPropHealth,
+            { 
+                PropID.Energy => ADShowReason.Video_GetPropHealth,
                 PropID.ScrewExtraSlot => ADShowReason.Video_GetScrewExtraSlot,
                 PropID.ScrewHammer => ADShowReason.Video_GetScrewHammer,
                 PropID.ScrewExtraBox => ADShowReason.Video_GetScrewExtraBox,

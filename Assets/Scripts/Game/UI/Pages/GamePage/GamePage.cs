@@ -46,8 +46,7 @@ namespace Game.UI
 
         protected override void OnBeginOpen()
         {
-            var tHasHint = ModuleManager.Prop.HasProp(PropID.Hint);
-
+             
         } 
 
         void OnPropCountChange(EventData pEventData)

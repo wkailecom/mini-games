@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Purchasing;
 using UnityEngine.UI;
 
-public class UIShopBundle : MonoBehaviour, IShopItem
+public class UIShopBundle : ShopBaseItem
 {
     public RectTransform itemsRoot;
     public UIItem item;
@@ -16,11 +16,11 @@ public class UIShopBundle : MonoBehaviour, IShopItem
 
     [HideInInspector] public List<UIItem> propItems;
 
-    IAPProductConfig mConfig;
+    //IAPProductConfig mConfig;
     Product mProduct;
     Action<string> mBuyClickEvent;
 
-    public void Init(IAPProductConfig tProductConfig, Action<string> pOnClickBuy)
+    public override void Init(IAPProductConfig tProductConfig, Action<string> pOnClickBuy)
     {
         mConfig = tProductConfig;
         mBuyClickEvent = pOnClickBuy;
@@ -38,16 +38,19 @@ public class UIShopBundle : MonoBehaviour, IShopItem
         }
     }
 
-    public void OnShow()
+    public override void OnShow()
     {
         if (mProduct == null)
         {
             mProduct = IAPManager.Instance.GetProduct(mConfig.productID);
             txtPrice.text = IAPManager.Instance.GetPriceText(mProduct, mConfig.price);
         }
+#if UNITY_EDITOR
+        txtPrice.text = "$" + mConfig.price;
+#endif
     }
 
-    public void OnHide()
+    public override void OnHide()
     {
 
     }
@@ -61,9 +64,7 @@ public class UIShopBundle : MonoBehaviour, IShopItem
             return null;
         }
 
-        //return ResourceManager.LoadPropIcon(tConfig.icon);
-
-        return null;
+        return ResTool.LoadPropIcon(tConfig.icon);
     }
 
     #region UI事件

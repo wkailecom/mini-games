@@ -69,8 +69,7 @@ public class RewardVideoLogic
                 ModuleManager.Statistics.AddValue(StatsID.ADHealthTimes, StatsGroup.Total);
             }
             else if (tEventData.showReason == ADShowReason.Video_GetPropHint)
-            {
-                ModuleManager.Statistics.AddValue(StatsID.ADHintTimes, StatsGroup.Total);
+            { 
             }
         }
     }

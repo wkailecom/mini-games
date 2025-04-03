@@ -231,10 +231,7 @@ public class StatisticsModule : ModuleBase
         var tEventData = pEventData as PropCountChange;
         if (tEventData.changedCount < 0)
         {
-            if (tEventData.propID == PropID.Hint)
-            {
-                AddValue(StatsID.UseHintTimes, StatsGroup.Total);
-            }
+ 
         }
     }
 
@@ -294,8 +291,6 @@ public enum StatsID
     WinStreak,         //最大连胜数
 
 
-    ADHealthTimes,     //观看激励获取体力次数
-    ADHintTimes,       //观看激励获取提示次数  
-    UseHintTimes,      //使用提示次数
+    ADHealthTimes,     //观看激励获取体力次数 
 
 }

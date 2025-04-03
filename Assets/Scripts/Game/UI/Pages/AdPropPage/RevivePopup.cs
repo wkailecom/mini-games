@@ -57,7 +57,7 @@ namespace Game.UI
         {
             GameMethod.TriggerUIAction(UIActionName.ReturnHome, UIPageName.PopupRevive, UIActionType.Click, ADType.Interstitial);
             GameManager.Instance.FinishGame(false);
-            ModuleManager.Prop.ExpendProp(PropID.Health);
+            ModuleManager.Prop.ExpendProp(PropID.Energy);
             ADManager.Instance.PlayInterstitial(ADShowReason.Interstitial_ReturnHome, (isSucceed) =>
             {
                 PageManager.Instance.OpenPage(PageID.HomePage);
@@ -67,7 +67,7 @@ namespace Game.UI
         void GameRetry()
         {
             GameMethod.TriggerUIAction(UIActionName.Restart, UIPageName.PopupRevive, UIActionType.Click, ADType.Interstitial);
-            ModuleManager.Prop.ExpendProp(PropID.Health);
+            ModuleManager.Prop.ExpendProp(PropID.Energy);
             ADManager.Instance.PlayInterstitial(ADShowReason.Interstitial_GameRetry, (isSucceed) =>
             {
                 GameManager.Instance.RetryGame();
@@ -85,7 +85,7 @@ namespace Game.UI
 
         void OnClickRestart()
         {
-            if (ModuleManager.Prop.GetPropCount(PropID.Health) > 1)
+            if (ModuleManager.Prop.GetPropCount(PropID.Energy) > 1)
             {
                 GameRetry();
             }

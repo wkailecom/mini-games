@@ -633,14 +633,14 @@ public static class BQReportManager
         tData.Add(ReportEventDefine.UserID_Key, ReportEventDefine.UserID_Value);
         tData.Add(ReportEventDefine.AppVersion_Key, ReportEventDefine.AppVersion_Value);
 
-        tData.Add(ReportEventDefine.LevelUniqueID_Key, ReportEventDefine.LevelUniqueID_Value);
-        tData.Add(ReportEventDefine.SceneName_Key, ReportEventDefine.SceneName_Value);
-        tData.Add(ReportEventDefine.LevelNum_Key, ReportEventDefine.LevelNum_Value);
-        tData.Add(ReportEventDefine.SeedNum_Key, ReportEventDefine.SeedNum_Value);
-        tData.Add(ReportEventDefine.IssueNum_Key, ReportEventDefine.IssueNum_Value);
+        //tData.Add(ReportEventDefine.LevelUniqueID_Key, ReportEventDefine.LevelUniqueID_Value);
+        //tData.Add(ReportEventDefine.SceneName_Key, ReportEventDefine.SceneName_Value);
+        //tData.Add(ReportEventDefine.LevelNum_Key, ReportEventDefine.LevelNum_Value);
+        //tData.Add(ReportEventDefine.SeedNum_Key, ReportEventDefine.SeedNum_Value);
+        //tData.Add(ReportEventDefine.IssueNum_Key, ReportEventDefine.IssueNum_Value);
 
-        tData.Add(ReportEventDefine.LeftHintCount_Key, ReportEventDefine.LeftPropCount_Value(PropID.Hint));
-        tData.Add(ReportEventDefine.LeftHealthCount_Key, ReportEventDefine.LeftPropCount_Value(PropID.Health));
+        //tData.Add(ReportEventDefine.LeftHintCount_Key, ReportEventDefine.LeftPropCount_Value(PropID.Hint));
+        //tData.Add(ReportEventDefine.LeftHealthCount_Key, ReportEventDefine.LeftPropCount_Value(PropID.Health));
 
         ReportData("LevelEntry", tData);
     }

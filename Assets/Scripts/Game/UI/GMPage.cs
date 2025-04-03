@@ -91,15 +91,16 @@ public class GMPage : PageBase
             {
                 tCount = 1;
             }
-            ModuleManager.Prop.AddProp(PropID.Health, tCount, PropSource.Unknown);
+            ModuleManager.Prop.AddProp(PropID.Energy, tCount, PropSource.Unknown);
         });
-        AddCommand("增加提示道具", (pParam) =>
+        AddCommand("增加道具", (pParam) =>
         {
-            if (!int.TryParse(pParam, out int tCount))
+            if (!Enum.TryParse(pParam, out int tPropID))
             {
-                tCount = 1;
+                Console.WriteLine("当前道具id存在！");
+                return;
             }
-            ModuleManager.Prop.AddProp(PropID.Hint, tCount, PropSource.Unknown);
+            ModuleManager.Prop.AddProp((PropID)tPropID, 1, PropSource.Unknown);
         });
 
         AddCommand("小游戏跳关", (pParam) =>
@@ -136,7 +137,7 @@ public class GMPage : PageBase
         {
             GameVariable.IsSkipPurchasValidate = !GameVariable.IsSkipPurchasValidate;
             Refresh();
-        }); 
+        });
         AddCommand("ECPM多次打点", (pParam) =>
         {
             if (int.TryParse(pParam, out int tCount))

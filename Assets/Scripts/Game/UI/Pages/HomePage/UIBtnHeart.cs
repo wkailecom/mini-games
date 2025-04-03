@@ -72,7 +72,7 @@ public class UIBtnHeart : MonoBehaviour
     void OnPropCountChange(EventData pEventData)
     {
         var tEventData = pEventData as PropCountChange;
-        if (tEventData.propID == PropID.Health && tEventData.changedCount > 0)
+        if (tEventData.propID == PropID.Energy && tEventData.changedCount > 0)
         {
             CheckCountdown();
         }
@@ -82,7 +82,7 @@ public class UIBtnHeart : MonoBehaviour
     void CheckCountdown()
     {
         StopAllCoroutines();
-        if (GameMethod.IsFullHealth())
+        if (GameMethod.IsFullEnergy())
         {
             timeTxt.text = "FULL";
         }

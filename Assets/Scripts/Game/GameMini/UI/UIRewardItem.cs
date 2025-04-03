@@ -63,8 +63,8 @@ public class UIRewardItem : MonoBehaviour
         }
         string tPropName = propData.ID switch
         {
-            PropID.Hint => "sticker_hint",
-            PropID.Health => "ui_heart",
+            //PropID.Hint => "sticker_hint",
+            PropID.Energy => "ui_heart",
             _ => mConfig.icon,
         };
         imgProp.SetPropIcon(tPropName, false);

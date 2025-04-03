@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIShopFree : MonoBehaviour, IShopItem
+public class UIShopFree : ShopBaseItem
 {
     public Image imgIcon;
     public TextMeshProUGUI txtName;
@@ -14,20 +14,20 @@ public class UIShopFree : MonoBehaviour, IShopItem
     public Button btnVideo;
     public GameObject btnDisabled;
 
-    public UICountDownTMP txtCountdown;
+    public UICountDownTMP txtCountdown; 
 
     //public Animator animVideoIcon;
 
     Transform mTranCountdown;
-    public void Init(IAPProductConfig tProductConfig, Action<string> pOnClickBuy)
+    public override void Init(IAPProductConfig tProductConfig, Action<string> pOnClickBuy)
     {
-        //imgIcon.SetIcon(CommonDefine.freeItemIcon, false);
-        //txtName.text = "x 1";
+        imgIcon.SetPropIcon(PropID.Coin);
+        txtName.text = $"x {CommonDefine.shopFreeCoinCount}";
         btnFree.onClick.AddListener(OnClickBtnFree);
         btnVideo.onClick.AddListener(OnClickBtnWatch);
     }
 
-    public void OnShow()
+    public override void OnShow()
     {
         //EventManager.Register(EventKey.ChangeShopFreeRewards, OnChangeShopFreeRewards);
         EventManager.Register(EventKey.VideoADLoaded, OnVideoADLoaded);
@@ -36,7 +36,7 @@ public class UIShopFree : MonoBehaviour, IShopItem
         RefreshUIState();
     }
 
-    public void OnHide()
+    public override void OnHide()
     {
         //EventManager.Unregister(EventDataType.ChangeShopFreeRewards, OnChangeShopFreeRewards);
         EventManager.Unregister(EventKey.VideoADLoaded, OnVideoADLoaded);
@@ -54,7 +54,7 @@ public class UIShopFree : MonoBehaviour, IShopItem
         {
             btnFree.gameObject.SetActive(true);
             btnVideo.gameObject.SetActive(false);
-            mTranCountdown.gameObject.SetActive(false);
+            btnDisabled.gameObject.SetActive(false);
         }
         else
         {

@@ -349,7 +349,7 @@ namespace Game.MiniGame
 
         void OnClickContinueGame()
         {
-            if (ModuleManager.Prop.HasProp(PropID.Health))
+            if (ModuleManager.Prop.HasProp(PropID.Energy))
             {
                 MiniGameManager.Instance.StartGame(mGameType, mCurLevel);
                 if (mCurLevel >= MiniGameConst.AD_OPEN_LEVEL)
@@ -359,7 +359,7 @@ namespace Game.MiniGame
             }
             else
             {
-                PageManager.Instance.OpenPage(PageID.AdsPropPopup, new AdsPropPageParam(PropID.Health, null));
+                PageManager.Instance.OpenPage(PageID.AdsPropPopup, new AdsPropPageParam(PropID.Energy, null));
             }
         }
 

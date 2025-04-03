@@ -1,9 +1,8 @@
 ﻿using Config;
 using Game.UISystem;
-using GameLogic;
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using ThinkingData.Analytics;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +11,8 @@ namespace Game.UI
     public class ShopPage : PageBase
     {
         [SerializeField] private Button _btnClose;
+        [SerializeField] private Button _btnHome;
+        [SerializeField] private GameObject _NodeBottomTab;
         [SerializeField] private UIShopFree _freeItem;
         [SerializeField] private UIShopSingle _singleItem;
         [SerializeField] private UIShopBundle _bundleItem;
@@ -19,25 +20,34 @@ namespace Game.UI
         [SerializeField] private RectTransform _productParent;
         [SerializeField] private GameObject _loadingMask;
 
-        Dictionary<string, IShopItem> mShopItems;
-        List<IShopItem> mCurShopItems;
+        RectTransform mRectScroll;
+
+        //Dictionary<string, ShopBaseItem> mShopItems;
+        List<ShopBaseItem> mCacheItems;
+        List<ShopBaseItem> mCurItems;
+        ShopPageParam mParam;
         protected override void OnInit()
         {
+            mRectScroll = _productRoot.GetComponent<RectTransform>();
             _btnClose.onClick.AddListener(Close);
-            mCurShopItems = new List<IShopItem>();
-            mShopItems = new Dictionary<string, IShopItem>();
+            _btnHome.onClick.AddListener(Close);
+            mCacheItems = new List<ShopBaseItem>();
+            mCurItems = new List<ShopBaseItem>();
+            //mShopItems = new Dictionary<string, ShopBaseItem>();
 
             var tFreeItem = InstantiateItem(_freeItem);
             tFreeItem.Init(null, null);
-            mShopItems.Add("freeItem", tFreeItem);
+            mCacheItems.Add(tFreeItem);
+            //mShopItems.Add("freeItem", tFreeItem);
 
             foreach (var tConfig in IAPManager.Instance.ProductsConfig)
             {
                 if (tConfig.shopId != 1) continue;
 
-                var tItem = InstantiateItem(tConfig.category == (int)ShopItemCategory.Bundle ? _bundleItem : _singleItem);
+                var tItem = InstantiateItem(tConfig.category == (int)ProductPack.Bundle ? _bundleItem : _singleItem);
                 tItem.Init(tConfig, OnClickBuy);
-                mShopItems.Add(tConfig.productID, tItem);
+                mCacheItems.Add(tItem);
+                //mShopItems.Add(tConfig.productID, tItem);
             }
             LayoutRebuilder.ForceRebuildLayoutImmediate(_productParent);
             _freeItem.gameObject.SetActive(false);
@@ -45,17 +55,47 @@ namespace Game.UI
             _bundleItem.gameObject.SetActive(false);
         }
 
-        IShopItem InstantiateItem(MonoBehaviour pShopItem)
+        ShopBaseItem InstantiateItem(ShopBaseItem pShopItem)
         {
-            return Instantiate(pShopItem, _productParent) as IShopItem;
+            return Instantiate(pShopItem, _productParent);
         }
 
         protected override void OnBeginOpen()
-        { 
+        {
+            mParam = PageParam as ShopPageParam;
+            bool tIsCoinFirst = mParam?.shopGroup == ShopPageParam.ShopGroup.CoinFirst;
+            _btnClose.gameObject.SetActive(tIsCoinFirst);
+            _NodeBottomTab.gameObject.SetActive(!tIsCoinFirst);
+            mRectScroll.offsetMin = new Vector2(mRectScroll.offsetMin.x, tIsCoinFirst ? 0 : 360f);
 
-            foreach (var tItem in mCurShopItems)
+            if (tIsCoinFirst)
             {
-                tItem.OnShow();
+                mCurItems.Clear();
+                var tOtherItems = new List<ShopBaseItem>();
+                foreach (var tItem in mCacheItems)
+                {
+                    if (tItem.mConfig == null ||
+                       (tItem.mConfig.propsID.Length == 1 && tItem.mConfig.propsID[0] == (int)PropID.Coin))
+                    {
+                        mCurItems.Add(tItem);//免费和单个金币靠前
+                    }
+                    else
+                    {
+                        tOtherItems.Add(tItem);
+                    }
+                }
+                mCurItems.AddRange(tOtherItems);
+            }
+            else
+            {
+                mCurItems.Clear();
+                mCurItems.AddRange(mCacheItems);
+            }
+
+            for (int i = 0; i < mCurItems.Count; i++)
+            {
+                mCurItems[i].transform.SetSiblingIndex(i);
+                mCurItems[i].OnShow();
             }
 
             _loadingMask.SetActive(false);
@@ -64,7 +104,7 @@ namespace Game.UI
 
         protected override void OnClosed()
         {
-            foreach (var tItem in mCurShopItems)
+            foreach (var tItem in mCurItems)
             {
                 tItem.OnHide();
             }
@@ -111,5 +151,21 @@ namespace Game.UI
 
 
         #endregion
+    }
+
+    public class ShopPageParam
+    {
+        public ShopGroup shopGroup { get; private set; }
+
+        public ShopPageParam(ShopGroup pShopGroup)
+        {
+            shopGroup = pShopGroup;
+        }
+
+        public enum ShopGroup
+        {
+            None,
+            CoinFirst, //金币优先
+        }
     }
 }

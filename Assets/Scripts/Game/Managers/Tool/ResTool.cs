@@ -1,9 +1,11 @@
-﻿using Game;
+﻿using Config;
+using Game;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
 using UnityEngine.UI;
+using static AdEvents;
 
 public static class ResTool
 {
@@ -37,5 +39,21 @@ public static class ResTool
         if (pSetNativeSize) pImage.SetNativeSize();
     }
 
+    public static void SetPropIcon(this Image pImage, int pPropID, bool pSetNativeSize = false)
+    {
+        var mConfig = ConfigData.propConfig.GetByPrimary(pPropID);
+        if (mConfig == null)
+        {
+            LogManager.LogError("SetPropIcon PropID null! ");
+            return;
+        }
+        pImage.sprite = LoadPropIcon(mConfig.icon);
+        if (pSetNativeSize) pImage.SetNativeSize();
+    }
+
+    public static void SetPropIcon(this Image pImage, PropID pPropID, bool pSetNativeSize = false)
+    {
+        SetPropIcon(pImage, (int)pPropID, pSetNativeSize);
+    }
 
 }

@@ -136,7 +136,7 @@ public static class GameMethod
             ADManager.Instance.HideBanner();
         }
     }
-    public static bool IsFullHealth() => ModuleManager.Prop.GetPropCount(PropID.Health) >= CommonDefine.healthFunllCount;
+    public static bool IsFullEnergy() => ModuleManager.Prop.GetPropCount(PropID.Energy) >= CommonDefine.energyFunllCount;
     public static int GetIAPProductPropCount(IAPProductConfig pConfig, PropID pPropID)
     {
         if (pConfig == null)

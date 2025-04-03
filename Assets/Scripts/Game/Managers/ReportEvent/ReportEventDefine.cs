@@ -302,8 +302,8 @@ public static class ReportEventDefine
         return pPropID switch
         {
             PropID.RemoveAD => "removeAD",
-            PropID.Health => "hearts",
-            PropID.Hint => "hints",
+            PropID.Energy => "hearts",
+            //PropID.Hint => "hints",
             PropID.Invalid => "Editor",
             _ => pPropID.ToString(),
         };
@@ -401,7 +401,7 @@ public static class ReportEventDefine
         return pPropID switch
         {
             //PropID.Health => ModuleManager.Statistics.GetValue(StatsID.UseHintTimes, StatsGroup.Type),
-            PropID.Hint => ModuleManager.Statistics.GetValue(StatsID.UseHintTimes, StatsGroup.Type),
+            //PropID.Energy => ModuleManager.Statistics.GetValue(StatsID.UseHintTimes, StatsGroup.Type),
             _ => 1,
         };
     }
@@ -410,9 +410,9 @@ public static class ReportEventDefine
     {
         return ModuleManager.MiniGame.GameType switch
         {
-            MiniGameType.Screw => LeftPropCount_Value(PropID.Hint, PropID.ScrewExtraSlot, PropID.ScrewHammer, PropID.ScrewExtraBox),
-            MiniGameType.Jam3d => LeftPropCount_Value(PropID.Hint, PropID.Jam3DShuffle, PropID.Jam3DReplace, PropID.Jam3DRevert),
-            MiniGameType.Tile => LeftPropCount_Value(PropID.Hint, PropID.TileRecall, PropID.TileMagnet, PropID.TileShuffle),
+            MiniGameType.Screw => LeftPropCount_Value(PropID.Energy, PropID.ScrewExtraSlot, PropID.ScrewHammer, PropID.ScrewExtraBox),
+            MiniGameType.Jam3d => LeftPropCount_Value(PropID.Energy, PropID.Jam3DShuffle, PropID.Jam3DReplace, PropID.Jam3DRevert),
+            MiniGameType.Tile => LeftPropCount_Value(PropID.Energy, PropID.TileRecall, PropID.TileMagnet, PropID.TileShuffle),
             _ => string.Empty,
         };
     }
