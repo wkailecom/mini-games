@@ -2,6 +2,7 @@
 using Game.UISystem;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -11,9 +12,9 @@ namespace Game.MiniGame
     public class MiniRevivePopup : PageBase
     {
         [SerializeField] private RectTransform _tranPanel;
-        [SerializeField] private Text _txtTitle;
-        [SerializeField] private Text _txtLevel;
-        [SerializeField] private Text _txtDescribe;
+        [SerializeField] private TextMeshProUGUI _txtTitle;
+        [SerializeField] private TextMeshProUGUI _txtLevel;
+        [SerializeField] private TextMeshProUGUI _txtDescribe;
         [SerializeField] private GameObject _nodeRoot;
         [SerializeField] private UIPopupBtn _btnLeft;
         [SerializeField] private UIPopupBtn _btnRight;

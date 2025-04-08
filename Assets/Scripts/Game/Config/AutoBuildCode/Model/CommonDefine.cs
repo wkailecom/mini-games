@@ -39,7 +39,7 @@ namespace Config
 		///</summary>
 		public static int energyHarvestInterval = 30;
 		///<summary>
-		///体力金币购买数
+		///体力购买花费金币数
 		///</summary>
 		public static int energyCoinCount = 1000;
 	}

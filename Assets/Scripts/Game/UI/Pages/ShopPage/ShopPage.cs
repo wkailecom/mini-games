@@ -127,7 +127,12 @@ namespace Game.UI
             var tEventData = pEventData as PurchaseSuccess;
             var tConfig = tEventData.productConfig;
 
-
+            //刷新购买项
+            for (int i = 0; i < mCurItems.Count; i++)
+            {
+                mCurItems[i].transform.SetSiblingIndex(i);
+                mCurItems[i].OnShow();
+            }
         }
 
         void OnClickBuy(string pProductID)

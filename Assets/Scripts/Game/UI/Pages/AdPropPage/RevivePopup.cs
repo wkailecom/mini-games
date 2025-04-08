@@ -91,13 +91,13 @@ namespace Game.UI
             }
             else
             {
-                PageManager.Instance.OpenPage(PageID.AdPropPopup, new AdPropPageParam((isSucceed) =>
-                {
-                    if (isSucceed)
-                    {
-                        GameRetry();
-                    }
-                }));
+                //PageManager.Instance.OpenPage(PageID.AdPropPopup, new AdPropPageParam((isSucceed) =>
+                //{
+                //    if (isSucceed)
+                //    {
+                //        GameRetry();
+                //    }
+                //}));
             }
         }
 

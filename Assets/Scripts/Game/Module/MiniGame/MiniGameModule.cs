@@ -60,10 +60,10 @@ public class MiniGameModule : ModuleBase
         var tEventData = pEventData as ADEvent;
         if (tEventData.ADType == ADType.RewardVideo)
         {
-            var ttPropID = GetPropID(tEventData.showReason);
-            if (ttPropID != PropID.Invalid)
+            var tPropID = GetPropID(tEventData.showReason);
+            if (tPropID != PropID.Invalid)
             {
-                var tPageParam = new RewardPageParam(ttPropID, 1, PropSource.Rrewarded);
+                var tPageParam = new RewardPageParam(tPropID, 1, PropSource.Rrewarded);
                 PageManager.Instance.OpenPage(PageID.RewardPage, tPageParam);
             }
         }

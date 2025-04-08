@@ -35,13 +35,13 @@ namespace Config
 		/// </summary>
 		public int category { get; private set; }
 		/// <summary>
-		///查询id
-		/// </summary>
-		public int queryId { get; private set; }
-		/// <summary>
 		///商店id
 		/// </summary>
 		public int shopId { get; private set; }
+		/// <summary>
+		///查询id
+		/// </summary>
+		public int queryId { get; private set; }
 		/// <summary>
 		///图标
 		/// </summary>
@@ -93,11 +93,11 @@ namespace Config
 			}
 			if (!string.IsNullOrEmpty(pData[8]))
 			{
-				queryId = int.Parse(pData[8]);
+				shopId = int.Parse(pData[8]);
 			}
 			if (!string.IsNullOrEmpty(pData[9]))
 			{
-				shopId = int.Parse(pData[9]);
+				queryId = int.Parse(pData[9]);
 			}
 			if (!string.IsNullOrEmpty(pData[10]))
 			{

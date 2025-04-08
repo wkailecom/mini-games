@@ -49,8 +49,7 @@ public class UIBtnHeart : MonoBehaviour
     void OnPageBeginOpen(EventData pEventData)
     {
         var tEventData = pEventData as PageOperation;
-        if (tEventData.pageID == PageID.AdPropPopup || tEventData.pageID == PageID.RevivePopup ||
-            (tEventData.pageID == PageID.SettingsPage && PageManager.Instance.IsOpen(PageID.GamePage)))
+        if (tEventData.pageID == PageID.AdsPropPopup || tEventData.pageID == PageID.SwapEnergyPage)
         {
             openCount++;
             canvasRoot.overrideSorting = true;
@@ -61,8 +60,7 @@ public class UIBtnHeart : MonoBehaviour
     void OnPageClosed(EventData pEventData)
     {
         var tEventData = pEventData as PageOperation;
-        if (tEventData.pageID == PageID.AdPropPopup || tEventData.pageID == PageID.RevivePopup ||
-            (tEventData.pageID == PageID.SettingsPage && PageManager.Instance.IsOpen(PageID.GamePage)))
+        if (tEventData.pageID == PageID.AdsPropPopup || tEventData.pageID == PageID.SwapEnergyPage)
         {
             openCount--;
             canvasRoot.overrideSorting = openCount > 0;
@@ -106,6 +104,14 @@ public class UIBtnHeart : MonoBehaviour
 
     public void OpenGetADHealth()
     {
-        PageManager.Instance.OpenPage(PageID.AdPropPopup);
+        var tCurCount = ModuleManager.Prop.GetPropCount(PropID.Coin);
+        if (tCurCount >= CommonDefine.energyCoinCount)
+        {
+            PageManager.Instance.OpenPage(PageID.SwapEnergyPage);
+        }
+        else
+        {
+            PageManager.Instance.OpenPage(PageID.ShopPage, new ShopPageParam(ShopPageParam.ShopGroup.CoinFirst));
+        }
     }
 }

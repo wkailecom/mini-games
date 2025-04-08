@@ -2,7 +2,6 @@
 using Game.UISystem;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,15 +29,9 @@ namespace Game.MiniGame
         {
             base.OnBeginOpen();
 
-            int shopId = ModuleManager.MiniGame.GameType switch
-            {
-                MiniGameType.Screw => 101,
-                MiniGameType.Jam3d => 102,
-                MiniGameType.Tile => 103,
-                _ => 101,
-            };
+            int shopId = 105;// (int)ModuleManager.MiniGame.GameType;
 
-            timeCountDown.StartCountDown(ModuleManager.MiniGame.EndTime, "Finished");
+            //timeCountDown.StartCountDown(ModuleManager.MiniGame.EndTime, "Finished");
             foreach (var tConfig in IAPManager.Instance.ProductsConfig)
             {
                 if (tConfig.shopId != shopId) continue;

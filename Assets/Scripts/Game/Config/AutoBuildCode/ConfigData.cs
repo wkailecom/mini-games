@@ -12,6 +12,7 @@ namespace Config
 		public static LogEcpmEventConfigController logEcpmEventConfig = new LogEcpmEventConfigController();
 		public static MiniMapConfigController miniMapConfig = new MiniMapConfigController();
 		public static MiniScheduleConfigController miniScheduleConfig = new MiniScheduleConfigController();
+		public static MiniTypeConfigController miniTypeConfig = new MiniTypeConfigController();
 		public static PageConfigController pageConfig = new PageConfigController();
 		public static PropConfigController propConfig = new PropConfigController();
 
@@ -27,6 +28,7 @@ namespace Config
 			logEcpmEventConfig.LoadData(dataPath);
 			miniMapConfig.LoadData(dataPath);
 			miniScheduleConfig.LoadData(dataPath);
+			miniTypeConfig.LoadData(dataPath);
 			pageConfig.LoadData(dataPath);
 			propConfig.LoadData(dataPath);
 		}

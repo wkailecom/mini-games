@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 
 namespace Game
 {
@@ -12,16 +11,16 @@ namespace Game
         public const string ShuShuAppID = "b065ac7070ba4ccbbc7801df4fe3aa0a";
 
         public const int TARGET_FRAME_RATE = 60; // 目标帧率 
-        public const string CONFIG_ROOT_PATH = "Configs/ConfigData"; //配置根目录A
-        public const string CONFIG_ROOT_PATHB = "Configs/ConfigDataB";//配置根目录B
-        public const string CONFIG_ROOT_PATHC = "Configs/ConfigDataC";//配置根目录C
-        public const string CONFIG_ROOT_PATHD = "Configs/ConfigDataD";//配置根目录D
+        public const string CONFIG_ROOT_PATH = "Configs/ConfigData";     //配置根目录A
+        public const string CONFIG_ROOT_PATHB = "Configs/ConfigDataB";   //配置根目录B
+        public const string CONFIG_ROOT_PATHC = "Configs/ConfigDataC";   //配置根目录C
+        public const string CONFIG_ROOT_PATHD = "Configs/ConfigDataD";   //配置根目录D
 
-        public const string ATLAS_PROPS_PATH = "Atlas/Props";          //图集道具Icon路径
-        public const string ATLAS_TOKENS_PATH = "Atlas/Tokens";        //图集收集品Icon路径
+        public const string ATLAS_PROPS_PATH = "Atlas/Props";            //图集：道具Icon路径
+        public const string ATLAS_MINI_EVENT_PATH = "Atlas/MiniEnter";   //图集：不同小游戏图标
 
-        public const string EVENT_ASSET_PATH = "UI/Widget/EventWidget";        //活动相关资源路径
-         
+        public const string PREFAB_MINI_EVENT_PATH = "UI/Widget/MiniEnter/";  //预制体：不同小游戏组件
+
         public const int TOKENS_DOUBLE_COUNT = 2;               //奖励加倍倍数 
         public const int MINI_GAME_LEVEL = 4;                   //小游戏开启关卡    
 

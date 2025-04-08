@@ -19,33 +19,32 @@ public class UIMiniEnter : MonoBehaviour
     public GameObject GoHot;
     public GameObject GoNew;
 
-    private UISwitch _switnLike;
+    UISwitch _switnLike;
+    MiniTypeConfig mTypeConfig;
     MiniGameType mMiniGameType;
     private void Awake()
     {
         _switnLike = BtnLike.GetComponentInChildren<UISwitch>(true);
         BtnLike.onClick.AddListener(OnClickBtnLike);
-        BtnEnter.onClick.AddListener(OnClickBtnEnter);
     }
 
-    public void Init(MiniGameType pMiniGameType)
+    public void Init(MiniTypeConfig pConfig)
     {
-        mMiniGameType = pMiniGameType;
-        //ImgIcon.sprite =
-        TxtTitle.text = pMiniGameType.ToString();
+        mTypeConfig = pConfig;
+
+        BtnEnter.onClick.AddListener(OnClickBtnEnter); 
+        mMiniGameType = (MiniGameType)pConfig.ID;
+        ImgIcon.sprite = ResTool.LoadIcon(pConfig.coverIcon, GameConst.ATLAS_MINI_EVENT_PATH);
+        TxtTitle.text = pConfig.titleName;
     }
 
     void OnClickBtnLike()
     {
 
     }
+
     void OnClickBtnEnter()
-    {
-        if (mMiniGameType == MiniGameType.Screw)
-        {
-
-        }
-
-        PageManager.Instance.OpenPage(PageID.MiniEnterPage);
+    { 
+        PageManager.Instance.OpenPage(PageID.MiniEnterPage, new MiniEnterPageParam(mTypeConfig));
     }
 }

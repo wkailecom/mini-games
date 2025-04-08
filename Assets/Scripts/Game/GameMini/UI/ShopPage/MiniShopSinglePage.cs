@@ -35,7 +35,7 @@ namespace Game.MiniGame
                 return;
             }
 
-            timeCountDown.StartCountDown(ModuleManager.MiniGame.EndTime, "Finished");
+            //timeCountDown.StartCountDown(ModuleManager.MiniGame.EndTime, "Finished");
             foreach (var tConfig in IAPManager.Instance.ProductsConfig)
             {
                 if (tConfig.shopId != 2) continue;

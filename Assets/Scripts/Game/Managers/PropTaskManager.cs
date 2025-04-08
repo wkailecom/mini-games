@@ -24,11 +24,11 @@ public partial class PopConfig
     /// </summary>
     public int Weight;
 
-    public static PopConfig[] Datas = new PopConfig[]{
-        new () { Id =PageID.EventChestPage, Weight=100},
-        new () { Id=PageID.EventPuzzlePage, Weight=200},
-        new () { Id=PageID.EventTangramPage, Weight=300},
-    };
+    //public static PopConfig[] Datas = new PopConfig[]{
+    //    new () { Id =PageID.EventChestPage, Weight=100},
+    //    new () { Id=PageID.EventPuzzlePage, Weight=200},
+    //    new () { Id=PageID.EventTangramPage, Weight=300},
+    //};
 }
 
 public class PopTaskInfo

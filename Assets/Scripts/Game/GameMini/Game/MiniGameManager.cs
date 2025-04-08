@@ -25,103 +25,158 @@ public class MiniGameManager : Singleton<MiniGameManager>
     {
         if (pGameType == MiniGameType.Screw)
         {
-            ScrewJam.ScrewTriggerEvents screwEventTrigger = new ScrewJam.ScrewTriggerEvents(
-                () =>
-                {
-                    //游戏成功
-                    TriggerEventGameOver(MiniGameType.Screw, true);
-                },
-                () =>
-                {
-                    //游戏失败
-                    TriggerEventGameOver(MiniGameType.Screw, false);
-                },
-                () =>
-                {
-                    //使用ExtraSlot
-                },
-                () =>
-                {
-                    //点击Hammer
-                },
-                () =>
-                {
-                    //取消点击Hammer
-                },
-                () =>
-                {
-                    //使用ExtraBox
-                },
-                () =>
-                {
-                    //使用道具1成功
-                    TriggerEventUsePropComplete(MiniGameType.Screw, PropID.ScrewExtraSlot);
-                },
-                () =>
-                {
-                    //使用道具2成功
-                    TriggerEventUsePropComplete(MiniGameType.Screw, PropID.ScrewHammer);
-                },
-                () =>
-                {
-                    //使用道具3成功
-                    TriggerEventUsePropComplete(MiniGameType.Screw, PropID.ScrewExtraBox);
-                },
-                () =>
-                {
-                    //重试
-                },
-                (soundName) =>
-                {
-                    //播放声音
-                    PlaySound(soundName);
-                });
-            ScrewJam.EventManager.Instance.RegisterTriggerEvents(screwEventTrigger);
+            RegisterScrew();
         }
         else if (pGameType == MiniGameType.Jam3d)
         {
-            GameLogic.JamTriggerEvents jamEventTrigger = new GameLogic.JamTriggerEvents(
-                () =>
-                {
-                    //开始游戏之后;
-                },
-                (level) => { TriggerEventGameOver(MiniGameType.Jam3d, true); },
-                (level) => { EventManager.Trigger(EventKey.MiniGameSubSuccess); },
-                (level) => { TriggerEventGameOver(MiniGameType.Jam3d, false); },
-                (soundName) => { PlaySound(soundName); },
-                () =>
-                {
-                    UnloadScene(MiniGameType.Jam3d.ToString());
-                },
-                (name, parent) =>
-                {
-                    var levelGroup = ConfigData.jamLevelGroupConfig.GetByPrimary(name);
-                    var levelGo = AssetManager.Instance.LoadPrefab($"PackageJam3d/BundleResources/Prefabs/Gen/Level_{levelGroup.prefab}", parent);
-                    return levelGo;
-                },
-                (levelGroupId) =>
-                {
-                    var levelGroup = ConfigData.jamLevelGroupConfig.GetByPrimary(levelGroupId);
-                    return levelGroup.stepsExchange;
-                },
-                (name, resType) =>
-                {
-                    if (resType == GameLogic.JamTriggerEvents.ResType.TerrainConfig)
-                    {
-                        var levelGroup = ConfigData.jamLevelGroupConfig.GetByPrimary(name);
-                        var res = AssetManager.Instance.LoadAsset<UnityEngine.Object>($"PackageJam3d/BundleResources/Terrains/Terrain_{levelGroup.prefab}");
-                        return res;
-                    }
-                    return null;
-                }, (pathInPackage) =>
-                {
-                    var res = AssetManager.Instance.LoadAsset<UnityEngine.Object>($"PackageJam3d/{pathInPackage}");
-                    return res;
-                });
-            GameLogic.JamManager.GetSingleton().RegisterJamTriggerEvents(jamEventTrigger);
+            RegisterJam3D();
+        }
+        else if (pGameType == MiniGameType.Tile)
+        {
+            RegisterTile();
+        }
+        else if (pGameType == MiniGameType.Bus)
+        {
+            RegisterBusOut();
+        }
+        else if (pGameType == MiniGameType.Triple)
+        {
+            RegisterTriple();
         }
     }
 
+    #region 注册事件
+    public void RegisterScrew()
+    {
+        ScrewJam.ScrewTriggerEvents screwEventTrigger = new ScrewJam.ScrewTriggerEvents(
+            () =>
+            {
+                //游戏成功
+                TriggerEventGameOver(MiniGameType.Screw, true);
+            },
+            () =>
+            {
+                //游戏失败
+                TriggerEventGameOver(MiniGameType.Screw, false);
+            },
+            () =>
+            {
+                //使用ExtraSlot
+            },
+            () =>
+            {
+                //点击Hammer
+            },
+            () =>
+            {
+                //取消点击Hammer
+            },
+            () =>
+            {
+                //使用ExtraBox
+            },
+            () =>
+            {
+                //使用道具1成功
+                TriggerEventUsePropComplete(MiniGameType.Screw, PropID.ScrewExtraSlot);
+            },
+            () =>
+            {
+                //使用道具2成功
+                TriggerEventUsePropComplete(MiniGameType.Screw, PropID.ScrewHammer);
+            },
+            () =>
+            {
+                //使用道具3成功
+                TriggerEventUsePropComplete(MiniGameType.Screw, PropID.ScrewExtraBox);
+            },
+            () =>
+            {
+                //重试
+            },
+            (soundName) =>
+            {
+                //播放声音
+                PlaySound(soundName);
+            });
+        ScrewJam.EventManager.Instance.RegisterTriggerEvents(screwEventTrigger);
+    }
+
+    public void RegisterJam3D()
+    {
+        GameLogic.JamTriggerEvents jamEventTrigger = new GameLogic.JamTriggerEvents(
+            () =>
+            {
+                //开始游戏之后;
+            },
+            (level) =>
+            {
+                //游戏成功
+                TriggerEventGameOver(MiniGameType.Jam3d, true);
+            },
+            (level) =>
+            {
+                //小节成功
+                EventManager.Trigger(EventKey.MiniGameSubSuccess);
+            },
+            (level) =>
+            {
+                //游戏失败
+                TriggerEventGameOver(MiniGameType.Jam3d, false);
+            },
+            (soundName) =>
+            {
+                //播放音效
+                PlaySound(soundName);
+            },
+            () =>
+            {
+                UnloadScene(MiniGameType.Jam3d.ToString());
+            },
+            (name, parent) =>
+            {
+                var levelGroup = ConfigData.jamLevelGroupConfig.GetByPrimary(name);
+                var levelGo = AssetManager.Instance.LoadPrefab($"PackageJam3d/BundleResources/Prefabs/Gen/Level_{levelGroup.prefab}", parent);
+                return levelGo;
+            },
+            (levelGroupId) =>
+            {
+                var levelGroup = ConfigData.jamLevelGroupConfig.GetByPrimary(levelGroupId);
+                return levelGroup.stepsExchange;
+            },
+            (name, resType) =>
+            {
+                if (resType == GameLogic.JamTriggerEvents.ResType.TerrainConfig)
+                {
+                    var levelGroup = ConfigData.jamLevelGroupConfig.GetByPrimary(name);
+                    var res = AssetManager.Instance.LoadAsset<UnityEngine.Object>($"PackageJam3d/BundleResources/Terrains/Terrain_{levelGroup.prefab}");
+                    return res;
+                }
+                return null;
+            }, (pathInPackage) =>
+            {
+                var res = AssetManager.Instance.LoadAsset<UnityEngine.Object>($"PackageJam3d/{pathInPackage}");
+                return res;
+            });
+        GameLogic.JamManager.GetSingleton().RegisterJamTriggerEvents(jamEventTrigger);
+    }
+
+    public void RegisterTile()
+    {
+
+    }
+
+    public void RegisterBusOut()
+    {
+
+    }
+
+    public void RegisterTriple()
+    {
+
+    }
+
+    #endregion
     public void StartGame(MiniGameType pGameType, int pLevel)
     {
         mCacheLevel = pLevel;
@@ -150,6 +205,36 @@ public class MiniGameManager : Singleton<MiniGameManager>
                 GameLogic.JamManager.GetSingleton().UpdateStepsExchangeIndex(pLevel, levelGroup.threshold);
                 GameLogic.JamManager.GetSingleton().StartGame(tLevelIDs);
                 PageManager.Instance.OpenPage(PageID.Jam3DGamePage, new MiniGamePageParam(pLevel, tLevelIDs.Length));
+                TriggerEventGameStart(pGameType, mCacheLevel);
+            });
+        }
+        else if (pGameType == MiniGameType.Tile)
+        {
+            var tLevelID = ModuleManager.MiniGame.GetLevelID(pLevel);
+            LoadScene(tSceneName, () =>
+            {
+                ScrewJam.GameModel.Instance.StartLevel(tLevelID);
+                PageManager.Instance.OpenPage(PageID.ScrewGamePage, new MiniGamePageParam(pLevel));
+                TriggerEventGameStart(pGameType, mCacheLevel);
+            });
+        }
+        else if (pGameType == MiniGameType.Bus)
+        {
+            var tLevelID = ModuleManager.MiniGame.GetLevelID(pLevel);
+            LoadScene(tSceneName, () =>
+            {
+                ScrewJam.GameModel.Instance.StartLevel(tLevelID);
+                PageManager.Instance.OpenPage(PageID.ScrewGamePage, new MiniGamePageParam(pLevel));
+                TriggerEventGameStart(pGameType, mCacheLevel);
+            });
+        }
+        else if (pGameType == MiniGameType.Triple)
+        {
+            var tLevelID = ModuleManager.MiniGame.GetLevelID(pLevel);
+            LoadScene(tSceneName, () =>
+            {
+                ScrewJam.GameModel.Instance.StartLevel(tLevelID);
+                PageManager.Instance.OpenPage(PageID.ScrewGamePage, new MiniGamePageParam(pLevel));
                 TriggerEventGameStart(pGameType, mCacheLevel);
             });
         }
@@ -201,9 +286,9 @@ public class MiniGameManager : Singleton<MiniGameManager>
     void LoadScene(string pSceneName, Action pAction)
     {
         foreach (var item in pSceneName)
-        { 
+        {
             AssetManager.Instance.UnloadScene(pSceneName);
-        } 
+        }
         AssetManager.Instance.LoadSceneAsync(pSceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive, (scene) =>
         {
             pAction?.Invoke();

@@ -1,4 +1,5 @@
 ﻿using Config;
+using Game.MiniGame;
 using Game.UISystem;
 using System;
 using System.Collections;
@@ -20,11 +21,14 @@ namespace Game.UI
         [SerializeField] private ScrollRect _enterRoot;
 
         [SerializeField] private Button _btnEvent;
-        //[SerializeField] private UIMiniGameEnter _miniGameEnter;
+        [SerializeField] private UIMiniEnter _miniEnter;
 
+        List<UIMiniEnter> mMiniEnter;
         bool mIsGuideLevel = false;
         protected override void OnInit()
         {
+            mMiniEnter = new List<UIMiniEnter>();
+
             _btnSet.onClick.AddListener(OnOpenSettingsPage);
             _btnHeart.buttonRoot.onClick.AddListener(OnClickUIHeart);
             _btnCoin.buttonRoot.onClick.AddListener(OnClickUICoin);
@@ -71,7 +75,14 @@ namespace Game.UI
 
         void EnterControl()
         {
-
+            var tDataList = ConfigData.miniTypeConfig.DataList;
+            mMiniEnter.SetItemsActive(tDataList.Count, _miniEnter, _enterRoot.content);
+            for (int i = 0; i < tDataList.Count; i++)
+            {
+                mMiniEnter[i].Init(tDataList[i]);
+            }
+            _enterRoot.verticalNormalizedPosition = 1f;
+            _miniEnter.gameObject.SetActive(false);
         }
 
         public void GuideShow(bool pIsGuide)
@@ -91,6 +102,9 @@ namespace Game.UI
         {
             GameMethod.TriggerUIAction(UIActionName.EnterShop, UIPageName.PageHome, UIActionType.Click);
             PageManager.Instance.OpenPage(PageID.ShopPage, new ShopPageParam(ShopPageParam.ShopGroup.None));
+
+            //PageManager.Instance.OpenPage(PageID.MiniShopPage);
+            //PageManager.Instance.OpenPage(PageID.MiniShopSinglePage, new MiniShopSinglePageParam(PropID.ScrewExtraSlot));
         }
 
         void OnClickBtnScrew()

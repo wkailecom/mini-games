@@ -39,17 +39,17 @@ namespace Game
         MiniGame,
     }
 
-    /// <summary>
-    /// 小游戏类型，同场景名
-    /// </summary>
-    public enum MiniGameType
-    {
-        Screw = 1,
-        Jam3d = 2,
-        Tile = 3,
-        Bus = 4,
-        Triple = 5,
-    }
+    ///// <summary>
+    ///// 小游戏类型，同场景名
+    ///// </summary>
+    //public enum MiniGameType
+    //{
+    //    Screw = 101,
+    //    Jam3d = 102,
+    //    Tile = 103,
+    //    Bus = 104,
+    //    Triple = 105,
+    //}
 
 
 }

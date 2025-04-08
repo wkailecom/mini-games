@@ -90,8 +90,8 @@ namespace Game.UI
 
         void OnOpenTutorialPage()
         {
-            GameMethod.TriggerUIAction(UIActionName.ClickTutorial, UIPageName.PageGame, UIActionType.Click);
-            PageManager.Instance.OpenPage(PageID.TutorialPage);
+            //GameMethod.TriggerUIAction(UIActionName.ClickTutorial, UIPageName.PageGame, UIActionType.Click);
+            //PageManager.Instance.OpenPage(PageID.TutorialPage);
         }
 
         void OnClickUIHeart()

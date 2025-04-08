@@ -138,10 +138,10 @@ public static class BQReportManager
     static void OnPageBeginOpen(EventData pEventData)
     {
         var tEventData = pEventData as PageOperation;
-        if (tEventData.pageID == PageID.RevivePopup)
-        {
-            ReportLevelFailed();
-        }
+        //if (tEventData.pageID == PageID.RevivePopup)
+        //{
+        //    ReportLevelFailed();
+        //}
     }
 
     static void OnPropCountChange(EventData pEventData)
