@@ -111,8 +111,8 @@ public static class ReportEventDefine
     {
         return pReason switch
         {
-            ADShowReason.Video_GetPropHealth => "addHeart",
-            ADShowReason.Video_GetPropHint => "addHint",
+            ADShowReason.Video_GetEnergy => "addHeart",
+            ADShowReason.Video_GetCoin => "addCoin",
             ADShowReason.Video_GameRevive => "revive",
             ADShowReason.Video_RewardDoubled => "doubledReward",
             ADShowReason.Video_GetScrewExtraSlot => "addScrewExtraSlot",
@@ -167,7 +167,7 @@ public static class ReportEventDefine
 
     public static int EndlessOverTimes_Value => ModuleManager.Statistics.GetValue(StatsID.OverTimes, StatsGroup.Type, GameModeType.Endless);
     public static int DailyOverTimes_Value => ModuleManager.Statistics.GetValue(StatsID.OverTimes, StatsGroup.Type, GameModeType.Daily);
-     
+
     #endregion
 
     #region UI点击行为
@@ -199,7 +199,7 @@ public static class ReportEventDefine
     public const string RetryCount_Key = "restartCount";                         //当前关卡的重试次数
 
     public static string UseLanguage_Value => ModuleManager.UserInfo.Data.Language.ToString();
-    public static string UseFontSize_Value => ModuleManager.UserInfo.Data.FontSize.ToString();  
+    public static string UseFontSize_Value => ModuleManager.UserInfo.Data.FontSize.ToString();
     public static string GameMode_Value => GameManager.Instance.CurrentGameModeType.ToString();
     public static string SceneName_Value
     {
@@ -253,10 +253,10 @@ public static class ReportEventDefine
                 return string.Empty;
             }
         }
-    } 
-    public static string LevelUniqueID_Value => GameManager.Instance.BaseData.UniqueID.ToString(); 
-    public static int PlayTime_Value => GameManager.Instance.BaseData.TakeTime; 
-     
+    }
+    public static string LevelUniqueID_Value => GameManager.Instance.BaseData.UniqueID.ToString();
+    public static int PlayTime_Value => GameManager.Instance.BaseData.TakeTime;
+
 
     #endregion
 

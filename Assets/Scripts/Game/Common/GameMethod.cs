@@ -161,15 +161,7 @@ public static class GameMethod
             if (tProp == (int)pPropID) return true;
         }
         return false;
-    }
-
-    public static void ShowInterstitial(ADShowReason pADShowReason)
-    {
-        var tEventData = EventManager.GetEventData<ADEvent>(EventKey.ShowInterstitial);
-        tEventData.ADType = ADType.Interstitial;
-        tEventData.showReason = pADShowReason;
-        EventManager.Trigger(tEventData);
-    }
+    } 
 
     public static void TriggerUIAction(string pUIName, string pPageName, UIActionType pType, bool pIsReport = true)
     {

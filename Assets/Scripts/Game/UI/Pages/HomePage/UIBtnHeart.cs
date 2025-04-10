@@ -8,12 +8,14 @@ using Game.UISystem;
 using Game.UI;
 using Game;
 using System;
+using System.Threading;
 
 public class UIBtnHeart : MonoBehaviour
 {
     public Canvas canvasRoot;
     public Button buttonRoot;
-    public Transform timeRoot;
+    public UICountDownTMP countDown;
+    public GameObject addRoot;
     public TextMeshProUGUI timeTxt;
     public TextMeshProUGUI countTxt;
 
@@ -78,32 +80,27 @@ public class UIBtnHeart : MonoBehaviour
 
 
     void CheckCountdown()
-    {
-        StopAllCoroutines();
+    { 
         if (GameMethod.IsFullEnergy())
         {
-            timeTxt.text = "FULL";
+            addRoot.SetActive(false);
+            countDown.StopCountDown(false, "FULL"); 
         }
         else
         {
-            StartCoroutine(UpdateTimeTxt(ModuleManager.UserInfo.HealthHarvestTime));
+            addRoot.SetActive(true);
+            countDown.StartCountDown(ModuleManager.UserInfo.HealthHarvestTime, "Full");
         }
-    }
-
-    IEnumerator UpdateTimeTxt(DateTime pHarvestTime)
-    {
-        while (DateTime.Now < pHarvestTime)
-        {
-            TimeSpan timeSpan = pHarvestTime - DateTime.Now;
-            timeTxt.text = string.Format("{0:D2}m {1:D2}s", (int)timeSpan.TotalMinutes, timeSpan.Seconds);
-            yield return TimerManager.WaitOneSecond;
-        }
-    }
-
-
+    } 
 
     public void OpenGetADHealth()
     {
+        if (GameMethod.IsFullEnergy())
+        {
+            MessageHelp.Instance.ShowMessage("You energy are full!");
+            return;
+        }
+
         var tCurCount = ModuleManager.Prop.GetPropCount(PropID.Coin);
         if (tCurCount >= CommonDefine.energyCoinCount)
         {

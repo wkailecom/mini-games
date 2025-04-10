@@ -17,6 +17,8 @@ namespace Config
 			CommonDefine.energyFunllCount = int.Parse(tFileReader.ReadLine()[0]);
 			CommonDefine.energyHarvestInterval = int.Parse(tFileReader.ReadLine()[0]);
 			CommonDefine.energyCoinCount = int.Parse(tFileReader.ReadLine()[0]);
+			CommonDefine.miniShowSort = TableParser.ParseArrayData<int>(tFileReader.ReadLine()[0]);
+			CommonDefine.miniShowState = TableParser.ParseArrayData<int>(tFileReader.ReadLine()[0]);
 		}
 	}
 }

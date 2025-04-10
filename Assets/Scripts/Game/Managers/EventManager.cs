@@ -20,8 +20,7 @@ public enum EventKey
     ADShowFailed,
     VideoADRewarded,
     VideoADLoaded,
-    ADForecastRevenue,
-    ShowInterstitial,
+    ADForecastRevenue, 
 
     PurchaseSuccess,
     ValidateReceiptResult,
@@ -71,8 +70,7 @@ public static class EventManager
         AddEventData(EventKey.ADShowFailed, new ADEvent(EventKey.ADShowFailed));
         AddEventData(EventKey.VideoADRewarded, new ADEvent(EventKey.VideoADRewarded));
         AddEventData(EventKey.VideoADLoaded, new ADEvent(EventKey.VideoADLoaded));
-        AddEventData(EventKey.ADForecastRevenue, new ADEvent(EventKey.ADForecastRevenue));
-        AddEventData(EventKey.ShowInterstitial, new ADEvent(EventKey.ShowInterstitial));
+        AddEventData(EventKey.ADForecastRevenue, new ADEvent(EventKey.ADForecastRevenue)); 
 
         AddEventData(EventKey.PurchaseSuccess, new PurchaseSuccess());
         AddEventData(EventKey.ValidateReceiptResult, new ValidateReceiptResult());

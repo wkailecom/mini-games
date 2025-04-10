@@ -1,12 +1,11 @@
 ﻿using Config;
 using Game.UISystem;
 using System.Collections.Generic;
-using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.UI
+namespace Game.MiniGame
 {
     public class MiniSucceedPage : PageBase
     {
@@ -16,6 +15,7 @@ namespace Game.UI
         [SerializeField] private Button _btnNext;
         [SerializeField] private UIRewardItem _rewardItem;
 
+        [SerializeField] private RectTransform _successRoot;
         [SerializeField] private RectTransform _nodeBalloon;
         [SerializeField] private RectTransform _nodeReward;
         [SerializeField] private RectTransform _levelReward;
@@ -36,12 +36,19 @@ namespace Game.UI
         protected override void OnBeginOpen()
         {
             mParam = PageParam as MiniSucceedPageParam;
+            AudioManager.Instance.PlaySound(SoundID.Tile_Level_Succeed);
 
-            if (mParam == null)
-            {
-                LogManager.LogError("MiniSucceedPage: invalid param");
-                return;
-            }
+            //if (mParam == null)
+            //{
+            //    LogManager.LogError("MiniSucceedPage: invalid param");
+            //    return;
+            //}
+            mParam = new MiniSucceedPageParam();
+
+            var tConfig = ModuleManager.MiniGame.GetLevelConfig(MiniGameManager.Instance.Level);
+            var tRewards = ModuleManager.MiniGame.GetLevelReward(tConfig.LevelReward);
+            mParam.nodeRewards = tRewards;
+            mParam.levelRewards = tRewards;
 
             if (mParam.nodeRewards.Count > 0)
             {
@@ -65,7 +72,7 @@ namespace Game.UI
                 mLevelItems.SetItemsActive(mParam.levelRewards.Count, _rewardItem, _levelReward);
                 for (int i = 0; i < mParam.levelRewards.Count; i++)
                 {
-                    mNodeItems[i].SetData(mParam.levelRewards[i]);
+                    mLevelItems[i].SetData(mParam.levelRewards[i]);
                 }
                 _levelReward.gameObject.SetActive(true);
             }
@@ -73,6 +80,7 @@ namespace Game.UI
             {
                 _levelReward.gameObject.SetActive(false);
             }
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_successRoot);
         }
 
 

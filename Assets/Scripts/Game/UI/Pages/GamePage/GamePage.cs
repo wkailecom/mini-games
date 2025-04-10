@@ -96,7 +96,7 @@ namespace Game.UI
 
         void OnClickUIHeart()
         {
-            GameMethod.TriggerUIAction(UIActionName.AddHearts, UIPageName.PageGame, UIActionType.Click);
+            GameMethod.TriggerUIAction(UIActionName.AddHeart, UIPageName.PageGame, UIActionType.Click);
         }
 
         void OnClickUIRemoveads()

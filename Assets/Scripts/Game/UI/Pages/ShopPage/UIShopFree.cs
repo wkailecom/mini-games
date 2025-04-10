@@ -1,5 +1,6 @@
 ﻿using Config;
 using DG.Tweening;
+using Game;
 using Game.UISystem;
 using System;
 using TMPro;
@@ -14,7 +15,7 @@ public class UIShopFree : ShopBaseItem
     public Button btnVideo;
     public GameObject btnDisabled;
 
-    public UICountDownTMP txtCountdown; 
+    public UICountDownTMP txtCountdown;
 
     //public Animator animVideoIcon;
 
@@ -100,19 +101,19 @@ public class UIShopFree : ShopBaseItem
 
     void OnClickBtnWatch()
     {
-        //if (ADManager.Instance.IsShopFreeVideoValid)
-        //{
-        //    ADManager.Instance.ShowRewardVideo(ADShowReason.Video_ShopFreeRotate);
-        //}
-        //else
-        //{
-        //    PageManager.Instance.OpenPage(PageID.HintNetPage, new HintNetPageParam(TextTool.GetText("Item_VideoFailed"), TextTool.GetText("Txt_NoNetwork")));
-        //}
+        ADManager.Instance.PlayRewardVideo(ADShowReason.Video_GetCoin, (isf) =>
+        {
+            if (isf)
+            {
+                PageManager.Instance.OpenPage(PageID.RewardPage, new RewardPageParam(PropID.Energy, 1, PropSource.ShopFree));
+            }
+        });
     }
 
     void OnClickBtnFree()
     {
-        //ModuleManager.Activity.ReceiveShopFree();
+        PageManager.Instance.OpenPage(PageID.RewardPage, new RewardPageParam(PropID.Energy, 1, PropSource.ShopFree));
+        ModuleManager.UserInfo.GatherShopFree();
         RefreshUIState();
     }
 

@@ -10,7 +10,7 @@ public class RewardVideoLogic
         EventManager.Register(EventKey.ADShown, OnADShown);
         EventManager.Register(EventKey.ADClosed, OnADClosed);
         EventManager.Register(EventKey.VideoADRewarded, OnVideoADRewarded);
-        EventManager.Register(EventKey.ADShowFailed, OnADShowFailed); 
+        EventManager.Register(EventKey.ADShowFailed, OnADShowFailed);
     }
 
     public void Uninit()
@@ -18,7 +18,7 @@ public class RewardVideoLogic
         EventManager.Unregister(EventKey.ADShown, OnADShown);
         EventManager.Unregister(EventKey.ADClosed, OnADClosed);
         EventManager.Unregister(EventKey.VideoADRewarded, OnVideoADRewarded);
-        EventManager.Unregister(EventKey.ADShowFailed, OnADShowFailed); 
+        EventManager.Unregister(EventKey.ADShowFailed, OnADShowFailed);
     }
 
     public void TryShowRewardVideo(ADShowReason pReason, Action<bool> pAction)
@@ -64,12 +64,13 @@ public class RewardVideoLogic
             ModuleManager.Statistics.AddValue(StatsID.ADVideo, StatsGroup.Total);
             ModuleManager.Statistics.AddValue(StatsID.ADVideo, StatsGroup.TotalDay);
 
-            if (tEventData.showReason == ADShowReason.Video_GetPropHealth)
+            if (tEventData.showReason == ADShowReason.Video_GetEnergy)
             {
                 ModuleManager.Statistics.AddValue(StatsID.ADHealthTimes, StatsGroup.Total);
             }
-            else if (tEventData.showReason == ADShowReason.Video_GetPropHint)
-            { 
+            else if (tEventData.showReason == ADShowReason.Video_GetCoin)
+            {
+
             }
         }
     }

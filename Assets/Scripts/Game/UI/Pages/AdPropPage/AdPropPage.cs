@@ -33,7 +33,7 @@ namespace Game.UI
             GameMethod.TriggerUIAction(UIActionName.Na, UIPageName.PopupAddHeart, UIActionType.Agree, ADType.RewardVideo);
             if (ADManager.Instance.IsRewardVideoReady)
             {
-                ADManager.Instance.PlayRewardVideo(ADShowReason.Video_GetPropHealth, (isSucceed) =>
+                ADManager.Instance.PlayRewardVideo(ADShowReason.Video_GetEnergy, (isSucceed) =>
                 {
                     if (GameVariable.CurUIBtnHeart != null)
                     {

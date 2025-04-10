@@ -79,7 +79,7 @@ public class UserInfoModule : ModuleBase
 
         if (IsKillEnd)//杀端重进检查扣除体力
         {
-            //ModuleManager.Prop.ExpendProp(PropID.Health);
+            ModuleManager.Prop.ExpendProp(PropID.Energy);
             IsKillEnd = false;
         }
 
@@ -184,13 +184,16 @@ public class UserInfoModule : ModuleBase
         }
     }
 
-    public void UpdateShopFreeHarvestTime()
+    #region 商店免费金币
+
+    public void GatherShopFree()
     {
         ShopFreeHarvestTime = DateTime.Now.AddMinutes(CommonDefine.shopFreeTimeInterval);
         Data.ShopFreeHarvestTime = ShopFreeHarvestTime.Ticks;
         Serialize();
     }
 
+    #endregion
     public OrderInfo GetOrderInfo(string pProductID)
     {
         foreach (var tOrder in mUserPayOrders)

@@ -48,11 +48,10 @@ public class MiniGameModule : ModuleBase
     {
         var tEventData = pEventData as PurchaseSuccess;
         var tConfig = tEventData.productConfig;
-        if (tConfig.shopId == 2 || tConfig.shopId == 101 || tConfig.shopId == 102)
-        {
-            var tPropDatas = GameMethod.ParseProps(tConfig.propsID, tConfig.propsCount);
-            PageManager.Instance.OpenPage(PageID.RewardPage, new RewardPageParam(tPropDatas, PropSource.Shop));
-        }
+
+        var tPropDatas = GameMethod.ParseProps(tConfig.propsID, tConfig.propsCount);
+        var tPageParam = new RewardPageParam(tPropDatas, PropSource.Shop);
+        PageManager.Instance.OpenPage(PageID.RewardPage, tPageParam);
     }
 
     void OnVideoADRewarded(EventData pEventData)
@@ -60,7 +59,7 @@ public class MiniGameModule : ModuleBase
         var tEventData = pEventData as ADEvent;
         if (tEventData.ADType == ADType.RewardVideo)
         {
-            var tPropID = GetPropID(tEventData.showReason);
+            var tPropID = DataConvert.GetADPropID(tEventData.showReason);
             if (tPropID != PropID.Invalid)
             {
                 var tPageParam = new RewardPageParam(tPropID, 1, PropSource.Rrewarded);
@@ -76,8 +75,9 @@ public class MiniGameModule : ModuleBase
         if (tEventData.isSuccess)
         {
             mData.CurrentLevel++;
-        }
 
+            Serialize();
+        }
     }
 
 
@@ -139,6 +139,10 @@ public class MiniGameModule : ModuleBase
         return false;
     }
 
+    public MiniTypeConfig GetTypeConfig(int pTypeId)
+    {
+        return ConfigData.miniTypeConfig.GetByPrimary(pTypeId);
+    }
 
     public MiniMapConfig GetLevelConfig(int pLevel)
     {
@@ -217,37 +221,7 @@ public class MiniGameModule : ModuleBase
 
     #region 资源处理
 
-    HashSet<ADShowReason> MiniGameAD = new HashSet<ADShowReason>
-    {
-        ADShowReason.Video_GetScrewExtraSlot,
-        ADShowReason.Video_GetScrewHammer,
-        ADShowReason.Video_GetScrewExtraBox,
-        ADShowReason.Video_GetJam3DReplace,
-        ADShowReason.Video_GetJam3DRevert,
-        ADShowReason.Video_GetJam3DShuffle,
-        ADShowReason.Video_GetTileRecall,
-        ADShowReason.Video_GetTileMagnet,
-        ADShowReason.Video_GetTileShuffle
-    };
 
-    public bool IsMiniGameAD(ADShowReason pReason) => MiniGameAD.Contains(pReason);
-
-    public PropID GetPropID(ADShowReason pReason)
-    {
-        return pReason switch
-        {
-            ADShowReason.Video_GetScrewExtraSlot => PropID.ScrewExtraSlot,
-            ADShowReason.Video_GetScrewHammer => PropID.ScrewHammer,
-            ADShowReason.Video_GetScrewExtraBox => PropID.ScrewExtraBox,
-            ADShowReason.Video_GetJam3DReplace => PropID.Jam3DReplace,
-            ADShowReason.Video_GetJam3DRevert => PropID.Jam3DRevert,
-            ADShowReason.Video_GetJam3DShuffle => PropID.Jam3DShuffle,
-            ADShowReason.Video_GetTileRecall => PropID.TileRecall,
-            ADShowReason.Video_GetTileMagnet => PropID.TileMagnet,
-            ADShowReason.Video_GetTileShuffle => PropID.TileShuffle,
-            _ => PropID.Invalid,
-        };
-    }
 
     #endregion
 

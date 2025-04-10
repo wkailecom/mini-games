@@ -28,8 +28,7 @@ public class InterstitialLogic
         EventManager.Register(EventKey.ADShown, OnADShown);
         EventManager.Register(EventKey.ADClosed, OnADClosed);
         EventManager.Register(EventKey.ADShowFailed, OnADShowFailed);
-        EventManager.Register(EventKey.PurchaseSuccess, OnPurchaseSuccess);
-        EventManager.Register(EventKey.ShowInterstitial, OnShowInterstitial);
+        EventManager.Register(EventKey.PurchaseSuccess, OnPurchaseSuccess); 
 
         EventManager.Register(EventKey.ApplicationFocus, OnApplicationFocus); 
         EventManager.Register(EventKey.PageBeginOpen, OnPageBeginOpen);
@@ -43,8 +42,7 @@ public class InterstitialLogic
         EventManager.Unregister(EventKey.ADShown, OnADShown);
         EventManager.Unregister(EventKey.ADClosed, OnADClosed);
         EventManager.Unregister(EventKey.ADShowFailed, OnADShowFailed);
-        EventManager.Unregister(EventKey.PurchaseSuccess, OnPurchaseSuccess);
-        EventManager.Unregister(EventKey.ShowInterstitial, OnShowInterstitial);
+        EventManager.Unregister(EventKey.PurchaseSuccess, OnPurchaseSuccess); 
 
         EventManager.Unregister(EventKey.ApplicationFocus, OnApplicationFocus); 
         EventManager.Unregister(EventKey.PageBeginOpen, OnPageBeginOpen);
@@ -122,17 +120,8 @@ public class InterstitialLogic
                 return;
             }
         }
-    }
-
-    void OnShowInterstitial(EventData pEventData)
-    {
-        var tEventData = pEventData as ADEvent;
-        if (tEventData.ADType == ADType.Interstitial)
-        {
-            TryShowInterstitial(tEventData.showReason);
-        }
-    }
-
+    } 
+ 
     void OnGameStart(EventData pEventData)
     {
         var tEventData = pEventData as GameStart;

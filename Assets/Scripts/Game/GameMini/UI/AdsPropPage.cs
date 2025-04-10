@@ -1,5 +1,5 @@
-﻿using Config; 
-using Game.UISystem; 
+﻿using Config;
+using Game.UISystem;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,13 +30,7 @@ namespace Game.MiniGame
                 return;
             }
 
-            var mConfig = ConfigData.propConfig.GetByPrimary((int)mParam.propID);
-            if (mConfig == null)
-            {
-                return;
-            }
-            string tPropName = mParam.propID == PropID.Energy ? "ui_heart" : mConfig.icon;
-            _imgProp.SetPropIcon(tPropName, false);
+            _imgProp.SetPropIcon(mParam.propID, false);
             _txtCount.text = $"x{mParam.PropCount}";
             _txtDesc.text = $"Watch a video to Get 1 free Hint.";
         }
@@ -48,7 +42,7 @@ namespace Game.MiniGame
             //GameMethod.TriggerUIAction(UIActionName.Na, UIPageName.PopupAddHeart, UIActionType.Agree, ADType.RewardVideo);
             if (ADManager.Instance.IsRewardVideoReady)
             {
-                var tADShowReason = GetADShowReason(mParam.propID);
+                var tADShowReason = DataConvert.GetADShowReason(mParam.propID);
                 if (tADShowReason == ADShowReason.Invalid)
                 {
                     MessageHelp.Instance.ShowMessage("no internet connection");
@@ -66,23 +60,7 @@ namespace Game.MiniGame
             }
         }
 
-        ADShowReason GetADShowReason(PropID pPropID)
-        {
-            return pPropID switch
-            { 
-                PropID.Energy => ADShowReason.Video_GetPropHealth,
-                PropID.ScrewExtraSlot => ADShowReason.Video_GetScrewExtraSlot,
-                PropID.ScrewHammer => ADShowReason.Video_GetScrewHammer,
-                PropID.ScrewExtraBox => ADShowReason.Video_GetScrewExtraBox,
-                PropID.Jam3DReplace => ADShowReason.Video_GetJam3DReplace,
-                PropID.Jam3DRevert => ADShowReason.Video_GetJam3DRevert,
-                PropID.Jam3DShuffle => ADShowReason.Video_GetJam3DShuffle,
-                PropID.TileRecall => ADShowReason.Video_GetTileRecall,
-                PropID.TileMagnet => ADShowReason.Video_GetTileMagnet,
-                PropID.TileShuffle => ADShowReason.Video_GetTileShuffle,
-                _ => ADShowReason.Invalid,
-            };
-        }
+
 
         void OnClickClose()
         {

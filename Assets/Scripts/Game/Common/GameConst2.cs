@@ -19,7 +19,8 @@ namespace Game
 
     public struct UIActionName
     {
-        public const string AddHearts = "addHearts";              // 点击增加生命
+        public const string AddHeart = "addHearts";               // 点击增加生命
+        public const string AddCoin = "addCoin";                  // 点击增加金币
         public const string Settings = "settings";                // 点击settings
         public const string RemoveAds = "removeAds";              // 点击购买去广告
         public const string EnterDaily = "enterDaily";            // 点击daily的入口按钮

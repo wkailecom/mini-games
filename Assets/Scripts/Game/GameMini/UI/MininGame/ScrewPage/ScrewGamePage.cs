@@ -37,8 +37,8 @@ namespace Game.MiniGame
 #if UNITY_EDITOR || GM_MODE
             _gmBtn1.gameObject.SetActive(true);
             _gmBtn2.gameObject.SetActive(true);
-            _gmBtn1.onClick.AddListener(() => { TriggerEventGameOver(true); });
-            _gmBtn2.onClick.AddListener(() => { TriggerEventGameOver(false); });
+            _gmBtn1.onClick.AddListener(() => { MiniGameManager.Instance.TriggerEventGameOver(mGameType, true); });
+            _gmBtn2.onClick.AddListener(() => { MiniGameManager.Instance.TriggerEventGameOver(mGameType, false); });
 #else
             _gmBtn1.gameObject.SetActive(false);
             _gmBtn2.gameObject.SetActive(false);
@@ -120,23 +120,12 @@ namespace Game.MiniGame
             _btnProp2.transform.GetChild(0).gameObject.SetActive(pIsEnable);
         }
 
-        void TriggerEventGameOver(bool pIsSuccess)
-        {
-            var tEventData = EventManager.GetEventData<MiniGameOver>(EventKey.MiniGameOver);
-            tEventData.modeType = mGameType;
-            tEventData.levelID = mParam.level;
-            tEventData.isSuccess = pIsSuccess;
-            EventManager.Trigger(tEventData);
-        }
 
         #region UI事件
 
         void OnClickBack()
         {
-            var tPageParam = new MiniRevivePopupParam();
-            tPageParam.isReturn = true;
-            tPageParam.level = mParam.level; 
-            PageManager.Instance.OpenPage(PageID.MiniRevivePopup, tPageParam);
+            PageManager.Instance.OpenPage(PageID.MiniExitPage);
         }
 
         void OnClickShop()
@@ -144,14 +133,14 @@ namespace Game.MiniGame
             PageManager.Instance.OpenPage(PageID.MiniShopPage);
         }
 
-        void OpenAdsPropPopup(PropID pPropID, Action<bool> pCallBack = null)
-        {
-            PageManager.Instance.OpenPage(PageID.AdsPropPopup, new AdsPropPageParam(pPropID, pCallBack));
-        }
-
         void OpenPropShop(PropID pPropID)
         {
             PageManager.Instance.OpenPage(PageID.MiniShopSinglePage, new MiniShopSinglePageParam(pPropID));
+        }
+
+        void OpenAdsPropPopup(PropID pPropID, Action<bool> pCallBack = null)
+        {
+            PageManager.Instance.OpenPage(PageID.AdsPropPopup, new AdsPropPageParam(pPropID, pCallBack));
         }
 
         void OnMiniGameUsePropComplete(EventData pEventData)
@@ -172,7 +161,7 @@ namespace Game.MiniGame
 
             ModuleManager.Prop.ExpendProp(tEventData.propID);
 
-            if (tEventData.propID== PropID.ScrewExtraBox)
+            if (tEventData.propID == PropID.ScrewExtraBox)
             {
                 AudioManager.Instance.PlaySound(SoundID.Mini_Prop_Magnet);
             }
@@ -261,9 +250,9 @@ namespace Game.MiniGame
             {
                 DataTool.SetBool(MiniGameConst.Guide_ScreProps, true);
                 PageManager.Instance.OpenPage(PageID.MiniGuidePage, MiniGameConst.Guide_ScreProps);
-            } 
+            }
         }
-         
+
         #endregion
     }
 }

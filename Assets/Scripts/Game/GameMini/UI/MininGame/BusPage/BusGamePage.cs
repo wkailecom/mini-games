@@ -36,8 +36,8 @@ namespace Game.MiniGame
 #if UNITY_EDITOR || GM_MODE
             _gmBtn1.gameObject.SetActive(true);
             _gmBtn2.gameObject.SetActive(true);
-            _gmBtn1.onClick.AddListener(() => { TriggerEventGameOver(true); });
-            _gmBtn2.onClick.AddListener(() => { TriggerEventGameOver(false); });
+            _gmBtn1.onClick.AddListener(() => { MiniGameManager.Instance.TriggerEventGameOver(mGameType, true); });
+            _gmBtn2.onClick.AddListener(() => { MiniGameManager.Instance.TriggerEventGameOver(mGameType, false); });
 #else
             _gmBtn1.gameObject.SetActive(false);
             _gmBtn2.gameObject.SetActive(false);

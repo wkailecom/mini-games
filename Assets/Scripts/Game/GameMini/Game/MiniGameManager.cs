@@ -214,7 +214,7 @@ public class MiniGameManager : Singleton<MiniGameManager>
             LoadScene(tSceneName, () =>
             {
                 ScrewJam.GameModel.Instance.StartLevel(tLevelID);
-                PageManager.Instance.OpenPage(PageID.ScrewGamePage, new MiniGamePageParam(pLevel));
+                PageManager.Instance.OpenPage(PageID.TileGamePage, new MiniGamePageParam(pLevel));
                 TriggerEventGameStart(pGameType, mCacheLevel);
             });
         }
@@ -224,7 +224,7 @@ public class MiniGameManager : Singleton<MiniGameManager>
             LoadScene(tSceneName, () =>
             {
                 ScrewJam.GameModel.Instance.StartLevel(tLevelID);
-                PageManager.Instance.OpenPage(PageID.ScrewGamePage, new MiniGamePageParam(pLevel));
+                PageManager.Instance.OpenPage(PageID.BusGamePage, new MiniGamePageParam(pLevel));
                 TriggerEventGameStart(pGameType, mCacheLevel);
             });
         }
@@ -234,7 +234,7 @@ public class MiniGameManager : Singleton<MiniGameManager>
             LoadScene(tSceneName, () =>
             {
                 ScrewJam.GameModel.Instance.StartLevel(tLevelID);
-                PageManager.Instance.OpenPage(PageID.ScrewGamePage, new MiniGamePageParam(pLevel));
+                PageManager.Instance.OpenPage(PageID.TripleGamePage, new MiniGamePageParam(pLevel));
                 TriggerEventGameStart(pGameType, mCacheLevel);
             });
         }
@@ -252,7 +252,7 @@ public class MiniGameManager : Singleton<MiniGameManager>
         AudioManager.Instance.PlaySound(SoundID.Tile_Level_Begin);
     }
 
-    void TriggerEventGameOver(MiniGameType pType, bool pIsSuccess)
+    public void TriggerEventGameOver(MiniGameType pType, bool pIsSuccess)
     {
         var tEventData = EventManager.GetEventData<MiniGameOver>(EventKey.MiniGameOver);
         tEventData.modeType = pType;
@@ -282,12 +282,14 @@ public class MiniGameManager : Singleton<MiniGameManager>
         }
     }
 
+    #region 小游戏场景管理
+
     List<string> mScenes = new List<string>();
     void LoadScene(string pSceneName, Action pAction)
     {
-        foreach (var item in pSceneName)
+        foreach (var item in mScenes)
         {
-            AssetManager.Instance.UnloadScene(pSceneName);
+            AssetManager.Instance.UnloadScene(item);
         }
         AssetManager.Instance.LoadSceneAsync(pSceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive, (scene) =>
         {
@@ -307,4 +309,9 @@ public class MiniGameManager : Singleton<MiniGameManager>
         });
     }
 
+    #endregion
+
+    #region GM方法
+
+    #endregion
 }

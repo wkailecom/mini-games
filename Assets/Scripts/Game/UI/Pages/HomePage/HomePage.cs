@@ -23,11 +23,15 @@ namespace Game.UI
         [SerializeField] private Button _btnEvent;
         [SerializeField] private UIMiniEnter _miniEnter;
 
+        [SerializeField] private float enterItemAnimInterval = 0.15f;
+
         List<UIMiniEnter> mMiniEnter;
+        List<UIMiniEnter> mCurMiniEnter;
         bool mIsGuideLevel = false;
         protected override void OnInit()
         {
             mMiniEnter = new List<UIMiniEnter>();
+            mCurMiniEnter = new List<UIMiniEnter>();
 
             _btnSet.onClick.AddListener(OnOpenSettingsPage);
             _btnHeart.buttonRoot.onClick.AddListener(OnClickUIHeart);
@@ -75,14 +79,34 @@ namespace Game.UI
 
         void EnterControl()
         {
-            var tDataList = ConfigData.miniTypeConfig.DataList;
+            var tDataList = ModuleManager.MiniFavor.GetShowSort();
             mMiniEnter.SetItemsActive(tDataList.Count, _miniEnter, _enterRoot.content);
+            mCurMiniEnter.Clear();
             for (int i = 0; i < tDataList.Count; i++)
             {
-                mMiniEnter[i].Init(tDataList[i]);
+                var tConfig = ModuleManager.MiniGame.GetTypeConfig(tDataList[i]);
+                mMiniEnter[i].Init(tConfig);
+                mCurMiniEnter.Add(mMiniEnter[i]);
             }
             _enterRoot.verticalNormalizedPosition = 1f;
             _miniEnter.gameObject.SetActive(false);
+            StartCoroutine(PlayAnim());
+        }
+
+        IEnumerator PlayAnim()
+        {
+            yield return null;
+            foreach (var item in mCurMiniEnter)
+            {
+                item.GetComponent<Animator>().enabled = false;
+                item.GetComponent<CanvasGroup>().alpha = 0;
+            }
+            yield return new WaitForSeconds(GetAnimationTime(true) / 2);
+            for (int i = 0; i < mCurMiniEnter.Count; i++)
+            {
+                mCurMiniEnter[i].GetComponent<Animator>().enabled = true;
+                if (i % 2 == 1) yield return new WaitForSeconds(enterItemAnimInterval);
+            }
         }
 
         public void GuideShow(bool pIsGuide)
@@ -102,23 +126,16 @@ namespace Game.UI
         {
             GameMethod.TriggerUIAction(UIActionName.EnterShop, UIPageName.PageHome, UIActionType.Click);
             PageManager.Instance.OpenPage(PageID.ShopPage, new ShopPageParam(ShopPageParam.ShopGroup.None));
-
-            //PageManager.Instance.OpenPage(PageID.MiniShopPage);
-            //PageManager.Instance.OpenPage(PageID.MiniShopSinglePage, new MiniShopSinglePageParam(PropID.ScrewExtraSlot));
-        }
-
-        void OnClickBtnScrew()
-        {
-            PageManager.Instance.OpenPage(PageID.MiniMapPage);
         }
 
         void OnClickUIHeart()
         {
-            GameMethod.TriggerUIAction(UIActionName.AddHearts, UIPageName.PageHome, UIActionType.Click);
+            GameMethod.TriggerUIAction(UIActionName.AddHeart, UIPageName.PageHome, UIActionType.Click);
         }
+
         void OnClickUICoin()
         {
-
+            GameMethod.TriggerUIAction(UIActionName.AddCoin, UIPageName.PageHome, UIActionType.Click);
         }
 
         void OnClickUIRemoveads()
@@ -126,31 +143,6 @@ namespace Game.UI
             GameMethod.TriggerUIAction(UIActionName.RemoveAds, UIPageName.PageHome, UIActionType.Click);
         }
 
-        void OnPlayGame()
-        {
-            GameMethod.TriggerUIAction(UIActionName.Play, UIPageName.PageHome, UIActionType.Click, ADType.Interstitial);
-            if (mIsGuideLevel)
-            {
-                PlayEndlessGame(true);
-            }
-            else
-            {
-                PlayEndlessGame(false);
-            }
-        }
-
-        public void PlayEndlessGame(bool pIsNewGame = false)
-        {
-            if (ModuleManager.Prop.HasProp(PropID.Energy))
-            {
-                ADManager.Instance.PlayInterstitial(ADShowReason.Interstitial_GameStart);
-                //GameManager.Instance.StartGame(GameModeType.Endless, ModuleManager.LevelInfo.EndlessLevelID);
-            }
-            else
-            {
-                _btnHeart.OpenGetADHealth();
-            }
-        }
 
         #endregion
     }

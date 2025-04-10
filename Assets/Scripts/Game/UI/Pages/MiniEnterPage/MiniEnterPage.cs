@@ -1,10 +1,11 @@
 ﻿using Config;
+using Game.UI;
 using Game.UISystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.UI
+namespace Game.MiniGame
 {
     public class MiniEnterPage : PageBase
     {
@@ -16,9 +17,12 @@ namespace Game.UI
         [SerializeField] private Image _imgIcon;
 
         [SerializeField] private Button _btnLevel;
+        [SerializeField] private TextMeshProUGUI _txtLevel;
 
         UISwitch _switnLike;
         MiniEnterPageParam mParam;
+        MiniGameType mGameType;
+        int mCurLevel;
         protected override void OnInit()
         {
             _switnLike = _btnLike.GetComponentInChildren<UISwitch>(true);
@@ -37,13 +41,18 @@ namespace Game.UI
                 return;
             }
 
-            _switnLike.SetSwitch(false);
+            mCurLevel = ModuleManager.MiniGame.CurLevel;
+            mGameType = (MiniGameType)mParam.typeConfig.ID;
+
+            bool tIsLike = ModuleManager.MiniFavor.IsFavor(mParam.typeConfig.ID);
+            _switnLike.SetSwitch(tIsLike);
             _titleRoot.ClearChild();
             _iconRoot.ClearChild();
 
             ResTool.CreatePrefab<Transform>(mParam.typeConfig.animTitle, GameConst.PREFAB_MINI_EVENT_PATH, _titleRoot.transform);
             ResTool.CreatePrefab<Transform>(mParam.typeConfig.animIcon, GameConst.PREFAB_MINI_EVENT_PATH, _iconRoot.transform);
             _imgIcon.sprite = ResTool.LoadIcon(mParam.typeConfig.enterIcon, GameConst.ATLAS_MINI_EVENT_PATH);
+            _txtLevel.text = $"LEVEL {mCurLevel}";
         }
 
 
@@ -51,14 +60,20 @@ namespace Game.UI
 
         void OnClickBtnLike()
         {
-            bool tIsLike = false;
-
-            _switnLike.SetSwitch(tIsLike);
+            ModuleManager.MiniFavor.SetFavor(mParam.typeConfig.ID, !_switnLike.isOn);
+            _switnLike.SetSwitch(!_switnLike.isOn);
         }
 
         void OnClickBtnLevel()
         {
-
+            if (ModuleManager.Prop.HasProp(PropID.Energy))
+            {
+                MiniGameManager.Instance.StartGame(mGameType, mCurLevel);
+            }
+            else
+            {
+                PageManager.Instance.OpenPage(PageID.AdsPropPopup, new AdsPropPageParam(PropID.Energy, null));
+            }
         }
 
         #endregion

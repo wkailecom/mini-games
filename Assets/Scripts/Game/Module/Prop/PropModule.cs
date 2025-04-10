@@ -160,21 +160,7 @@ public class PropModule : ModuleBase
     void OnVideoAdRewarded(EventData pEventData)
     {
         var tEventData = pEventData as ADEvent;
-        PropID tPropID = tEventData.showReason switch
-        {
-            //ADShowReason.Video_GetPropHint => PropID.Hint,
-            ADShowReason.Video_GetPropHealth => PropID.Energy,
-            ADShowReason.Video_GetScrewExtraSlot => PropID.ScrewExtraSlot,
-            ADShowReason.Video_GetScrewHammer => PropID.ScrewHammer,
-            ADShowReason.Video_GetScrewExtraBox => PropID.ScrewExtraBox,
-            ADShowReason.Video_GetJam3DReplace => PropID.Jam3DReplace,
-            ADShowReason.Video_GetJam3DRevert => PropID.Jam3DRevert,
-            ADShowReason.Video_GetJam3DShuffle => PropID.Jam3DShuffle,
-            ADShowReason.Video_GetTileRecall => PropID.TileRecall,
-            ADShowReason.Video_GetTileMagnet => PropID.TileMagnet,
-            ADShowReason.Video_GetTileShuffle => PropID.TileShuffle,
-            _ => PropID.Invalid,
-        };
+        PropID tPropID = DataConvert.GetADPropID(tEventData.showReason);
 
         if (tPropID != PropID.Invalid)
         {

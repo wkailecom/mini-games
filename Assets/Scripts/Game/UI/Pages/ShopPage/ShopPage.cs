@@ -1,6 +1,8 @@
 ﻿using Config;
+using DG.Tweening;
 using Game.UISystem;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -19,6 +21,10 @@ namespace Game.UI
         [SerializeField] private ScrollRect _productRoot;
         [SerializeField] private RectTransform _productParent;
         [SerializeField] private GameObject _loadingMask;
+
+        public float shopItemAnimInterval = 0.15f;
+        public float moveDuration = 0.2f;
+        public AnimationCurve moveEase;
 
         RectTransform mRectScroll;
 
@@ -100,6 +106,38 @@ namespace Game.UI
 
             _loadingMask.SetActive(false);
             _productRoot.verticalNormalizedPosition = 1f;
+            StartCoroutine(PlayAnim());
+        }
+
+        IEnumerator PlayAnim()
+        {
+            InputLockManager.Instance.Lock("ShopAnim");
+            yield return null;
+
+            _productRoot.content.GetComponent<VerticalLayoutGroup>().enabled = false;
+            foreach (var item in mCurItems)
+            {
+                item.GetComponent<Animation>().enabled = false;
+                //item.transform.DOLocalMoveX(-1500, 0);
+                var tTran = item.GetComponent<RectTransform>();
+                // 设置锚点到中心
+                tTran.anchorMin = new Vector2(0.5f, 0.5f);
+                tTran.anchorMax = new Vector2(0.5f, 0.5f);
+                // 设置 pivot 到中心
+                tTran.pivot = new Vector2(0.5f, 0.5f);
+                // 设置位置为中心
+                tTran.anchoredPosition = new Vector2(1500, tTran.anchoredPosition.y);
+            }
+            yield return new WaitForSeconds(GetAnimationTime(true) / 2);
+            foreach (var item in mCurItems)
+            {
+                item.GetComponent<Animation>().enabled = true;
+                item.GetComponent<Animation>().Play("Shop_Appear");
+                //item.transform.DOLocalMoveX(0, moveDuration).SetEase(moveEase); 
+                yield return new WaitForSeconds(shopItemAnimInterval);
+            }
+            _productRoot.content.GetComponent<VerticalLayoutGroup>().enabled = true;
+            InputLockManager.Instance.UnLock("ShopAnim");
         }
 
         protected override void OnClosed()

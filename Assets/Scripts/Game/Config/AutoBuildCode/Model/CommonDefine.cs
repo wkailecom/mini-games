@@ -42,5 +42,13 @@ namespace Config
 		///体力购买花费金币数
 		///</summary>
 		public static int energyCoinCount = 1000;
+		///<summary>
+		///小游戏显示顺序
+		///</summary>
+		public static int[] miniShowSort = { 103, 101, 105, 102, 104 };
+		///<summary>
+		///小游戏状态（0无，1火，2新）
+		///</summary>
+		public static int[] miniShowState = { 1, 1, 2, 0, 0 };
 	}
 }
