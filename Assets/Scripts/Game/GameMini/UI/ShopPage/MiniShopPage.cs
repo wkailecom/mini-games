@@ -29,7 +29,7 @@ namespace Game.MiniGame
         {
             base.OnBeginOpen();
 
-            int shopId = 105;// (int)ModuleManager.MiniGame.GameType;
+            int shopId = (int)MiniGameManager.Instance.GameType;
 
             //timeCountDown.StartCountDown(ModuleManager.MiniGame.EndTime, "Finished");
             foreach (var tConfig in IAPManager.Instance.ProductsConfig)

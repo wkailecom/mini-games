@@ -156,7 +156,7 @@ public class MiniGameModule : ModuleBase
     {
         mMapConfigs = GetTypeMapConfig((int)pTypeId);
 
-        return mMapConfigs.FirstOrDefault(config => config.level == pLevel);
+        return mMapConfigs?.FirstOrDefault(config => config.level == pLevel);
     }
 
     MiniMapConfig GetLevelConfigByIndex(MiniGameType pTypeId, int pIndex)

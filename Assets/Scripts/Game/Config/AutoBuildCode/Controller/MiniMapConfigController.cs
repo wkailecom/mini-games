@@ -11,12 +11,12 @@ namespace Config
 
 		protected override void AddPrimaryDict(MiniMapConfig pModel)
 		{
-			primaryDict[pModel.ID.ToString()] = pModel;
+			primaryDict[pModel.ID] = pModel;
 		}
 
 		protected override void AddIndexesDict(MiniMapConfig pModel)
 		{
-			string tKey = GetIndexesKey(pModel.mode.ToString(), pModel.issueNum.ToString());
+			string tKey = GetIndexesKey(pModel.mode.ToString(), pModel.issue.ToString());
 			if (!indexesDict.ContainsKey(tKey))
 			{
 				indexesDict[tKey] = new List<MiniMapConfig>();

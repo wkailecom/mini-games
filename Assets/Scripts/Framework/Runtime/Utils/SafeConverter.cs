@@ -15,11 +15,22 @@ public static class SafeConverter
 
     public static int ToInt(this string pString)
     {
-        if (!int.TryParse(pString, out int tResult))
+        //if (!int.TryParse(pString, out int tResult))
+        //{
+        //    LogManager.LogError($"SafeConverter.ToInt Failed! String: {pString}");
+        //}
+        //return tResult;
+
+        if (double.TryParse(pString, out double doubleResult))
         {
-            LogManager.LogError($"SafeConverter.ToInt Failed! String: {pString}");
+            if (doubleResult % 1 == 0) // 判断是否为整数形式，解决数据被存储为1.0的情况
+            {
+                return (int)doubleResult;
+            }
         }
-        return tResult;
+
+        LogManager.LogError($"SafeConverter.ToInt Failed! String: {pString}");
+        return 0;
     }
 
     public static long ToLong(this string pString)

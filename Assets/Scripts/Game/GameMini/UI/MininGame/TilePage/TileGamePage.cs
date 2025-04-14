@@ -29,9 +29,9 @@ namespace Game.MiniGame
         {
             _btnBack.onClick.AddListener(OnClickBack);
             _btnShop.onClick.AddListener(OnClickShop);
-            _btnProp1.onClick.AddListener(OnClickExtraSlot);
-            _btnProp2.onClick.AddListener(OnClickHammer);
-            _btnProp3.onClick.AddListener(OnClickExtraBox);
+            _btnProp1.onClick.AddListener(OnClickProp1);
+            _btnProp2.onClick.AddListener(OnClickProp2);
+            _btnProp3.onClick.AddListener(OnClickProp3);
 
 #if UNITY_EDITOR || GM_MODE
             _gmBtn1.gameObject.SetActive(true);
@@ -102,7 +102,7 @@ namespace Game.MiniGame
 
         void OnClickBack()
         {
-            
+            PageManager.Instance.OpenPage(PageID.MiniExitPage);
         }
 
         void OnClickShop()
@@ -118,29 +118,23 @@ namespace Game.MiniGame
         void OpenPropShop(PropID pPropID)
         {
             PageManager.Instance.OpenPage(PageID.MiniShopSinglePage, new MiniShopSinglePageParam(pPropID));
-        } 
-       
-        void OnFreeExtraSlot()
-        {
-            
         }
 
-        void OnClickReplace()
-        {
-          
-        }
+        #endregion
 
-        void OnClickExtraSlot()
+        #region 道具事件
+
+        void OnClickProp1()
         {
            
         }
 
-        void OnClickHammer()
+        void OnClickProp2()
         {
             
         }
 
-        void OnClickExtraBox()
+        void OnClickProp3()
         {
             
         }

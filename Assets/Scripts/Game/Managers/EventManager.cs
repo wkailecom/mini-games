@@ -20,7 +20,7 @@ public enum EventKey
     ADShowFailed,
     VideoADRewarded,
     VideoADLoaded,
-    ADForecastRevenue, 
+    ADForecastRevenue,
 
     PurchaseSuccess,
     ValidateReceiptResult,
@@ -43,13 +43,30 @@ public enum EventKey
     MiniGameOver,
 
     #region Screw
-    MiniGameUsePropComplete, 
+    MiniGameUsePropComplete,
 
     #endregion
 
     #region Jam
-    MiniGameSubSuccess,
+    MiniGameSubSuccess,         //完成小节
 
+    #endregion
+
+    #region BusOut
+    E_BusOutReadyToSuccess,
+    E_BusOutSuccess,
+    E_BusOutFailed,
+    //------------------------------------
+    BusOut_OnClickUnlockSlot,   //点击解锁停车位
+    BusOut_OutUnlockSlot,       //解锁停车位
+    //------------------------------------
+    BusOut_OnClickVIP,           //点击vip道具
+    BusOut_VIPComplete,          //vip道具使用成功
+    BusOut_PassengerNumberChange,//等待的乘客数量改变
+    BusOut_VIPMoveFinish,        //vip移动完成
+    BusOut_VehicleHit,           //车辆被击中
+    BusOut_VehicleClick,         //车辆被点击
+    BusOut_PassengerSeat,        //乘客到达座位
     #endregion
 }
 
@@ -70,7 +87,7 @@ public static class EventManager
         AddEventData(EventKey.ADShowFailed, new ADEvent(EventKey.ADShowFailed));
         AddEventData(EventKey.VideoADRewarded, new ADEvent(EventKey.VideoADRewarded));
         AddEventData(EventKey.VideoADLoaded, new ADEvent(EventKey.VideoADLoaded));
-        AddEventData(EventKey.ADForecastRevenue, new ADEvent(EventKey.ADForecastRevenue)); 
+        AddEventData(EventKey.ADForecastRevenue, new ADEvent(EventKey.ADForecastRevenue));
 
         AddEventData(EventKey.PurchaseSuccess, new PurchaseSuccess());
         AddEventData(EventKey.ValidateReceiptResult, new ValidateReceiptResult());

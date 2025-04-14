@@ -24,14 +24,14 @@ namespace Game.MiniGame
 
         bool isFreeProp = false; 
         MiniGamePageParam mParam;
-        MiniGameType mGameType = MiniGameType.Tile;
+        MiniGameType mGameType = MiniGameType.Triple;
         protected override void OnInit()
         {
             _btnBack.onClick.AddListener(OnClickBack);
             _btnShop.onClick.AddListener(OnClickShop);
-            _btnProp1.onClick.AddListener(OnClickExtraSlot);
-            _btnProp2.onClick.AddListener(OnClickHammer);
-            _btnProp3.onClick.AddListener(OnClickExtraBox);
+            _btnProp1.onClick.AddListener(OnClickProp1);
+            _btnProp2.onClick.AddListener(OnClickProp2);
+            _btnProp3.onClick.AddListener(OnClickProp3);
 
 #if UNITY_EDITOR || GM_MODE
             _gmBtn1.gameObject.SetActive(true);
@@ -102,7 +102,7 @@ namespace Game.MiniGame
 
         void OnClickBack()
         {
-            
+            PageManager.Instance.OpenPage(PageID.MiniExitPage);
         }
 
         void OnClickShop()
@@ -118,33 +118,26 @@ namespace Game.MiniGame
         void OpenPropShop(PropID pPropID)
         {
             PageManager.Instance.OpenPage(PageID.MiniShopSinglePage, new MiniShopSinglePageParam(pPropID));
-        } 
-       
-        void OnFreeExtraSlot()
-        {
-            
         }
 
-        void OnClickReplace()
+        #endregion
+
+        #region 道具事件
+
+        void OnClickProp1()
         {
-          
+
         }
 
-        void OnClickExtraSlot()
+        void OnClickProp2()
         {
-           
+
         }
 
-        void OnClickHammer()
+        void OnClickProp3()
         {
-            
-        }
 
-        void OnClickExtraBox()
-        {
-            
         }
-
 
         #endregion
 

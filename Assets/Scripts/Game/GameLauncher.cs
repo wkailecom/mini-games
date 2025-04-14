@@ -1,7 +1,7 @@
 ﻿using Config;
 using Game.Sdk;
 using Game.UISystem;
-using LLFramework; 
+using LLFramework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -131,7 +131,7 @@ namespace Game
         IEnumerator Start()
         {
             AddInitTask(() => { ConfigData.Init(AppInfoManager.Instance.GetCurDataPath()); });
-            AddInitTask(() => { ScrewJam.ResourcesManager.SetResourceLoader(new ScrewResourceLoader()); });
+            AddInitTask(() => { ResourceLoader.Instance.Init(); });
             AddInitTask(() => { EventManager.Init(); });
             AddInitTask(() => { ModuleManager.Init(); });
             AddInitTask(() => { TimerManager.Instance.Init(); });

@@ -169,7 +169,45 @@ public class MiniGameManager : Singleton<MiniGameManager>
 
     public void RegisterBusOut()
     {
-
+        BusOut.BusOutTriggerEvents busOutTriggerEvents = new BusOut.BusOutTriggerEvents(
+           () => { TriggerEventGameOver(MiniGameType.Bus, true); },//游戏成功
+           () => { TriggerEventGameOver(MiniGameType.Bus, false); },//游戏失败
+           (int pIndex) =>
+           {
+               //点击解锁停车位
+               //EventManager.Trigger(EventKey. );
+               //EventDispatcher.TriggerEvent<int>(EventKey.E_BusOutOnClickUnlockSlot, pIndex);
+           },
+           () =>
+           {
+               //EventDispatcher.TriggerEvent(EventKey.E_BusOutVIPComplete);
+           },
+           (int pNumber) =>
+           {
+               //EventDispatcher.TriggerEvent(EventKey.E_BusOutPassengerNumberChange, pNumber);
+           },
+           () =>
+           {
+               //EventDispatcher.TriggerEvent(EventKey.E_BusOutReadyToSuccess);
+           },
+           () =>
+           {
+               //EventDispatcher.TriggerEvent(EventKey.E_BusOutVIPMoveFinish);
+           },
+           () =>
+           {
+               //EventDispatcher.TriggerEvent(EventKey.E_BusOutVehicleHit);
+           },
+           () =>
+           {
+               //EventDispatcher.TriggerEvent(EventKey.E_BusOutVehicleClick);
+           },
+           () =>
+           {
+               //EventDispatcher.TriggerEvent(EventKey.E_BusOutPassengerSeat);
+           }
+       );
+        BusOut.EventManager.Instance.RegisterTriggerEvents(busOutTriggerEvents);
     }
 
     public void RegisterTriple()
@@ -224,7 +262,7 @@ public class MiniGameManager : Singleton<MiniGameManager>
             var tLevelID = ModuleManager.MiniGame.GetLevelID(pGameType, pLevel);
             LoadScene(tSceneName, () =>
             {
-                ScrewJam.GameModel.Instance.StartLevel(tLevelID);
+                //BusOut.GameModel.Instance.StartLevel(tLevelID, pLevel == 1 ? false : true, tLevelConfig.IconNumber);
                 PageManager.Instance.OpenPage(PageID.BusGamePage, new MiniGamePageParam(pLevel));
                 TriggerEventGameStart(pGameType, mCacheLevel);
             });

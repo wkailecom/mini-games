@@ -51,7 +51,8 @@ namespace Game.MiniGame
                 if (tLevel <= tTotalLevel)
                 {
                     ItemState tState = tLevel <= pCurLevel ? ItemState.Unlock : ItemState.Lock;
-                    ItemType tType = ModuleManager.MiniGame.GetLevelConfig(MiniGameManager.Instance.GameType, tLevel).HardMark == 1 ? ItemType.Hard : ItemType.Normal;
+                    //ItemType tType = ModuleManager.MiniGame.GetLevelConfig(MiniGameManager.Instance.GameType, tLevel).HardMark == 1 ? ItemType.Hard : ItemType.Normal;
+                    ItemType tType = ItemType.Normal;
                     levelItems[i].SetData(pIndex, i, tLevel, tState, tType);
                     levelItems[i].gameObject.SetActive(true);
                 }

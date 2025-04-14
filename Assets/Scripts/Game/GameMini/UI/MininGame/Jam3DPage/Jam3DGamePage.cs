@@ -130,10 +130,7 @@ namespace Game.MiniGame
 
         void OnClickBack()
         {
-            var tPageParam = new MiniRevivePopupParam();
-            tPageParam.isReturn = true;
-            tPageParam.level = mParam.level;
-            PageManager.Instance.OpenPage(PageID.MiniRevivePopup, tPageParam);
+            PageManager.Instance.OpenPage(PageID.MiniExitPage);
         }
 
         void OnClickShop()
@@ -150,6 +147,10 @@ namespace Game.MiniGame
         {
             PageManager.Instance.OpenPage(PageID.MiniShopSinglePage, new MiniShopSinglePageParam(pPropID));
         }
+
+        #endregion
+
+        #region 道具事件
 
         void OnClickRevive()
         {

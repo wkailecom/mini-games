@@ -22,16 +22,16 @@ namespace Game.MiniGame
         public Button BtnProp2 => _btnProp2;
         public Button BtnProp3 => _btnProp3;
 
-        bool isFreeProp = false; 
+        bool vipIsEnable = false;
         MiniGamePageParam mParam;
-        MiniGameType mGameType = MiniGameType.Tile;
+        MiniGameType mGameType = MiniGameType.Bus;
         protected override void OnInit()
         {
             _btnBack.onClick.AddListener(OnClickBack);
             _btnShop.onClick.AddListener(OnClickShop);
-            _btnProp1.onClick.AddListener(OnClickExtraSlot);
-            _btnProp2.onClick.AddListener(OnClickHammer);
-            _btnProp3.onClick.AddListener(OnClickExtraBox);
+            _btnProp1.onClick.AddListener(OnClickRefresh);
+            _btnProp2.onClick.AddListener(OnClickVIP);
+            _btnProp3.onClick.AddListener(OnClickSort);
 
 #if UNITY_EDITOR || GM_MODE
             _gmBtn1.gameObject.SetActive(true);
@@ -46,17 +46,18 @@ namespace Game.MiniGame
 
         protected override void RegisterEvents()
         {
-            EventManager.Register(EventKey.MiniGameOver, OnMiniGameOver); 
+            EventManager.Register(EventKey.MiniGameOver, OnMiniGameOver);
+            EventManager.Register(EventKey.BusOut_VIPComplete, OnVIPComplete);
         }
 
         protected override void UnregisterEvents()
         {
-            EventManager.Unregister(EventKey.MiniGameOver, OnMiniGameOver); 
+            EventManager.Unregister(EventKey.MiniGameOver, OnMiniGameOver);
         }
 
         protected override void OnBeginOpen()
         {
-            isFreeProp = false; 
+            SetVIPEnable(false);
             mParam = PageParam as MiniGamePageParam;
             if (mParam == null)
             {
@@ -65,7 +66,7 @@ namespace Game.MiniGame
             }
 
             _txtLevel.text = $"LEVEL {mParam.level}";
-             
+
         }
 
         protected override void OnOpened()
@@ -75,7 +76,7 @@ namespace Game.MiniGame
 
         protected override void OnBeginClose()
         {
-            
+
         }
 
         void OnMiniGameOver(EventData pEventData)
@@ -98,11 +99,18 @@ namespace Game.MiniGame
             }
         }
 
+        void SetVIPEnable(bool pIsEnable)
+        {
+            vipIsEnable = pIsEnable;
+            _btnProp2.transform.Find("Selected").gameObject.SetActive(pIsEnable); 
+            BusOut.EventManager.Instance.OnClickVIP?.Invoke(pIsEnable);
+        }
+
         #region UI事件
 
         void OnClickBack()
         {
-            
+            PageManager.Instance.OpenPage(PageID.MiniExitPage);
         }
 
         void OnClickShop()
@@ -118,31 +126,81 @@ namespace Game.MiniGame
         void OpenPropShop(PropID pPropID)
         {
             PageManager.Instance.OpenPage(PageID.MiniShopSinglePage, new MiniShopSinglePageParam(pPropID));
-        } 
-       
-        void OnFreeExtraSlot()
-        {
-            
         }
 
-        void OnClickReplace()
+        #endregion
+
+        #region 道具事件
+
+        private bool guideRule = false;
+        private bool vipMoveFinish = true;
+        private bool CanUseProp => !BusOut.EventManager.Instance.HasMovingVehicle();
+
+        public bool CanBlock()
         {
-          
+            //if (!vipMoveFinish || !CanUseProp || !isColdDown || toOpenFailedPage || !canUseSort || readyToSuccess || isClearing)
+            //    return true;
+            return false;
         }
 
-        void OnClickExtraSlot()
+        void OnClickRefresh()
         {
-           
+            var tPropID = PropID.BusRefreshColor;
+            if (ModuleManager.Prop.HasProp(tPropID))
+            {
+                AudioManager.Instance.PlaySound(SoundID.BtnClick);
+                ModuleManager.Prop.ExpendProp(tPropID);
+                BusOut.EventManager.Instance.OnClickRefresh?.Invoke();
+            }
+            else
+            {
+                OpenPropShop(tPropID);
+            }
         }
 
-        void OnClickHammer()
+        void OnClickVIP()
         {
-            
+            var tPropID = PropID.BusVIPSpot;
+            if (ModuleManager.Prop.HasProp(tPropID))
+            {
+                var tCanVIPSpot = BusOut.EventManager.Instance.CheckCanUseVIP?.Invoke() ?? false;
+                if (tCanVIPSpot)
+                {
+                    AudioManager.Instance.PlaySound(SoundID.BtnClick);
+                    SetVIPEnable(true);
+                }
+                else
+                {
+                    MessageHelp.Instance.ShowMessage("No more vip space");
+                }
+            }
+            else
+            {
+                OpenPropShop(tPropID);
+            }
         }
 
-        void OnClickExtraBox()
+        void OnVIPComplete(EventData pEventData)
         {
-            
+            SetVIPEnable(false); 
+            ModuleManager.Prop.ExpendProp(PropID.BusVIPSpot);
+        }
+
+        void OnClickSort()
+        {
+            var tPropID = PropID.BusSortDepart;
+            if (ModuleManager.Prop.HasProp(tPropID))
+            {
+                if (JamManager.GetSingleton().ContinueGame())
+                {
+                    ModuleManager.Prop.ExpendProp(tPropID);
+                    AudioManager.Instance.PlaySound(SoundID.Mini_Prop_Recall);
+                }
+            }
+            else
+            {
+                OpenPropShop(tPropID);
+            }
         }
 
 
@@ -151,9 +209,9 @@ namespace Game.MiniGame
         #region 引导
         private void TryShowGuide()
         {
-            
+
         }
-         
+
         #endregion
     }
 }

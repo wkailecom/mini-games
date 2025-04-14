@@ -106,7 +106,7 @@ namespace Game.MiniGame
         void SetHammerEnable(bool pIsEnable)
         {
             isEnableHammer = pIsEnable;
-            _btnProp2.transform.GetChild(0).gameObject.SetActive(pIsEnable);
+            _btnProp2.transform.Find("Selected").gameObject.SetActive(pIsEnable);
         }
 
 
@@ -131,6 +131,10 @@ namespace Game.MiniGame
         {
             PageManager.Instance.OpenPage(PageID.AdsPropPopup, new AdsPropPageParam(pPropID, pCallBack));
         }
+
+        #endregion
+
+        #region 道具事件
 
         void OnMiniGameUsePropComplete(EventData pEventData)
         {
