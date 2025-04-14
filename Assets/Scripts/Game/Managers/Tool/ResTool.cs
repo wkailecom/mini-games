@@ -32,6 +32,11 @@ public static class ResTool
         return CreatePrefab<T>(Path.Combine(pRootPath, pPrefabName), pParent);
     }
 
+    public static T Load<T>(string pAssetPath) where T : Object
+    {
+        return AssetManager.Instance.LoadAsset<T>(pAssetPath);
+    }
+
     public static Sprite LoadIcon(string pIconName, string pAtlasPath)
     {
         var tAtlas = AssetManager.Instance.LoadAsset<SpriteAtlas>(pAtlasPath);

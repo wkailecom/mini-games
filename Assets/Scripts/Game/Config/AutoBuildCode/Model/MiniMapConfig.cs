@@ -11,6 +11,10 @@ namespace Config
 		/// </summary>
 		public int mode { get; private set; }
 		/// <summary>
+		///期数
+		/// </summary>
+		public int issueNum { get; private set; }
+		/// <summary>
 		///关卡
 		/// </summary>
 		public int level { get; private set; }
@@ -37,7 +41,7 @@ namespace Config
 
 		public override void ParseData(string[] pData)
 		{
-			if (pData == null || pData.Length < 8)
+			if (pData == null || pData.Length < 9)
 			{
 				LogManager.LogError("MiniMapConfig.ParseData param wrong!");
 				return;
@@ -53,27 +57,31 @@ namespace Config
 			}
 			if (!string.IsNullOrEmpty(pData[2]))
 			{
-				level = int.Parse(pData[2]);
+				issueNum = int.Parse(pData[2]);
 			}
 			if (!string.IsNullOrEmpty(pData[3]))
 			{
-				Chapter = int.Parse(pData[3]);
+				level = int.Parse(pData[3]);
 			}
 			if (!string.IsNullOrEmpty(pData[4]))
 			{
-				Chessboard = pData[4];
+				Chapter = int.Parse(pData[4]);
 			}
 			if (!string.IsNullOrEmpty(pData[5]))
 			{
-				HardMark = int.Parse(pData[5]);
+				Chessboard = pData[5];
 			}
 			if (!string.IsNullOrEmpty(pData[6]))
 			{
-				LevelReward = pData[6];
+				HardMark = int.Parse(pData[6]);
 			}
 			if (!string.IsNullOrEmpty(pData[7]))
 			{
-				ReplayCoin = int.Parse(pData[7]);
+				LevelReward = pData[7];
+			}
+			if (!string.IsNullOrEmpty(pData[8]))
+			{
+				ReplayCoin = int.Parse(pData[8]);
 			}
 		}
 	}

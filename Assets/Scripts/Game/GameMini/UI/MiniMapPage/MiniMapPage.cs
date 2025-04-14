@@ -92,11 +92,11 @@ namespace Game.MiniGame
         protected override void OnBeginOpen()
         {
             base.OnBeginOpen();
-            var tEndTime = ModuleManager.MiniGame.EndTime;
-            mGameType = ModuleManager.MiniGame.GameType;
-            mCurLevel = ModuleManager.MiniGame.CurLevel;
-            mRecLevel = ModuleManager.MiniGame.RecLevel;
-            mTotalLevel = ModuleManager.MiniGame.MaxLevel;
+            var tEndTime = new DateTime();// ModuleManager.MiniGame.EndTime;
+            mGameType = MiniGameType.Invalid;// ModuleManager.MiniGame.GameType;
+            mCurLevel = 1;// ModuleManager.MiniGame.CurLevel;
+            mRecLevel = 1;// ModuleManager.MiniGame.RecLevel;
+            mTotalLevel = 1;// ModuleManager.MiniGame.MaxLevel;
 
             //mTotalLevel = 55;
             //mCurLevel = 56;
@@ -277,7 +277,7 @@ namespace Game.MiniGame
                 }
             }
 
-            ModuleManager.MiniGame.SyncLevel();
+            //ModuleManager.MiniGame.SyncLevel();
         }
 
         IEnumerator SetNevigationLevel(GameObject pLevelItem, float pWaitTime = 0f)
@@ -398,7 +398,7 @@ namespace Game.MiniGame
             else if (mGameType == MiniGameType.Tile)
             {
 
-            } 
+            }
         }
         #endregion
     }

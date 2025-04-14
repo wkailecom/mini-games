@@ -88,29 +88,18 @@ namespace Game.MiniGame
             var tEventData = pEventData as MiniGameOver;
             if (tEventData.modeType != mGameType) return;
 
-            var tOverParam = new MiniGameOverPageParam(mParam.level, tEventData.isSuccess);
             if (tEventData.isSuccess)
             {
-                PageManager.Instance.OpenPage(PageID.MiniGameOverPage, tOverParam);
+                PageManager.Instance.OpenPage(PageID.MiniSucceedPage, new MiniSucceedPageParam());
             }
             else
             {
-                var tReviveParam = new MiniRevivePopupParam();
-                tReviveParam.isReturn = false;
-                tReviveParam.level = mParam.level;
-                tReviveParam.clickAction = (isRight) =>
+                PropID tUseProp = PropID.ScrewExtraSlot;
+                var tIsValid = ScrewJam.EventManager.Instance.CheckCanExtraSlotUse.Invoke();
+                PageManager.Instance.OpenPage(PageID.MiniFailedPage, new MiniFailedPageParam(tUseProp, tIsValid, () =>
                 {
-                    if (isRight)
-                    {
-                        OnClickReplace();
-                    }
-                    else
-                    {
-                        ModuleManager.Prop.ExpendProp(PropID.Energy, 1);
-                        PageManager.Instance.OpenPage(PageID.MiniGameOverPage, tOverParam); 
-                    }
-                };
-                PageManager.Instance.OpenPage(PageID.MiniRevivePopup, tReviveParam);
+                    OnClickReplace();
+                }));
             }
         }
 
@@ -240,7 +229,7 @@ namespace Game.MiniGame
         #region 引导
         private void TryShowGuide()
         {
-            var tLevel = ModuleManager.MiniGame.CurLevel;
+            var tLevel = ModuleManager.MiniGame.GetCurLevel((int)mGameType);
             if (!DataTool.GetBool(MiniGameConst.Guide_ScreRules) && tLevel == 1)
             {
                 DataTool.SetBool(MiniGameConst.Guide_ScreRules, true);

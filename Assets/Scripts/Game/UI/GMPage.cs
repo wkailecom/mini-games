@@ -107,9 +107,9 @@ public class GMPage : PageBase
         {
             if (int.TryParse(pParam, out int tCount))
             {
-                tCount = tCount >= ModuleManager.MiniGame.MaxLevel ? ModuleManager.MiniGame.MaxLevel : tCount;
-                ModuleManager.MiniGame.InfoData.CurrentLevel = tCount;
-                ModuleManager.MiniGame.SyncLevel();
+                //tCount = tCount >= ModuleManager.MiniGame.MaxLevel ? ModuleManager.MiniGame.MaxLevel : tCount;
+                //ModuleManager.MiniGame.InfoData.CurLevel = tCount;
+                //ModuleManager.MiniGame.SyncLevel();
             }
         });
 

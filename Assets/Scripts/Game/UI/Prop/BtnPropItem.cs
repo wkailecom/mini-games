@@ -9,6 +9,7 @@ public class BtnPropItem : MonoBehaviour
     [HideInInspector] public int propCount;
 
     [SerializeField] private Text txtCount;
+    [SerializeField] private Image imgIcon;
     [SerializeField] private Image imgAdd;
 
     float animTime = 0.3f;
@@ -18,6 +19,7 @@ public class BtnPropItem : MonoBehaviour
     void OnEnable()
     {
         EventManager.Register(EventKey.PropCountChange, OnPropCountChange);
+        imgIcon.SetPropIcon(propID);
         Refresh();
     }
 

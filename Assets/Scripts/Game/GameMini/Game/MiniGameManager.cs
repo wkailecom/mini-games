@@ -18,7 +18,8 @@ public class MiniGameManager : Singleton<MiniGameManager>
 
     public void Init()
     {
-        mCacheLevel = ModuleManager.MiniGame.CurLevel;
+        mCacheType = MiniGameType.Invalid;
+        mCacheLevel = 1;
     }
 
     public void InitEvent(MiniGameType pGameType)
@@ -181,14 +182,14 @@ public class MiniGameManager : Singleton<MiniGameManager>
     {
         mCacheLevel = pLevel;
         mCacheType = pGameType;
-        var tSceneName = pGameType.ToString();
 
         InitEvent(pGameType);
 
-        var tLevelConfig = ModuleManager.MiniGame.GetLevelConfig(pLevel);
+        var tSceneName = GetSceneName(pGameType);
+        var tLevelConfig = ModuleManager.MiniGame.GetLevelConfig(pGameType, pLevel);
         if (pGameType == MiniGameType.Screw)
         {
-            var tLevelID = ModuleManager.MiniGame.GetLevelID(pLevel);
+            var tLevelID = ModuleManager.MiniGame.GetLevelID(pGameType, pLevel);
             LoadScene(tSceneName, () =>
             {
                 ScrewJam.GameModel.Instance.StartLevel(tLevelID);
@@ -198,7 +199,7 @@ public class MiniGameManager : Singleton<MiniGameManager>
         }
         else if (pGameType == MiniGameType.Jam3d)
         {
-            int[] tLevelIDs = ModuleManager.MiniGame.GetLevelIDs(pLevel, tLevelConfig.Chapter);
+            int[] tLevelIDs = ModuleManager.MiniGame.GetLevelIDs(pGameType, pLevel, tLevelConfig.Chapter);
             LoadScene(tSceneName, () =>
             {
                 var levelGroup = ConfigData.jamLevelGroupConfig.GetByPrimary(tLevelIDs[0]);
@@ -210,7 +211,7 @@ public class MiniGameManager : Singleton<MiniGameManager>
         }
         else if (pGameType == MiniGameType.Tile)
         {
-            var tLevelID = ModuleManager.MiniGame.GetLevelID(pLevel);
+            var tLevelID = ModuleManager.MiniGame.GetLevelID(pGameType, pLevel);
             LoadScene(tSceneName, () =>
             {
                 ScrewJam.GameModel.Instance.StartLevel(tLevelID);
@@ -220,7 +221,7 @@ public class MiniGameManager : Singleton<MiniGameManager>
         }
         else if (pGameType == MiniGameType.Bus)
         {
-            var tLevelID = ModuleManager.MiniGame.GetLevelID(pLevel);
+            var tLevelID = ModuleManager.MiniGame.GetLevelID(pGameType, pLevel);
             LoadScene(tSceneName, () =>
             {
                 ScrewJam.GameModel.Instance.StartLevel(tLevelID);
@@ -230,7 +231,7 @@ public class MiniGameManager : Singleton<MiniGameManager>
         }
         else if (pGameType == MiniGameType.Triple)
         {
-            var tLevelID = ModuleManager.MiniGame.GetLevelID(pLevel);
+            var tLevelID = ModuleManager.MiniGame.GetLevelID(pGameType, pLevel);
             LoadScene(tSceneName, () =>
             {
                 ScrewJam.GameModel.Instance.StartLevel(tLevelID);
@@ -246,6 +247,7 @@ public class MiniGameManager : Singleton<MiniGameManager>
         var tEventData = EventManager.GetEventData<MiniGameStart>(EventKey.MiniGameStart);
         tEventData.modeType = pType;
         tEventData.levelID = levelID;
+        tEventData.isNewGame = ModuleManager.MiniGame.IsNewGame((int)pType);
         EventManager.Trigger(tEventData);
 
         AudioManager.Instance.PlayMusic(MusicID.bgm_mini_game);
@@ -285,6 +287,12 @@ public class MiniGameManager : Singleton<MiniGameManager>
     #region 小游戏场景管理
 
     List<string> mScenes = new List<string>();
+
+    string GetSceneName(MiniGameType pType)
+    {
+        return ModuleManager.MiniGame.GetTypeConfig((int)pType).sceneName;
+    }
+
     void LoadScene(string pSceneName, Action pAction)
     {
         foreach (var item in mScenes)
@@ -306,6 +314,17 @@ public class MiniGameManager : Singleton<MiniGameManager>
             pAction?.Invoke();
             UIRoot.Instance.MainCamera.enabled = true;
             mScenes.Remove(pSceneName);
+        });
+    }
+
+    public void UnloadCurTypeScene(Action pAction = null)
+    {
+        string tSceneName = GetSceneName(mCacheType);
+        AssetManager.Instance.UnloadSceneAsync(tSceneName, () =>
+        {
+            pAction?.Invoke();
+            UIRoot.Instance.MainCamera.enabled = true;
+            mScenes.Remove(tSceneName);
         });
     }
 

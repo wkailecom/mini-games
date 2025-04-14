@@ -16,7 +16,7 @@ namespace Config
 
 		protected override void AddIndexesDict(MiniMapConfig pModel)
 		{
-			string tKey = GetIndexesKey(pModel.mode.ToString());
+			string tKey = GetIndexesKey(pModel.mode.ToString(), pModel.issueNum.ToString());
 			if (!indexesDict.ContainsKey(tKey))
 			{
 				indexesDict[tKey] = new List<MiniMapConfig>();

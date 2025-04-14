@@ -18,12 +18,12 @@ public class UIShopFree : ShopBaseItem
     public UICountDownTMP txtCountdown;
 
     //public Animator animVideoIcon;
-
+    PropData mPropData = new PropData(PropID.Coin, CommonDefine.shopFreeCoinCount);
     Transform mTranCountdown;
     public override void Init(IAPProductConfig tProductConfig, Action<string> pOnClickBuy)
     {
-        imgIcon.SetPropIcon(PropID.Coin);
-        txtName.text = $"x {CommonDefine.shopFreeCoinCount}";
+        imgIcon.SetPropIcon(mPropData.ID);
+        txtName.text = $"x {mPropData.Count}";
         btnFree.onClick.AddListener(OnClickBtnFree);
         btnVideo.onClick.AddListener(OnClickBtnWatch);
     }
@@ -105,14 +105,14 @@ public class UIShopFree : ShopBaseItem
         {
             if (isf)
             {
-                PageManager.Instance.OpenPage(PageID.RewardPage, new RewardPageParam(PropID.Energy, 1, PropSource.ShopFree));
+                PageManager.Instance.OpenPage(PageID.RewardPage, new RewardPageParam(mPropData, PropSource.ShopFree));
             }
         });
     }
 
     void OnClickBtnFree()
     {
-        PageManager.Instance.OpenPage(PageID.RewardPage, new RewardPageParam(PropID.Energy, 1, PropSource.ShopFree));
+        PageManager.Instance.OpenPage(PageID.RewardPage, new RewardPageParam(mPropData, PropSource.ShopFree));
         ModuleManager.UserInfo.GatherShopFree();
         RefreshUIState();
     }

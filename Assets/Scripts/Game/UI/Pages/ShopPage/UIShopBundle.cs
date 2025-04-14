@@ -1,4 +1,5 @@
 ﻿using Config;
+using Game; 
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -28,13 +29,17 @@ public class UIShopBundle : ShopBaseItem
         btnBuy.onClick.AddListener(OnClickBtnBuy);
 
         ////txtName.text = "x" + TextTool.GetText(mConfig.textID);
-        //imgIcon.SetIcon(mConfig.icon);
-
+        //imgIcon.SetIcon(mConfig.icon); 
         propItems = new List<UIItem>() { item };
         GameMethod.SetItemsActive(propItems, mConfig.propsID.Length, item, itemsRoot);
         for (int i = 0; i < propItems.Count; i++)
         {
             propItems[i].SetUIItem(SetPropIcon(mConfig.propsID[i]), mConfig.propsCount[i].ToString(), string.Empty);
+        }
+
+        if (!string.IsNullOrEmpty(mConfig.icon))
+        {
+            GetComponent<Image>().sprite = ResTool.Load<Sprite>($"{GameConst.SPRITE_PATH}Shop/{mConfig.icon}");
         }
     }
 

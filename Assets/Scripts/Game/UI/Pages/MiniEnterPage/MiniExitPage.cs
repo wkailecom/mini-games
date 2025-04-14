@@ -38,7 +38,7 @@ namespace Game.MiniGame
             {
                 ModuleManager.Prop.ExpendProp(PropID.Energy);
                 PageManager.Instance.OpenPage(PageID.HomePage);
-                MiniGameManager.Instance.UnloadScene(MiniGameManager.Instance.GameType.ToString());
+                MiniGameManager.Instance.UnloadCurTypeScene(); 
             }
             else
             {

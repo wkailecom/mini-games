@@ -38,7 +38,7 @@ namespace Game.MiniGame
         {
             base.OnBeginOpen();
 
-            timeCountDown.StartCountDown(ModuleManager.MiniGame.EndTime, "Finished");
+            //timeCountDown.StartCountDown(ModuleManager.MiniGame.EndTime, "Finished");
             foreach (var tItem in mShopItems)
             {
                 tItem.OnShow();

@@ -11,25 +11,17 @@ public class MiniGameModule : ModuleBase
 {
     const string RECORD_KEY = "RecordMiniGameInfo";
 
-    public int IssueNum => mData.IssueNum;
-    public int CurLevel => mData.CurrentLevel;
-    public int RecLevel => mData.RecordLevel;
-    public bool IsCompleted => mData.IsComplete;
-    public MiniGameInfoData InfoData => mData;
-    public DateTime StartTime { get; private set; }
-    public DateTime EndTime { get; private set; }
-    public MiniGameType GameType => (MiniGameType)mScheduleConfig.gameType;
-    public int MaxLevel => mMapConfigs.Count;
-
     List<MiniMapConfig> mMapConfigs;
-    MiniScheduleConfig mScheduleConfig;
-    MiniGameInfoData mData;
+    //MiniGameInfoData mData;
+
+    Dictionary<int, MiniGameData> mGameData;
     protected override void OnInit()
     {
         Deserialize();
 
         EventManager.Register(EventKey.PurchaseSuccess, OnPurchaseSuccess);
         EventManager.Register(EventKey.VideoADRewarded, OnVideoADRewarded);
+        EventManager.Register(EventKey.MiniGameStart, OnMiniGameStart);
         EventManager.Register(EventKey.MiniGameOver, OnMiniGameOver);
 
         RefreshData();
@@ -38,11 +30,10 @@ public class MiniGameModule : ModuleBase
 
     void RefreshData()
     {
-        mScheduleConfig = ConfigData.miniScheduleConfig.GetByPrimary(IssueNum, false);
-        StartTime = DateTime.Parse(mScheduleConfig.startTime);
-        EndTime = DateTime.Parse(mScheduleConfig.endTime);
-        mMapConfigs = ConfigData.miniMapConfig.GetByIndexes(mScheduleConfig.mapIndex);
+
     }
+
+    #region 事件方法
 
     void OnPurchaseSuccess(EventData pEventData)
     {
@@ -68,112 +59,141 @@ public class MiniGameModule : ModuleBase
         }
     }
 
+    void OnMiniGameStart(EventData pEventData)
+    {
+        var tEventData = pEventData as MiniGameStart;
+        if (tEventData.isNewGame)
+        {
+            int pTypeId = (int)tEventData.modeType;
+
+            SetIsNewGame(pTypeId, false);
+            AddRetryCount(pTypeId);
+            Serialize(pTypeId);
+        }
+    }
+
     void OnMiniGameOver(EventData pEventData)
     {
         var tEventData = pEventData as MiniGameOver;
-
         if (tEventData.isSuccess)
         {
-            mData.CurrentLevel++;
+            int pTypeId = (int)tEventData.modeType;
 
-            Serialize();
+            AddCurLevel(pTypeId);
+            SetRetryCount(pTypeId, 0);
+            SetIsNewGame(pTypeId, true);
+            Serialize(pTypeId);
         }
     }
 
+    #endregion
 
+    #region 记录数据信息
 
-    public void SyncLevel()
+    public MiniGameData GetGameData(int pTypeId)
     {
-        mData.RecordLevel = mData.CurrentLevel;
-
-        Serialize();
-    }
-
-    public int GetNewIssue()
-    {
-        DateTime tNow = DateTime.Now;
-        foreach (var tConfig in ConfigData.miniScheduleConfig.DataList)
+        var tData = mGameData.GetValue(pTypeId);
+        if (tData == null)
         {
-            //if (tConfig.ID == mData.IssueNum) continue;//新活动和记录活动相同跳过
-            // 先解析结束时间并比较
-            if (DateTime.TryParse(tConfig.endTime, out DateTime tEndTime) && tNow < tEndTime)
-            {
-                if (DateTime.TryParse(tConfig.startTime, out DateTime tStartTime) && tNow >= tStartTime)
-                {
-                    return tConfig.ID;
-                }
-            }
+            tData = new MiniGameData();
+            mGameData.Add(pTypeId, tData);
         }
-
-        return -1;
+        return tData;
     }
 
-    public void StartNewIssue(int pIssueNum)
+    //当前关卡
+    public int GetCurLevel(int pTypeId)
     {
-        mData.IssueNum = pIssueNum;
-        mData.IsComplete = false;
-        mData.CurrentLevel = 1;
-        mData.RecordLevel = 1;
-
-        RefreshData();
-        Serialize();
+        return GetGameData(pTypeId).CurLevel;
     }
-
-    public void RetryGame()
+    public void SetCurLevel(int pTypeId, int pValue)
     {
-        mData.RetryCount += 1;
-        Serialize();
+        GetGameData(pTypeId).CurLevel = pValue;
+    }
+    public void AddCurLevel(int pTypeId, int pValue = 1)
+    {
+        GetGameData(pTypeId).CurLevel += pValue;
     }
 
-    public bool IsComplete()
+    public int GetRetryCount(int pTypeId)
     {
-        return CurLevel > MaxLevel;
+        return GetGameData(pTypeId).RetryCount;
+    }
+    public void SetRetryCount(int pTypeId, int pValue)
+    {
+        GetGameData(pTypeId).RetryCount = pValue;
+    }
+    public void AddRetryCount(int pTypeId, int pValue = 1)
+    {
+        GetGameData(pTypeId).RetryCount += pValue;
     }
 
-    public bool IsUnderway()
+    public bool IsNewGame(int pTypeId)
     {
-        if (StartTime <= DateTime.Now && DateTime.Now < EndTime)
-        {
-            return true;
-        }
-        return false;
+        return GetGameData(pTypeId).IsNewGame;
     }
+    public void SetIsNewGame(int pTypeId, bool pValue)
+    {
+        GetGameData(pTypeId).IsNewGame = pValue;
+    }
+
+
+    #endregion
+
+    #region 其他信息 
 
     public MiniTypeConfig GetTypeConfig(int pTypeId)
     {
         return ConfigData.miniTypeConfig.GetByPrimary(pTypeId);
     }
 
-    public MiniMapConfig GetLevelConfig(int pLevel)
+    public List<MiniMapConfig> GetTypeMapConfig(int pTypeId)
     {
+        return ConfigData.miniMapConfig.GetByIndexes(pTypeId, 1);
+    }
+
+    public MiniMapConfig GetLevelConfig(MiniGameType pTypeId, int pLevel)
+    {
+        mMapConfigs = GetTypeMapConfig((int)pTypeId);
+
         return mMapConfigs.FirstOrDefault(config => config.level == pLevel);
     }
 
-    public List<PropData> GetLevelReward(string pRewardStr)
+    MiniMapConfig GetLevelConfigByIndex(MiniGameType pTypeId, int pIndex)
     {
-        var tResult = new List<PropData>();
-        if (string.IsNullOrEmpty(pRewardStr)) return tResult;
+        mMapConfigs = GetTypeMapConfig((int)pTypeId);
 
-        var tProp = pRewardStr.Split(';');
-        foreach (var item in tProp)
+        if (pIndex < 0 || pIndex >= mMapConfigs.Count)
         {
-            var tP = item.Split(',');
-            tResult.Add(new PropData((PropID)tP[0].ToInt(), tP[1].ToInt()));
+            LogManager.LogError($"GetLevelConfig {pIndex + 1} 配置存在");
+            return null;
         }
-        return tResult;
+        return mMapConfigs[pIndex];
     }
 
-    public int GetLevelID(int pLevel)
+    public MiniMapConfig GetCurLevelConfig()
     {
-        var tConfig = GetLevelConfig(pLevel);
-        var strArray = tConfig.Chessboard.Split(';');
+        return GetLevelConfig(MiniGameManager.Instance.GameType, MiniGameManager.Instance.Level);
+    }
 
+    int GetLoopLevel(int pTypeId, int pLevel)
+    {
+        int tMaxLevel = GetMaxLevel(pTypeId);
+        return GameMethod.GetLoopIndex(pLevel, tMaxLevel) + 1;
+    }
+
+    public int GetLevelID(MiniGameType pTypeId, int pLevel)
+    {
+        pLevel = GetLoopLevel((int)pTypeId, pLevel);
+        var tConfig = GetLevelConfig(pTypeId, pLevel);
+        var strArray = tConfig.Chessboard.Split(';');
         return strArray[0].ToInt();
     }
 
-    public int[] GetLevelIDs(int pLevel, int pLevelCount)
+    public int[] GetLevelIDs(MiniGameType pTypeId, int pLevel, int pLevelCount)
     {
-        var tConfig = GetLevelConfig(pLevel);
+        pLevel = GetLoopLevel((int)pTypeId, pLevel);
+        var tConfig = GetLevelConfig(pTypeId, pLevel);
         var strArray = tConfig.Chessboard.Split(';');
         var tSeed = pLevel + pLevelCount + DateTime.Now.Month;
         System.Random random = new System.Random(tSeed);
@@ -218,6 +238,28 @@ public class MiniGameModule : ModuleBase
         return tResult.ToArray();
     }
 
+    public List<PropData> GetLevelReward(string pRewardStr)
+    {
+        var tResult = new List<PropData>();
+        if (string.IsNullOrEmpty(pRewardStr)) return tResult;
+
+        var tProp = pRewardStr.Split(';');
+        foreach (var item in tProp)
+        {
+            var tP = item.Split(',');
+            tResult.Add(new PropData((PropID)tP[0].ToInt(), tP[1].ToInt()));
+        }
+        return tResult;
+    }
+
+    public int GetMaxLevel(int pTypeId)
+    {
+        return GetTypeMapConfig(pTypeId).Count;
+    }
+
+    #endregion
+
+
 
     #region 资源处理
 
@@ -226,14 +268,41 @@ public class MiniGameModule : ModuleBase
     #endregion
 
     #region 序列化
+
+    string GetSerializeKey(int pTypeId)
+    {
+        return $"{RECORD_KEY}_{pTypeId}";
+    }
+
+    MiniGameData GetSerializeData(int pTypeId)
+    {
+        return mGameData.GetValue(pTypeId);
+    }
+
+    void Serialize(int pTypeId)
+    {
+        DataTool.Serialize(GetSerializeKey(pTypeId), GetSerializeData(pTypeId));
+    }
+
     void Serialize()
     {
-        DataTool.Serialize(RECORD_KEY, mData);
+        //DataTool.Serialize(RECORD_KEY, mData);
+
+        foreach (var tData in mGameData)
+        {
+            Serialize(tData.Key);
+        }
     }
 
     void Deserialize()
     {
-        mData = DataTool.Deserialize<MiniGameInfoData>(RECORD_KEY);
+        //mData = DataTool.Deserialize<MiniGameInfoData>(RECORD_KEY);
+
+        mGameData = new Dictionary<int, MiniGameData>();
+        foreach (var tConfig in ConfigData.miniTypeConfig.DataList)
+        {
+            mGameData.Add(tConfig.ID, DataTool.Deserialize<MiniGameData>(GetSerializeKey(tConfig.ID)));
+        }
     }
 
     #endregion

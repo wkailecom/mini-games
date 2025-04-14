@@ -21,7 +21,7 @@ namespace Game.MiniGame
 
         protected override void OnBeginOpen()
         {
-            int tType = (int)ModuleManager.MiniGame.GameType;
+            int tType = (int)MiniGameManager.Instance.GameType;
             for (int i = 0; i < _tranContent.childCount; i++)
             {
                 _tranContent.GetChild(i).gameObject.SetActive(i + 1 == tType);

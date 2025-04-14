@@ -23,6 +23,9 @@ namespace Game.MiniGame
         List<UIRewardItem> mNodeItems;
         List<UIRewardItem> mLevelItems;
 
+        List<PropData> mNodeRewards;
+        List<PropData> mLevelRewards;
+
         MiniSucceedPageParam mParam;
         protected override void OnInit()
         {
@@ -34,28 +37,28 @@ namespace Game.MiniGame
         }
 
         protected override void OnBeginOpen()
-        {
+        { 
             mParam = PageParam as MiniSucceedPageParam;
             AudioManager.Instance.PlaySound(SoundID.Tile_Level_Succeed);
+            _txtLevel.text = $"LEVEL {MiniGameManager.Instance.Level}";
 
-            //if (mParam == null)
-            //{
-            //    LogManager.LogError("MiniSucceedPage: invalid param");
-            //    return;
-            //}
-            mParam = new MiniSucceedPageParam();
-
-            var tConfig = ModuleManager.MiniGame.GetLevelConfig(MiniGameManager.Instance.Level);
-            var tRewards = ModuleManager.MiniGame.GetLevelReward(tConfig.LevelReward);
-            mParam.nodeRewards = tRewards;
-            mParam.levelRewards = tRewards;
-
-            if (mParam.nodeRewards.Count > 0)
+            if (mParam == null)
             {
-                mNodeItems.SetItemsActive(mParam.nodeRewards.Count, _rewardItem, _nodeReward);
-                for (int i = 0; i < mParam.nodeRewards.Count; i++)
+                LogManager.LogError("MiniSucceedPage: invalid param");
+                return;
+            }
+
+            var tConfig = ModuleManager.MiniGame.GetCurLevelConfig();
+            var tRewards = ModuleManager.MiniGame.GetLevelReward(tConfig.LevelReward);
+            mNodeRewards = tRewards;
+            mLevelRewards = tRewards;
+
+            if (mNodeRewards.Count > 0)
+            {
+                mNodeItems.SetItemsActive(mNodeRewards.Count, _rewardItem, _nodeReward);
+                for (int i = 0; i < mNodeRewards.Count; i++)
                 {
-                    mNodeItems[i].SetData(mParam.nodeRewards[i]);
+                    mNodeItems[i].SetData(mNodeRewards[i]);
                 }
 
                 _nodeBalloon.gameObject.SetActive(false);
@@ -67,12 +70,12 @@ namespace Game.MiniGame
                 _nodeReward.gameObject.SetActive(false);
             }
 
-            if (mParam.levelRewards.Count > 0)
+            if (mLevelRewards.Count > 0)
             {
-                mLevelItems.SetItemsActive(mParam.levelRewards.Count, _rewardItem, _levelReward);
-                for (int i = 0; i < mParam.levelRewards.Count; i++)
+                mLevelItems.SetItemsActive(mLevelRewards.Count, _rewardItem, _levelReward);
+                for (int i = 0; i < mLevelRewards.Count; i++)
                 {
-                    mLevelItems[i].SetData(mParam.levelRewards[i]);
+                    mLevelItems[i].SetData(mLevelRewards[i]);
                 }
                 _levelReward.gameObject.SetActive(true);
             }
@@ -88,14 +91,16 @@ namespace Game.MiniGame
 
 
         void OnClickBtnReturn()
-        {
+        { 
+            MiniGameManager.Instance.UnloadCurTypeScene();
             PageManager.Instance.OpenPage(PageID.HomePage);
         }
 
         void OnClickBtnNext()
         {
-            // PageManager.Instance.OpenPage(PageID.MiniEnterPage);
-            //MiniGameManager.Instance.StartGame(mGameType, mCurLevel);
+            var tGameType = MiniGameManager.Instance.GameType;
+            var tCurLevel = ModuleManager.MiniGame.GetCurLevel((int)tGameType);
+            MiniGameManager.Instance.StartGame(tGameType, tCurLevel);
         }
 
         void OnClickSavePhoto()
@@ -118,8 +123,7 @@ namespace Game.MiniGame
 
     public class MiniSucceedPageParam
     {
-        public List<PropData> levelRewards = new List<PropData>();
-        public List<PropData> nodeRewards = new List<PropData>();
+
 
     }
 }

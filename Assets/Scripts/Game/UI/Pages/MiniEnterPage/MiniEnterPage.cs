@@ -11,9 +11,9 @@ namespace Game.MiniGame
     {
         [SerializeField] private Button _btnReturn;
         [SerializeField] private Button _btnLike;
+        [SerializeField] private Button _btnEnter;
         [SerializeField] private RectTransform _titleRoot;
         [SerializeField] private RectTransform _iconRoot;
-        [SerializeField] private RectTransform _enterRoot;
         [SerializeField] private Image _imgIcon;
 
         [SerializeField] private Button _btnLevel;
@@ -21,6 +21,7 @@ namespace Game.MiniGame
 
         UISwitch _switnLike;
         MiniEnterPageParam mParam;
+        MiniTypeConfig mTypeConfig;
         MiniGameType mGameType;
         int mCurLevel;
         protected override void OnInit()
@@ -29,10 +30,23 @@ namespace Game.MiniGame
 
             _btnReturn.onClick.AddListener(Close);
             _btnLike.onClick.AddListener(OnClickBtnLike);
+            _btnEnter.onClick.AddListener(OnClickBtnEnter);
             _btnLevel.onClick.AddListener(OnClickBtnLevel);
         }
 
         protected override void OnBeginOpen()
+        {
+            base.OnBeginOpen();
+            RefreshUI();
+        }
+
+        protected override void OnReopen()
+        {
+            base.OnReopen();
+            RefreshUI();
+        }
+
+        void RefreshUI()
         {
             mParam = PageParam as MiniEnterPageParam;
             if (mParam == null)
@@ -41,18 +55,30 @@ namespace Game.MiniGame
                 return;
             }
 
-            mCurLevel = ModuleManager.MiniGame.CurLevel;
-            mGameType = (MiniGameType)mParam.typeConfig.ID;
+            mTypeConfig = mParam.typeConfig;
+            mGameType = (MiniGameType)mTypeConfig.ID;
+            mCurLevel = ModuleManager.MiniGame.GetCurLevel((int)mGameType);
 
-            bool tIsLike = ModuleManager.MiniFavor.IsFavor(mParam.typeConfig.ID);
+            bool tIsLike = ModuleManager.MiniFavor.IsFavor((int)mGameType);
             _switnLike.SetSwitch(tIsLike);
             _titleRoot.ClearChild();
             _iconRoot.ClearChild();
 
-            ResTool.CreatePrefab<Transform>(mParam.typeConfig.animTitle, GameConst.PREFAB_MINI_EVENT_PATH, _titleRoot.transform);
-            ResTool.CreatePrefab<Transform>(mParam.typeConfig.animIcon, GameConst.PREFAB_MINI_EVENT_PATH, _iconRoot.transform);
-            _imgIcon.sprite = ResTool.LoadIcon(mParam.typeConfig.enterIcon, GameConst.ATLAS_MINI_EVENT_PATH);
+            ResTool.CreatePrefab<Transform>(mTypeConfig.animTitle, GameConst.PREFAB_MINI_EVENT_PATH, _titleRoot.transform);
+            ResTool.CreatePrefab<Transform>(mTypeConfig.animIcon, GameConst.PREFAB_MINI_EVENT_PATH, _iconRoot.transform);
             _txtLevel.text = $"LEVEL {mCurLevel}";
+
+            var tCurType = MiniGameManager.Instance.GameType;
+            if (tCurType == MiniGameType.Invalid || tCurType == mGameType)
+            {
+                _btnEnter.gameObject.SetActive(false);
+            }
+            else
+            {
+                var tCurConfig = ModuleManager.MiniGame.GetTypeConfig((int)tCurType);
+                _imgIcon.sprite = ResTool.LoadIcon(tCurConfig.enterIcon, GameConst.ATLAS_MINI_EVENT_PATH);
+                _btnEnter.gameObject.SetActive(true);
+            }
         }
 
 
@@ -60,8 +86,14 @@ namespace Game.MiniGame
 
         void OnClickBtnLike()
         {
-            ModuleManager.MiniFavor.SetFavor(mParam.typeConfig.ID, !_switnLike.isOn);
+            ModuleManager.MiniFavor.SetFavor(mTypeConfig.ID, !_switnLike.isOn);
             _switnLike.SetSwitch(!_switnLike.isOn);
+        }
+
+        void OnClickBtnEnter()
+        { 
+            var tCurConfig = ModuleManager.MiniGame.GetTypeConfig((int)MiniGameManager.Instance.GameType);
+            PageManager.Instance.OpenPage(PageID.MiniEnterPage, new MiniEnterPageParam(tCurConfig)); 
         }
 
         void OnClickBtnLevel()
@@ -72,7 +104,8 @@ namespace Game.MiniGame
             }
             else
             {
-                PageManager.Instance.OpenPage(PageID.AdsPropPopup, new AdsPropPageParam(PropID.Energy, null));
+                //PageManager.Instance.OpenPage(PageID.AdsPropPopup, new AdsPropPageParam(PropID.Energy, null));
+                PageManager.Instance.OpenPage(PageID.SwapEnergyPage);
             }
         }
 

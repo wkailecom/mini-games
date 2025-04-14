@@ -61,7 +61,7 @@ public class MiniGameOverPage : PageBase
 
     void SetSuccessRoot()
     {
-        var tConfig = ModuleManager.MiniGame.GetLevelConfig(mParam.level);
+        var tConfig = ModuleManager.MiniGame.GetCurLevelConfig();
         var tRewards = ModuleManager.MiniGame.GetLevelReward(tConfig.LevelReward);
 
         if (tRewards != null && tRewards.Count > 0)
@@ -87,14 +87,14 @@ public class MiniGameOverPage : PageBase
 
     private void OnClickClaimBtn()
     {
-        if (ModuleManager.MiniGame.IsUnderway())
-        {
-            PageManager.Instance.OpenPage(PageID.MiniMapPage);
-        }
-        else
-        {
+        //if (ModuleManager.MiniGame.IsUnderway())
+        //{
+        //    PageManager.Instance.OpenPage(PageID.MiniMapPage);
+        //}
+        //else
+        //{
             PageManager.Instance.OpenPage(PageID.HomePage);
-        }
+        //}
     }
 
     private void TryShowGuide()

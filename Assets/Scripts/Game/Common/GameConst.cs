@@ -19,6 +19,8 @@ namespace Game
         public const string ATLAS_PROPS_PATH = "Atlas/Props";            //图集：道具Icon路径
         public const string ATLAS_MINI_EVENT_PATH = "Atlas/MiniEnter";   //图集：不同小游戏图标
 
+        public const string SPRITE_PATH = "UISprite/";                   //图片：直接加载的Sprite
+
         public const string PREFAB_MINI_EVENT_PATH = "UI/Widget/MiniEnter/";  //预制体：不同小游戏组件
 
         public const int TOKENS_DOUBLE_COUNT = 2;               //奖励加倍倍数 

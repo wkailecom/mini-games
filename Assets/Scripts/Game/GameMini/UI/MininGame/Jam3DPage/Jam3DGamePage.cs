@@ -110,29 +110,18 @@ namespace Game.MiniGame
             var tEventData = pEventData as MiniGameOver;
             if (tEventData.modeType != mGameType) return;
 
-            var tOverParam = new MiniGameOverPageParam(mParam.level, tEventData.isSuccess);
             if (tEventData.isSuccess)
             {
-                PageManager.Instance.OpenPage(PageID.MiniGameOverPage, tOverParam);
+                PageManager.Instance.OpenPage(PageID.MiniSucceedPage, new MiniSucceedPageParam());
             }
             else
             {
-                var tReviveParam = new MiniRevivePopupParam();
-                tReviveParam.isReturn = false;
-                tReviveParam.level = mParam.level;
-                tReviveParam.clickAction = (isRight) =>
+                PropID tUseProp = PropID.Jam3DReplace;
+                var tIsValid = GameLogic.JamManager.GetSingleton().Board.CanReplace();
+                PageManager.Instance.OpenPage(PageID.MiniFailedPage, new MiniFailedPageParam(tUseProp, tIsValid, () =>
                 {
-                    if (isRight)
-                    {
-                        OnClickRevive();
-                    }
-                    else
-                    {
-                        ModuleManager.Prop.ExpendProp(PropID.Energy, 1);
-                        PageManager.Instance.OpenPage(PageID.MiniGameOverPage, tOverParam); 
-                    }
-                };
-                PageManager.Instance.OpenPage(PageID.MiniRevivePopup, tReviveParam);
+                    OnClickRevive();
+                }));
             }
         }
 
@@ -143,7 +132,7 @@ namespace Game.MiniGame
         {
             var tPageParam = new MiniRevivePopupParam();
             tPageParam.isReturn = true;
-            tPageParam.level = mParam.level; 
+            tPageParam.level = mParam.level;
             PageManager.Instance.OpenPage(PageID.MiniRevivePopup, tPageParam);
         }
 
@@ -237,7 +226,7 @@ namespace Game.MiniGame
 
         private void TryShowGuide()
         {
-            var tLevel = ModuleManager.MiniGame.CurLevel;
+            var tLevel = ModuleManager.MiniGame.GetCurLevel((int)mGameType);
             if (!DataTool.GetBool(MiniGameConst.Guide_JamRules) && tLevel == 1)
             {
                 DataTool.SetBool(MiniGameConst.Guide_JamRules, true);

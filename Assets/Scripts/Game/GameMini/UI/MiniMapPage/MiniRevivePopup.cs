@@ -71,7 +71,7 @@ namespace Game.MiniGame
                 _btnLeft.btnText.text = "Try Again";
                 _btnRight.btnText.text = "Play on";
 
-                var tGameType = ModuleManager.MiniGame.GameType;
+                var tGameType = MiniGameManager.Instance.GameType;
                 bool tIsValid = false;
                 var tPropId = PropID.Invalid;
                 if (tGameType == MiniGameType.Screw)
@@ -138,9 +138,9 @@ namespace Game.MiniGame
                 }
             }
 
-            SetNode(mParam.level, ModuleManager.MiniGame.MaxLevel);
+            //SetNode(mParam.level, ModuleManager.MiniGame.MaxLevel);
 
-            mIsAD = ModuleManager.MiniGame.IssueNum != 1 || ModuleManager.MiniGame.CurLevel >= 3;
+            //mIsAD = ModuleManager.MiniGame.IssueNum != 1 || ModuleManager.MiniGame.CurLevel >= 3;
         }
 
         void SetNode(int curLevel, int endLevel)
@@ -180,18 +180,18 @@ namespace Game.MiniGame
             if (mParam.isReturn)
             {
                 ModuleManager.Prop.ExpendProp(PropID.Energy);
-                if (ModuleManager.MiniGame.IsUnderway())
-                {
-                    if (mParam.level >= MiniGameConst.AD_OPEN_LEVEL)
-                    {
-                        ADManager.Instance.PlayInterstitial(ADShowReason.Interstitial_MiniGameReturn);
-                    }
-                    PageManager.Instance.OpenPage(PageID.MiniMapPage);
-                }
-                else
-                {
+                //if (ModuleManager.MiniGame.IsUnderway())
+                //{
+                //    if (mParam.level >= MiniGameConst.AD_OPEN_LEVEL)
+                //    {
+                //        ADManager.Instance.PlayInterstitial(ADShowReason.Interstitial_MiniGameReturn);
+                //    }
+                //    PageManager.Instance.OpenPage(PageID.MiniMapPage);
+                //}
+                //else
+                //{
                     PageManager.Instance.OpenPage(PageID.HomePage);
-                }
+                //}
             }
             MiniGameManager.Instance.UnloadScene(MiniGameManager.Instance.GameType.ToString());
         }

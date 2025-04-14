@@ -207,7 +207,7 @@ public static class ReportEventDefine
         {
             if (GameVariable.CurSceneType == GameSceneType.MiniGame)
             {
-                return $"miniGame_{ModuleManager.MiniGame.GameType}";
+                return $"miniGame_{MiniGameManager.Instance.GameType}";
             }
             else
             {
@@ -233,25 +233,27 @@ public static class ReportEventDefine
     {
         get
         {
+            return string.Empty;
             //if (GameVariable.CurSceneType == GameSceneType.MiniGame)
             //{
             //    return ModuleManager.MiniGame.GetLevelConfig(MiniGameManager.Instance.Level).Chessboard;
             //}
-            return ModuleManager.MiniGame.GetLevelConfig(MiniGameManager.Instance.Level).Chessboard;
+            //return ModuleManager.MiniGame.GetLevelConfig(MiniGameManager.Instance.Level).Chessboard;
         }
     }
     public static string IssueNum_Value
     {
         get
         {
-            if (GameVariable.CurSceneType == GameSceneType.MiniGame)
-            {
-                return ModuleManager.MiniGame.IssueNum.ToString();
-            }
-            else
-            {
-                return string.Empty;
-            }
+            return string.Empty;
+            //if (GameVariable.CurSceneType == GameSceneType.MiniGame)
+            //{
+            //    return ModuleManager.MiniGame.IssueNum.ToString();
+            //}
+            //else
+            //{
+            //    return string.Empty;
+            //}
         }
     }
     public static string LevelUniqueID_Value => GameManager.Instance.BaseData.UniqueID.ToString();
@@ -408,7 +410,7 @@ public static class ReportEventDefine
 
     public static string MiniGameLeftPropCount_Value()
     {
-        return ModuleManager.MiniGame.GameType switch
+        return MiniGameManager.Instance.GameType switch
         {
             MiniGameType.Screw => LeftPropCount_Value(PropID.Energy, PropID.ScrewExtraSlot, PropID.ScrewHammer, PropID.ScrewExtraBox),
             MiniGameType.Jam3d => LeftPropCount_Value(PropID.Energy, PropID.Jam3DShuffle, PropID.Jam3DReplace, PropID.Jam3DRevert),

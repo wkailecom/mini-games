@@ -27,13 +27,9 @@ namespace Game.UI
 
         protected override void OnBeginOpen()
         {
-            //mParam = PageParam as WatchAdsPageParam;
-            //if (mParam == null)
-            //{
-            //    LogManager.LogError("WatchAdsPage.OnBeginOpen: PageParam is Invalid");
-            //    return;
-            //}
-            //timeCountDown.StartCountDown(ModuleManager.MiniGame.GetHeartRecoverTime());
+            //prop.SetData(mPropData);
+            prop.propCount.name = "Full";
+            timeCountDown.StartCountDown(ModuleManager.UserInfo.HealthHarvestTime, "Full");
         }
 
         void ClickBtnBuy()
@@ -41,8 +37,10 @@ namespace Game.UI
             var tIsf = ModuleManager.Prop.ExpendProp(PropID.Coin, CommonDefine.energyCoinCount);
             if (tIsf)
             {
+                var tAddCount = CommonDefine.energyFunllCount - ModuleManager.Prop.GetPropCount(PropID.Energy);
+                ModuleManager.Prop.AddProp(PropID.Energy, tAddCount, PropSource.CoinSwap);
+
                 Close();
-                ModuleManager.Prop.AddProp(PropID.Energy, 1, PropSource.CoinSwap);
             }
             else
             {

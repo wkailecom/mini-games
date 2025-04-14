@@ -7,8 +7,7 @@ using UnityEngine.UI;
 using Game.UISystem;
 using Game.UI;
 using Game;
-using System;
-using System.Threading;
+using System; 
 
 public class UIBtnHeart : MonoBehaviour
 {
@@ -101,14 +100,16 @@ public class UIBtnHeart : MonoBehaviour
             return;
         }
 
-        var tCurCount = ModuleManager.Prop.GetPropCount(PropID.Coin);
-        if (tCurCount >= CommonDefine.energyCoinCount)
-        {
-            PageManager.Instance.OpenPage(PageID.SwapEnergyPage);
-        }
-        else
-        {
-            PageManager.Instance.OpenPage(PageID.ShopPage, new ShopPageParam(ShopPageParam.ShopGroup.CoinFirst));
-        }
+        PageManager.Instance.OpenPage(PageID.SwapEnergyPage);
+
+        //var tCurCount = ModuleManager.Prop.GetPropCount(PropID.Coin);
+        //if (tCurCount >= CommonDefine.energyCoinCount)
+        //{
+        //    PageManager.Instance.OpenPage(PageID.SwapEnergyPage);
+        //}
+        //else
+        //{
+        //    PageManager.Instance.OpenPage(PageID.ShopPage, new ShopPageParam(ShopPageParam.ShopGroup.CoinFirst));
+        //}
     }
 }

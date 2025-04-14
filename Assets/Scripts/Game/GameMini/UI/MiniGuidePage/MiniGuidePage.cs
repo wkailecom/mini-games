@@ -73,7 +73,7 @@ namespace Game.UI
                 SetClickPos(tBtnGame, false, false, true);
                 SetExplainPos(tBtnGame, new Vector2(0, 350));
 
-                var tName = ModuleManager.MiniGame.GameType switch
+                var tName = MiniGameManager.Instance.GameType switch
                 {
                     MiniGameType.Screw => "Screw Crush Mission",
                     MiniGameType.Jam3d => "Jam Crush Mission",
