@@ -64,6 +64,28 @@ public enum EventKey
     BusOut_VehicleClick,         //车辆被点击
     BusOut_PassengerSeat,        //乘客到达座位
     #endregion
+
+    #region TripleMath3D
+    E_GameFinish,
+    TripleMathSuccess,
+    TripleMathFailed,
+    TripleMath_Submitted,
+    TripleMath_Reset,
+    TripleMath_CountDownTime,
+    TripleMath_MagnetComplete,
+    TripleMath_UndoComplete,
+    TripleMath_CompassComplete,
+    TripleMath_FreezeComplete,
+    TripleMath_FreezeFinish,
+    TripleMath_CompassFinish,
+    TripleMath_CompassRefresh,
+    TripleMath_AddTime,
+    TripleMath_ReadyToSuccess,
+    TripleMath_BroomComplete,
+    TripleMath_Recall3ObjectComplete,
+    TripleMath_HourglassComplete,
+    TripleMath_BroomFinish,
+    #endregion
 }
 
 public static class EventManager

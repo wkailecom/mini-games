@@ -134,7 +134,7 @@ namespace Game
             AddInitTask(() => { ResourceLoader.Instance.Init(); });
             AddInitTask(() => { EventManager.Init(); });
             AddInitTask(() => { ModuleManager.Init(); });
-            AddInitTask(() => { TimerManager.Instance.Init(); });
+            AddInitTask(() => { TimeManager.Instance.Init(); });
             AddInitTask(() => { IAPManager.Instance.Init(); });
             AddInitTask(() => { ADManager.Instance.Init(); });
             AddInitTask(() => { GameManager.Instance.Init(); });

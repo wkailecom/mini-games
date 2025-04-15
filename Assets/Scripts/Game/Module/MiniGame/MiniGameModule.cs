@@ -238,6 +238,29 @@ public class MiniGameModule : ModuleBase
         return tResult.ToArray();
     }
 
+    public int GetTripleLevelTimes(MiniMapConfig pMapConfig, int tLevelID)
+    {
+        var time = 50; 
+        foreach (var item in ConfigData.tripleLevelSeedConfig.DataList)
+        {
+            if (item.id == tLevelID)
+            {
+                time = pMapConfig.LimitTime switch
+                {
+                    1 => item.diff_1,
+                    2 => item.diff_2,
+                    3 => item.diff_3,
+                    4 => item.diff_4,
+                    5 => item.diff_5,
+                    _ => 50,
+                };
+                return time;
+            }
+        }
+        
+        return time;
+    }
+
     public List<PropData> GetLevelReward(string pRewardStr)
     {
         var tResult = new List<PropData>();

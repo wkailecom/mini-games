@@ -154,7 +154,7 @@ public class UserInfoModule : ModuleBase
         while (DateTime.Now < pHarvestTime)
         {
             // TimeSpan timeSpan = pHarvestTime - DateTime.Now;
-            yield return TimerManager.WaitOneSecond;
+            yield return TimeManager.WaitOneSecond;
         }
 
         if (ModuleManager.Prop.GetPropCount(PropID.Energy) < CommonDefine.energyFunllCount - 1)

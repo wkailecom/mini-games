@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class TimerManager : MonoSingleton<TimerManager>
+public class TimeManager : MonoSingleton<TimeManager>
 {
     public readonly static WaitForSeconds WaitOneSecond = new(1);
     DateTime cacheTime;

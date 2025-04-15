@@ -31,6 +31,10 @@ namespace Config
 		/// </summary>
 		public int IconNumber { get; private set; }
 		/// <summary>
+		///限制时间(Triple)
+		/// </summary>
+		public int LimitTime { get; private set; }
+		/// <summary>
 		///关卡奖励
 		/// </summary>
 		public string LevelReward { get; private set; }
@@ -41,7 +45,7 @@ namespace Config
 
 		public override void ParseData(string[] pData)
 		{
-			if (pData == null || pData.Length < 9)
+			if (pData == null || pData.Length < 10)
 			{
 				LogManager.LogError("MiniMapConfig.ParseData param wrong!");
 				return;
@@ -77,11 +81,15 @@ namespace Config
 			}
 			if (!string.IsNullOrEmpty(pData[7]))
 			{
-				LevelReward = pData[7];
+				LimitTime = int.Parse(pData[7]);
 			}
 			if (!string.IsNullOrEmpty(pData[8]))
 			{
-				ReplayCoin = int.Parse(pData[8]);
+				LevelReward = pData[8];
+			}
+			if (!string.IsNullOrEmpty(pData[9]))
+			{
+				ReplayCoin = int.Parse(pData[9]);
 			}
 		}
 	}

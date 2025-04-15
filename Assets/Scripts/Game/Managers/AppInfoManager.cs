@@ -77,7 +77,7 @@ public class AppInfoManager : Singleton<AppInfoManager>
 
     string GetResVersion()
     {
-        return ResVersion ??= AssetManager.Instance.LoadAsset<TextAsset>("ResVersion").text;
+        return ResVersion ??= ResTool.Load<TextAsset>("ResVersion").text;
     }
 
     string GetAppOS()

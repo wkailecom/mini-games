@@ -1,11 +1,14 @@
 ﻿using Config;
 using Game;
 using Game.MiniGame;
+using Game.UI;
 using Game.UISystem;
 using LLFramework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UIElements;
 
 public class MiniGameManager : Singleton<MiniGameManager>
 {
@@ -150,13 +153,13 @@ public class MiniGameManager : Singleton<MiniGameManager>
                 if (resType == GameLogic.JamTriggerEvents.ResType.TerrainConfig)
                 {
                     var levelGroup = ConfigData.jamLevelGroupConfig.GetByPrimary(name);
-                    var res = AssetManager.Instance.LoadAsset<UnityEngine.Object>($"PackageJam3d/BundleResources/Terrains/Terrain_{levelGroup.prefab}");
+                    var res = ResTool.Load<UnityEngine.Object>($"PackageJam3d/BundleResources/Terrains/Terrain_{levelGroup.prefab}");
                     return res;
                 }
                 return null;
             }, (pathInPackage) =>
             {
-                var res = AssetManager.Instance.LoadAsset<UnityEngine.Object>($"PackageJam3d/{pathInPackage}");
+                var res = ResTool.Load<UnityEngine.Object>($"PackageJam3d/{pathInPackage}");
                 return res;
             });
         GameLogic.JamManager.GetSingleton().RegisterJamTriggerEvents(jamEventTrigger);
@@ -198,7 +201,39 @@ public class MiniGameManager : Singleton<MiniGameManager>
 
     public void RegisterTriple()
     {
-
+        TripleMath.TripleMathTriggerEvents eventTrigger = new TripleMath.TripleMathTriggerEvents(
+            () => { TriggerEventGameOver(MiniGameType.Triple, true); }, //游戏成功
+            (failReason) => { TriggerEventGameOver(MiniGameType.Triple, false); },//游戏失败
+            (matchType, count) =>
+            {
+                //EventManager.Trigger<string, int>(EventKey.TripleMath_Submitted, matchType, count);
+            },
+            (matchType, count) =>
+            {
+                //EventManager.Trigger<string, int>(EventKey.Triple_MathReset, matchType, count);
+            },
+            (leftTime) =>
+            {
+                //EventManager.Trigger<int>(EventKey.TripleMath_CountDownTime, leftTime);
+            },
+            () => { EventManager.Trigger(EventKey.TripleMath_MagnetComplete); },
+            () => { EventManager.Trigger(EventKey.TripleMath_UndoComplete); },
+            () => { EventManager.Trigger(EventKey.TripleMath_CompassComplete); },
+            () => { EventManager.Trigger(EventKey.TripleMath_FreezeComplete); },
+            () => { EventManager.Trigger(EventKey.TripleMath_FreezeFinish); },
+            () => { EventManager.Trigger(EventKey.TripleMath_CompassFinish); },
+            (targetTrans) =>
+            {
+                //EventManager.Trigger<Transform>(EventKey.TripleMath_CompassRefresh, targetTrans);
+            },
+            (soundName) => { PlaySound(soundName); },//播放音效
+            () => { EventManager.Trigger(EventKey.TripleMath_ReadyToSuccess); },
+            () => { EventManager.Trigger(EventKey.TripleMath_BroomComplete); },
+            () => { EventManager.Trigger(EventKey.TripleMath_Recall3ObjectComplete); },
+            () => { EventManager.Trigger(EventKey.TripleMath_HourglassComplete); },
+            () => { EventManager.Trigger(EventKey.TripleMath_BroomFinish); }
+        );
+        TripleMath.EventManager.Instance.RegisterTriggerEvents(eventTrigger);
     }
 
     #endregion
@@ -256,9 +291,11 @@ public class MiniGameManager : Singleton<MiniGameManager>
         else if (pGameType == MiniGameType.Triple)
         {
             var tLevelID = ModuleManager.MiniGame.GetLevelID(pGameType, pLevel);
+            var tLimitTime = ModuleManager.MiniGame.GetTripleLevelTimes(tLevelConfig, tLevelID);
             LoadScene(tSceneName, () =>
             {
-                ScrewJam.GameModel.Instance.StartLevel(tLevelID);
+                Camera uiCamera = GameObject.FindWithTag("UICamera").GetComponent<Camera>();
+                TripleMath.TripleMathManager.Instance.InitLevel(tLevelID, uiCamera, tLimitTime);
                 PageManager.Instance.OpenPage(PageID.TripleGamePage, new MiniGamePageParam(pLevel));
                 TriggerEventGameStart(pGameType, mCacheLevel);
             });

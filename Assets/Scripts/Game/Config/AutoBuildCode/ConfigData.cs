@@ -15,6 +15,7 @@ namespace Config
 		public static MiniTypeConfigController miniTypeConfig = new MiniTypeConfigController();
 		public static PageConfigController pageConfig = new PageConfigController();
 		public static PropConfigController propConfig = new PropConfigController();
+		public static TripleLevelSeedConfigController tripleLevelSeedConfig = new TripleLevelSeedConfigController();
 
 		public static void Init(string dataPath)
 		{
@@ -31,6 +32,7 @@ namespace Config
 			miniTypeConfig.LoadData(dataPath);
 			pageConfig.LoadData(dataPath);
 			propConfig.LoadData(dataPath);
+			tripleLevelSeedConfig.LoadData(dataPath);
 		}
 	}
 }
