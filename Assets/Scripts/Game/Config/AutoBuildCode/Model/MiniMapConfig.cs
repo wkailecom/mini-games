@@ -1,4 +1,4 @@
-﻿namespace Config
+namespace Config
 {
 	public class MiniMapConfig : ConfigModelBase
 	{
@@ -27,6 +27,10 @@
 		/// </summary>
 		public string Chessboard { get; private set; }
 		/// <summary>
+		///图案数(BuOut)
+		/// </summary>
+		public int IconNumber { get; private set; }
+		/// <summary>
 		///关卡奖励
 		/// </summary>
 		public string LevelReward { get; private set; }
@@ -37,7 +41,7 @@
 
 		public override void ParseData(string[] pData)
 		{
-			if (pData == null || pData.Length < 8)
+			if (pData == null || pData.Length < 9)
 			{
 				LogManager.LogError("MiniMapConfig.ParseData param wrong!");
 				return;
@@ -66,15 +70,18 @@
 			if (!string.IsNullOrEmpty(pData[5]))
 			{
 				Chessboard = pData[5];
-				LogManager.LogError(Chessboard);
 			}
 			if (!string.IsNullOrEmpty(pData[6]))
 			{
-				LevelReward = pData[6];
+				IconNumber = int.Parse(pData[6]);
 			}
 			if (!string.IsNullOrEmpty(pData[7]))
 			{
-				ReplayCoin = int.Parse(pData[7]);
+				LevelReward = pData[7];
+			}
+			if (!string.IsNullOrEmpty(pData[8]))
+			{
+				ReplayCoin = int.Parse(pData[8]);
 			}
 		}
 	}

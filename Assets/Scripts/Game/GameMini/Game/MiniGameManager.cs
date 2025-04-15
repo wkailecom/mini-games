@@ -170,42 +170,28 @@ public class MiniGameManager : Singleton<MiniGameManager>
     public void RegisterBusOut()
     {
         BusOut.BusOutTriggerEvents busOutTriggerEvents = new BusOut.BusOutTriggerEvents(
-           () => { TriggerEventGameOver(MiniGameType.Bus, true); },//游戏成功
+           () => { TriggerEventGameOver(MiniGameType.Bus, true); }, //游戏成功
            () => { TriggerEventGameOver(MiniGameType.Bus, false); },//游戏失败
            (int pIndex) =>
            {
                //点击解锁停车位
-               //EventManager.Trigger(EventKey. );
-               //EventDispatcher.TriggerEvent<int>(EventKey.E_BusOutOnClickUnlockSlot, pIndex);
+               var tEventData = EventManager.GetEventData<BusOut_OnClickUnlockSlot>(EventKey.BusOut_OnClickUnlockSlot);
+               tEventData.index = pIndex;
+               EventManager.Trigger(tEventData);
            },
-           () =>
-           {
-               //EventDispatcher.TriggerEvent(EventKey.E_BusOutVIPComplete);
-           },
+           () => { EventManager.Trigger(EventKey.BusOut_VIPComplete); },   //vip道具使用成功
            (int pNumber) =>
            {
-               //EventDispatcher.TriggerEvent(EventKey.E_BusOutPassengerNumberChange, pNumber);
+               //等待的乘客数量改变
+               var tEventData = EventManager.GetEventData<BusOut_PassengerNumberChange>(EventKey.BusOut_PassengerNumberChange);
+               tEventData.count = pNumber;
+               EventManager.Trigger(tEventData);
            },
-           () =>
-           {
-               //EventDispatcher.TriggerEvent(EventKey.E_BusOutReadyToSuccess);
-           },
-           () =>
-           {
-               //EventDispatcher.TriggerEvent(EventKey.E_BusOutVIPMoveFinish);
-           },
-           () =>
-           {
-               //EventDispatcher.TriggerEvent(EventKey.E_BusOutVehicleHit);
-           },
-           () =>
-           {
-               //EventDispatcher.TriggerEvent(EventKey.E_BusOutVehicleClick);
-           },
-           () =>
-           {
-               //EventDispatcher.TriggerEvent(EventKey.E_BusOutPassengerSeat);
-           }
+           () => { EventManager.Trigger(EventKey.BusOut_ReadyToSuccess); },//完成游戏（动画前）
+           () => { EventManager.Trigger(EventKey.BusOut_VIPMoveFinish); }, //vip移动完成
+           () => { EventManager.Trigger(EventKey.BusOut_VehicleHit); },    //车辆被击中
+           () => { EventManager.Trigger(EventKey.BusOut_VehicleClick); },  //车辆被点击
+           () => { EventManager.Trigger(EventKey.BusOut_PassengerSeat); }  //乘客到达座位
        );
         BusOut.EventManager.Instance.RegisterTriggerEvents(busOutTriggerEvents);
     }
@@ -262,7 +248,7 @@ public class MiniGameManager : Singleton<MiniGameManager>
             var tLevelID = ModuleManager.MiniGame.GetLevelID(pGameType, pLevel);
             LoadScene(tSceneName, () =>
             {
-                //BusOut.GameModel.Instance.StartLevel(tLevelID, pLevel == 1 ? false : true, tLevelConfig.IconNumber);
+                BusOut.GameModel.Instance.StartLevel(tLevelID, pLevel != 1, tLevelConfig.IconNumber);
                 PageManager.Instance.OpenPage(PageID.BusGamePage, new MiniGamePageParam(pLevel));
                 TriggerEventGameStart(pGameType, mCacheLevel);
             });
@@ -333,21 +319,45 @@ public class MiniGameManager : Singleton<MiniGameManager>
 
     void LoadScene(string pSceneName, Action pAction)
     {
+        bool tIsExist = false;
         foreach (var item in mScenes)
         {
-            AssetManager.Instance.UnloadScene(item);
+            if (item == pSceneName)
+            {
+                tIsExist = true;
+            }
+            else
+            {
+                AssetManager.Instance.UnloadScene(item);
+            }
         }
-        AssetManager.Instance.LoadSceneAsync(pSceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive, (scene) =>
+        if (tIsExist)
         {
-            pAction?.Invoke();
-            UIRoot.Instance.MainCamera.enabled = false;
-            mScenes.Add(pSceneName);
-        });
+            UnloadScene(pSceneName, () =>
+            {
+                AssetManager.Instance.LoadSceneAsync(pSceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive, (scene) =>
+                {
+                    pAction?.Invoke();
+                    UIRoot.Instance.MainCamera.enabled = false;
+                    mScenes.Add(pSceneName);
+                });
+            });
+        }
+        else
+        {
+            AssetManager.Instance.LoadSceneAsync(pSceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive, (scene) =>
+            {
+                pAction?.Invoke();
+                UIRoot.Instance.MainCamera.enabled = false;
+                mScenes.Add(pSceneName);
+            });
+        }
+
     }
 
     public void UnloadScene(string pSceneName, Action pAction = null)
     {
-        AssetManager.Instance.UnloadSceneAsync(pSceneName, () =>
+        AssetManager.Instance.UnloadScene(pSceneName, () =>
         {
             pAction?.Invoke();
             UIRoot.Instance.MainCamera.enabled = true;
@@ -358,7 +368,7 @@ public class MiniGameManager : Singleton<MiniGameManager>
     public void UnloadCurTypeScene(Action pAction = null)
     {
         string tSceneName = GetSceneName(mCacheType);
-        AssetManager.Instance.UnloadSceneAsync(tSceneName, () =>
+        AssetManager.Instance.UnloadScene(tSceneName, () =>
         {
             pAction?.Invoke();
             UIRoot.Instance.MainCamera.enabled = true;

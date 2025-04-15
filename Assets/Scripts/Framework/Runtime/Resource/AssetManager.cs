@@ -4,10 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using UnityEngine.AddressableAssets; 
+using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.SceneManagement; 
+using UnityEngine.ResourceManagement.ResourceProviders;
+using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 public class AssetHandle
@@ -28,6 +29,7 @@ public class AssetHandle
 public class AssetManager : BaseManager<AssetManager>
 {
     private readonly Dictionary<string, AssetHandle> _assetDic = new();
+    private readonly Dictionary<string, AsyncOperationHandle<SceneInstance>> _sceneDic = new();
     private readonly object lockObject = new();
 
     /// <summary>
@@ -151,17 +153,54 @@ public class AssetManager : BaseManager<AssetManager>
 
     IEnumerator LoadSceneAsyncCoroutine(string pSceneName, LoadSceneMode pLoadSceneMode, UnityAction<bool> pCallback)
     {
+        if (IsLoadScene(pSceneName))
+        {
+            Debug.LogWarning($"{pSceneName} 已经加载，无需重复加载。");
+            pCallback?.Invoke(true);
+            yield break;
+        }
+
         var tHandle = Addressables.LoadSceneAsync(pSceneName, pLoadSceneMode, false);
         yield return tHandle;
         if (tHandle.Status == AsyncOperationStatus.Succeeded)
         {
             AsyncOperation activateOperation = tHandle.Result.ActivateAsync();
             yield return activateOperation;  // 等待场景激活完成
-            pCallback?.Invoke(true);
+            if (tHandle.Result.Scene.isLoaded)
+            {
+                _sceneDic.Add(pSceneName, tHandle);
+                pCallback?.Invoke(true);
+            }
+            else
+            {
+                pCallback?.Invoke(false);
+            }
         }
         else
         {
             // 如果场景加载失败
+            pCallback?.Invoke(false);
+        }
+    }
+
+    IEnumerator UnloadSceneCoroutine(string pSceneName, UnityAction<bool> pCallback)
+    {
+        if (!IsLoadScene(pSceneName))
+        {
+            Debug.LogWarning($"尝试卸载未加载的场景: {pSceneName}");
+            pCallback?.Invoke(false);
+            yield break;
+        }
+
+        var tHandle = Addressables.UnloadSceneAsync(_sceneDic[pSceneName], UnloadSceneOptions.None, false);
+        yield return tHandle;
+        if (tHandle.Status == AsyncOperationStatus.Succeeded)
+        {
+            _sceneDic.Remove(pSceneName);
+            pCallback?.Invoke(true);
+        }
+        else
+        {
             pCallback?.Invoke(false);
         }
     }
@@ -175,9 +214,33 @@ public class AssetManager : BaseManager<AssetManager>
     }
 
     /// <summary>
+    /// 异步卸载场景
+    /// </summary> 
+    public void UnloadSceneAsync(string pSceneName, UnityAction<bool> pCallback)
+    {
+        TaskManager.Instance.StartTask(UnloadSceneCoroutine(pSceneName, pCallback));
+    }
+
+    /// <summary>
+    /// 异步卸载场景
+    /// </summary> 
+    public void UnloadScene(string pSceneName, UnityAction pCallback)
+    {
+        if (IsLoadScene(pSceneName))
+        {
+            Addressables.UnloadSceneAsync(_sceneDic[pSceneName], UnloadSceneOptions.None).Completed += (a) =>
+            {
+                _sceneDic.Remove(pSceneName);
+                pCallback?.Invoke();
+            };
+        }
+    }
+
+    #region SceneManager方式
+    /// <summary>
     /// 异步加载场景
     /// </summary> 
-    public void LoadSceneAsync(string pSceneName, LoadSceneMode pLoadSceneMode, UnityAction pCallback)
+    public void LoadSceneAsync2(string pSceneName, LoadSceneMode pLoadSceneMode, UnityAction pCallback)
     {
         SceneManager.LoadSceneAsync(pSceneName, LoadSceneMode.Additive).completed += (asyncOperation) =>
         {
@@ -186,7 +249,10 @@ public class AssetManager : BaseManager<AssetManager>
 
     }
 
-    public void UnloadSceneAsync(string pSceneName, UnityAction pCallback)
+    /// <summary>
+    /// 异步加载场景
+    /// </summary> 
+    public void UnloadSceneAsync2(string pSceneName, UnityAction pCallback)
     {
         Scene scene = SceneManager.GetSceneByName(pSceneName);
         if (scene != null && scene.isLoaded)
@@ -198,6 +264,14 @@ public class AssetManager : BaseManager<AssetManager>
         }
     }
 
+    //public bool IsLoadScene(string sceneName)
+    //{
+    //    var scene = SceneManager.GetSceneByName(sceneName);
+    //    return scene.IsValid() && scene.isLoaded;
+    //}
+
+    #endregion
+
     /// <summary>
     /// 卸载场景
     /// </summary> 
@@ -205,7 +279,7 @@ public class AssetManager : BaseManager<AssetManager>
     {
         if (IsLoadScene(sceneName))
         {
-            SceneManager.UnloadSceneAsync(sceneName);
+            UnloadScene(sceneName, null);
         }
         else
         {
@@ -215,6 +289,6 @@ public class AssetManager : BaseManager<AssetManager>
 
     public bool IsLoadScene(string sceneName)
     {
-        return SceneManager.GetSceneByName(sceneName).isLoaded;
+        return _sceneDic.ContainsKey(sceneName);
     }
 }

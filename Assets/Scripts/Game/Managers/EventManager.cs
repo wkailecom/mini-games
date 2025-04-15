@@ -53,13 +53,9 @@ public enum EventKey
     #endregion
 
     #region BusOut
-    E_BusOutReadyToSuccess,
-    E_BusOutSuccess,
-    E_BusOutFailed,
+    BusOut_ReadyToSuccess,      //完成游戏（动画前）
     //------------------------------------
-    BusOut_OnClickUnlockSlot,   //点击解锁停车位
-    BusOut_OutUnlockSlot,       //解锁停车位
-    //------------------------------------
+    BusOut_OnClickUnlockSlot,    //点击解锁停车位 
     BusOut_OnClickVIP,           //点击vip道具
     BusOut_VIPComplete,          //vip道具使用成功
     BusOut_PassengerNumberChange,//等待的乘客数量改变
@@ -107,6 +103,18 @@ public static class EventManager
         AddEventData(EventKey.MiniGameOver, new MiniGameOver());
         AddEventData(EventKey.MiniGameSubSuccess, new EventData((int)EventKey.MiniGameSubSuccess));
         AddEventData(EventKey.MiniGameUsePropComplete, new MiniGameUsePropComplete());
+
+        AddEventData(EventKey.BusOut_ReadyToSuccess, new EventData((int)EventKey.BusOut_ReadyToSuccess));
+        AddEventData(EventKey.BusOut_OnClickUnlockSlot, new BusOut_OnClickUnlockSlot());
+        AddEventData(EventKey.BusOut_OnClickVIP, new EventData((int)EventKey.BusOut_OnClickVIP));
+        AddEventData(EventKey.BusOut_VIPComplete, new EventData((int)EventKey.BusOut_VIPComplete));
+        AddEventData(EventKey.BusOut_PassengerNumberChange, new BusOut_PassengerNumberChange());
+        AddEventData(EventKey.BusOut_VIPMoveFinish, new EventData((int)EventKey.BusOut_VIPMoveFinish));
+        AddEventData(EventKey.BusOut_VehicleHit, new EventData((int)EventKey.BusOut_VehicleHit));
+        AddEventData(EventKey.BusOut_VehicleClick, new EventData((int)EventKey.BusOut_VehicleClick));
+        AddEventData(EventKey.BusOut_PassengerSeat, new EventData((int)EventKey.BusOut_PassengerSeat));
+
+
     }
 
     public static void AddEventData(EventKey pEventKey, EventData pEventData)
@@ -378,3 +386,34 @@ public class MiniGameUsePropComplete : EventData
 
     }
 }
+
+#region BusOut
+
+public class BusOut_PassengerNumberChange : EventData
+{
+    public BusOut_PassengerNumberChange() : base((int)EventKey.BusOut_PassengerNumberChange) { }
+
+    public int count;
+
+    public override void SetObjectFree()
+    {
+        base.SetObjectFree();
+        count = 0;
+    }
+}
+
+public class BusOut_OnClickUnlockSlot : EventData
+{
+    public BusOut_OnClickUnlockSlot() : base((int)EventKey.BusOut_OnClickUnlockSlot) { }
+
+    public int index;
+
+    public override void SetObjectFree()
+    {
+        base.SetObjectFree();
+        index = 0;
+    }
+}
+
+
+#endregion

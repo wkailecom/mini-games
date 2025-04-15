@@ -286,6 +286,10 @@ namespace Game
         GetReward,
         Countdown,
 
+        Bus_PassagerSeat,
+        Bus_VehicleClick,
+        Bus_VehicleHit,
+
         Eff_Clover_Centered,
         Eff_Clover_Split,
         Eff_Magnet,
