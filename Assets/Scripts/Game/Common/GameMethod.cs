@@ -123,7 +123,11 @@ public static class GameMethod
         return tResult;
     }
 
+    #region 道具相关
+
+    public static bool IsFullEnergy() => ModuleManager.Prop.GetPropCount(PropID.Energy) >= CommonDefine.energyFunllCount;
     public static bool HasRemoveAD() => ModuleManager.Prop.HasProp(PropID.RemoveAD);
+    public static PropConfig GetPropConfig(PropID pPropID) => ConfigData.propConfig.GetByPrimary((int)pPropID);
     public static void OpenBanner(bool pIsOpen)
     {
         if (HasRemoveAD()) return;
@@ -136,7 +140,6 @@ public static class GameMethod
             ADManager.Instance.HideBanner();
         }
     }
-    public static bool IsFullEnergy() => ModuleManager.Prop.GetPropCount(PropID.Energy) >= CommonDefine.energyFunllCount;
     public static int GetIAPProductPropCount(IAPProductConfig pConfig, PropID pPropID)
     {
         if (pConfig == null)
@@ -161,7 +164,9 @@ public static class GameMethod
             if (tProp == (int)pPropID) return true;
         }
         return false;
-    } 
+    }
+
+    #endregion
 
     public static void TriggerUIAction(string pUIName, string pPageName, UIActionType pType, bool pIsReport = true)
     {

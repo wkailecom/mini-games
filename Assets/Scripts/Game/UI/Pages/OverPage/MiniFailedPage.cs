@@ -38,20 +38,20 @@ namespace Game.MiniGame
             {
                 LogManager.LogError("MiniFailedPage: invalid param");
                 return;
-            } 
+            }
 
             var tGameType = MiniGameManager.Instance.GameType;
             var tUsePropID = mParam.usePropID;
-            bool tIsValid = mParam.isValid; 
+            bool tIsValid = mParam.isValid;
             if (tIsValid && tUsePropID != PropID.Invalid)
             {
                 _txtDescribe.text = tGameType switch
                 {
-                    MiniGameType.Screw => $"Add 1 extra hole to Play on!",
-                    MiniGameType.Jam3d => $"Move 3 blocks to the back up area to Play on!",
-                    MiniGameType.Tile => $" !",
-                    MiniGameType.Bus => $" !",
-                    MiniGameType.Triple => $" !",
+                    MiniGameType.Screw => $"Add 1 more hole and keep playing! ",
+                    MiniGameType.Jam3d => $"Set aside some minions to free up space! ",
+                    MiniGameType.Tile => $"Set aside 3 tiles to free up space! ",
+                    MiniGameType.Bus => $"Get all minions fully loaded on the current buses and keep playing! ",
+                    MiniGameType.Triple => GetTripleDescribe(tUsePropID),
                     _ => $"Use an item to continue the game!",
                 };
                 _btnClose.gameObject.SetActive(true);
@@ -82,11 +82,25 @@ namespace Game.MiniGame
                 _btnAbandon.gameObject.SetActive(true);
                 _btnPlayProp.gameObject.SetActive(false);
                 _btnPlayCoin.gameObject.SetActive(false);
-            }  
+            }
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(_failedRoot);
         }
 
+
+        string GetTripleDescribe(PropID pPropID)
+        {
+            if (pPropID == PropID.TripleRevert)
+            {
+                return $"<color=#dd30f7>Recall 3</color> objects to play on! ";
+            }
+            else if (pPropID == PropID.TripleAddTime)
+            {
+                return $"You are so close! Keep playing! ";
+            }
+
+            return string.Empty;
+        }
 
         #region UI事件
 

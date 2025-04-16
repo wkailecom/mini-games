@@ -50,6 +50,7 @@ namespace Game
         public static UIBtnHeart CurUIBtnHeart;                 //当前体力按钮
         public static GameSceneType CurSceneType;               //当前场景类型
 
+        public static int TripleCurTime;                        //Triple当前剩余时间
     }
 
 }

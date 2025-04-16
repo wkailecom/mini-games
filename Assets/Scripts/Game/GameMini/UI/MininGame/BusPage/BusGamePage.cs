@@ -67,6 +67,15 @@ namespace Game.MiniGame
         protected override void UnregisterEvents()
         {
             EventManager.Unregister(EventKey.MiniGameOver, OnMiniGameOver);
+
+            EventManager.Unregister(EventKey.BusOut_OnClickUnlockSlot, OnUnlockSlot);
+            EventManager.Unregister(EventKey.BusOut_VIPComplete, OnVIPComplete);
+            EventManager.Unregister(EventKey.BusOut_PassengerNumberChange, OnPassengerChange);
+            EventManager.Unregister(EventKey.BusOut_ReadyToSuccess, OnReadyToSuccess);
+            EventManager.Unregister(EventKey.BusOut_VIPMoveFinish, OnVIPMoveFinish);
+            EventManager.Unregister(EventKey.BusOut_VehicleHit, OnVehicleHit);
+            EventManager.Unregister(EventKey.BusOut_VehicleClick, OnVehicleClick);
+            EventManager.Unregister(EventKey.BusOut_PassengerSeat, OnPassengerSeat);
         }
 
         protected override void OnBeginOpen()

@@ -203,18 +203,34 @@ public class MiniGameManager : Singleton<MiniGameManager>
     {
         TripleMath.TripleMathTriggerEvents eventTrigger = new TripleMath.TripleMathTriggerEvents(
             () => { TriggerEventGameOver(MiniGameType.Triple, true); }, //游戏成功
-            (failReason) => { TriggerEventGameOver(MiniGameType.Triple, false); },//游戏失败
+            (failReason) =>
+            {
+                TriggerEventGameOver(MiniGameType.Triple, false);
+
+                var tEventData = EventManager.GetEventData<TripleMath_Failed>(EventKey.TripleMath_Failed);
+                tEventData.failReson = failReason;
+                EventManager.Trigger(tEventData);
+
+            },//游戏失败
             (matchType, count) =>
             {
-                //EventManager.Trigger<string, int>(EventKey.TripleMath_Submitted, matchType, count);
+                var tEventData = EventManager.GetEventData<TripleMath_Submitted>(EventKey.TripleMath_Submitted);
+                tEventData.matchType = matchType;
+                tEventData.count = count;
+                EventManager.Trigger(tEventData);
             },
             (matchType, count) =>
             {
-                //EventManager.Trigger<string, int>(EventKey.Triple_MathReset, matchType, count);
+                var tEventData = EventManager.GetEventData<TripleMath_Reset>(EventKey.TripleMath_Reset);
+                tEventData.matchType = matchType;
+                tEventData.count = count;
+                EventManager.Trigger(tEventData);
             },
             (leftTime) =>
             {
-                //EventManager.Trigger<int>(EventKey.TripleMath_CountDownTime, leftTime);
+                var tEventData = EventManager.GetEventData<TripleMath_CountDownTime>(EventKey.TripleMath_CountDownTime);
+                tEventData.leftTime = leftTime;
+                EventManager.Trigger(tEventData);
             },
             () => { EventManager.Trigger(EventKey.TripleMath_MagnetComplete); },
             () => { EventManager.Trigger(EventKey.TripleMath_UndoComplete); },
@@ -224,7 +240,9 @@ public class MiniGameManager : Singleton<MiniGameManager>
             () => { EventManager.Trigger(EventKey.TripleMath_CompassFinish); },
             (targetTrans) =>
             {
-                //EventManager.Trigger<Transform>(EventKey.TripleMath_CompassRefresh, targetTrans);
+                var tEventData = EventManager.GetEventData<TripleMath_CompassRefresh>(EventKey.TripleMath_CompassRefresh);
+                tEventData.targetTrans = targetTrans;
+                EventManager.Trigger(tEventData);
             },
             (soundName) => { PlaySound(soundName); },//播放音效
             () => { EventManager.Trigger(EventKey.TripleMath_ReadyToSuccess); },

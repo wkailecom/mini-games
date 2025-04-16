@@ -1,5 +1,6 @@
 ﻿using Config;
 using Game;
+using Game.UI;
 using System;
 using System.Collections.Generic;
 using UnityEngine.Purchasing;
@@ -65,10 +66,9 @@ public enum EventKey
     BusOut_PassengerSeat,        //乘客到达座位
     #endregion
 
-    #region TripleMath3D
-    E_GameFinish,
-    TripleMathSuccess,
-    TripleMathFailed,
+    #region TripleMath3D 
+    TripleMath_Failed,
+
     TripleMath_Submitted,
     TripleMath_Reset,
     TripleMath_CountDownTime,
@@ -126,6 +126,7 @@ public static class EventManager
         AddEventData(EventKey.MiniGameSubSuccess, new EventData((int)EventKey.MiniGameSubSuccess));
         AddEventData(EventKey.MiniGameUsePropComplete, new MiniGameUsePropComplete());
 
+        //BusOut
         AddEventData(EventKey.BusOut_ReadyToSuccess, new EventData((int)EventKey.BusOut_ReadyToSuccess));
         AddEventData(EventKey.BusOut_OnClickUnlockSlot, new BusOut_OnClickUnlockSlot());
         AddEventData(EventKey.BusOut_OnClickVIP, new EventData((int)EventKey.BusOut_OnClickVIP));
@@ -136,6 +137,24 @@ public static class EventManager
         AddEventData(EventKey.BusOut_VehicleClick, new EventData((int)EventKey.BusOut_VehicleClick));
         AddEventData(EventKey.BusOut_PassengerSeat, new EventData((int)EventKey.BusOut_PassengerSeat));
 
+        //TripleMath
+        AddEventData(EventKey.TripleMath_Failed, new TripleMath_Failed());
+        AddEventData(EventKey.TripleMath_Submitted, new TripleMath_Submitted());
+        AddEventData(EventKey.TripleMath_Reset, new TripleMath_Reset());
+        AddEventData(EventKey.TripleMath_CountDownTime, new TripleMath_CountDownTime());
+        AddEventData(EventKey.TripleMath_MagnetComplete, new EventData((int)EventKey.TripleMath_MagnetComplete));
+        AddEventData(EventKey.TripleMath_UndoComplete, new EventData((int)EventKey.TripleMath_UndoComplete));
+        AddEventData(EventKey.TripleMath_CompassComplete, new EventData((int)EventKey.TripleMath_CompassComplete));
+        AddEventData(EventKey.TripleMath_FreezeComplete, new EventData((int)EventKey.TripleMath_FreezeComplete));
+        AddEventData(EventKey.TripleMath_FreezeFinish, new EventData((int)EventKey.TripleMath_FreezeFinish));
+        AddEventData(EventKey.TripleMath_CompassFinish, new EventData((int)EventKey.TripleMath_CompassFinish));
+        AddEventData(EventKey.TripleMath_CompassRefresh, new TripleMath_CompassRefresh());
+        AddEventData(EventKey.TripleMath_AddTime, new TripleMath_AddTime());
+        AddEventData(EventKey.TripleMath_ReadyToSuccess, new EventData((int)EventKey.TripleMath_ReadyToSuccess));
+        AddEventData(EventKey.TripleMath_BroomComplete, new EventData((int)EventKey.TripleMath_BroomComplete));
+        AddEventData(EventKey.TripleMath_Recall3ObjectComplete, new EventData((int)EventKey.TripleMath_Recall3ObjectComplete));
+        AddEventData(EventKey.TripleMath_HourglassComplete, new EventData((int)EventKey.TripleMath_HourglassComplete));
+        AddEventData(EventKey.TripleMath_BroomFinish, new EventData((int)EventKey.TripleMath_BroomFinish));
 
     }
 
@@ -437,5 +456,80 @@ public class BusOut_OnClickUnlockSlot : EventData
     }
 }
 
+
+#endregion
+
+#region TripleMath
+
+public class TripleMath_Failed : EventData
+{
+    public TripleMath_Failed() : base((int)EventKey.TripleMath_Failed) { }
+    public FailReson failReson; 
+
+}
+
+public class TripleMath_Submitted : EventData
+{
+    public TripleMath_Submitted() : base((int)EventKey.TripleMath_Submitted) { }
+    public string matchType;
+    public int count;
+
+    public override void SetObjectFree()
+    {
+        base.SetObjectFree();
+        matchType = string.Empty;
+        count = 0;
+    }
+}
+
+public class TripleMath_Reset : EventData
+{
+    public TripleMath_Reset() : base((int)EventKey.TripleMath_Reset) { }
+    public string matchType;
+    public int count;
+
+    public override void SetObjectFree()
+    {
+        base.SetObjectFree();
+        matchType = string.Empty;
+        count = 0;
+    }
+}
+
+public class TripleMath_CountDownTime : EventData
+{
+    public TripleMath_CountDownTime() : base((int)EventKey.TripleMath_CountDownTime) { }
+    public int leftTime;
+
+    public override void SetObjectFree()
+    {
+        base.SetObjectFree();
+        leftTime = 0;
+    }
+}
+
+public class TripleMath_CompassRefresh : EventData
+{
+    public TripleMath_CompassRefresh() : base((int)EventKey.TripleMath_CompassRefresh) { }
+    public UnityEngine.Transform targetTrans;
+
+    public override void SetObjectFree()
+    {
+        base.SetObjectFree();
+        targetTrans = null;
+    }
+}
+
+public class TripleMath_AddTime : EventData
+{
+    public TripleMath_AddTime() : base((int)EventKey.TripleMath_AddTime) { }
+    public int time;
+
+    public override void SetObjectFree()
+    {
+        base.SetObjectFree();
+        time = 0;
+    }
+}
 
 #endregion

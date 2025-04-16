@@ -286,14 +286,18 @@ namespace Game
         GetReward,
         Countdown,
 
-        Bus_PassagerSeat,
-        Bus_VehicleClick,
-        Bus_VehicleHit,
-
         Eff_Clover_Centered,
         Eff_Clover_Split,
         Eff_Magnet,
         Eff_Chainsaw,
+
+        ///////
+        Bus_PassagerSeat,
+        Bus_VehicleClick,
+        Bus_VehicleHit,
+
+        Tile_Prop_Backout,
+        Tile_Prop_magnet,
     }
 
     public enum MusicID
