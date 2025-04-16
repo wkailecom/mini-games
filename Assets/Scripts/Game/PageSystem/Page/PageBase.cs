@@ -14,6 +14,7 @@ namespace Game.UISystem
         public bool SaveToHistory { get { return mPageConfig.saveToHistory; } }
         public bool NeedCache { get { return mPageConfig.needCache; } }
         public bool IsOpen { get; private set; }
+        public bool IsBack { get; private set; }
         public object PageParam { get; private set; }
 
         PageConfig mPageConfig;
@@ -68,7 +69,7 @@ namespace Game.UISystem
             }
         }
 
-        public IEnumerator OpenPage(object pPageParam, bool pPlayAnimation, int pBaseSortingOrder)
+        public IEnumerator OpenPage(object pPageParam, bool pPlayAnimation, int pBaseSortingOrder, bool pIsBack = false)
         {
             foreach (var tCanvas in mCanvases)
             {
@@ -80,6 +81,7 @@ namespace Game.UISystem
             }
 
             IsOpen = true;
+            IsBack = pIsBack;
             PageParam = pPageParam;
             gameObject.SetActive(true);
 

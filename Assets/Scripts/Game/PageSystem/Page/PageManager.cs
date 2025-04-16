@@ -165,7 +165,7 @@ namespace Game.UISystem
             yield return MultiTask.DoMultiTask(tMultiTasks.ToArray());
         }
 
-        IEnumerator DoOpenPage(PageBase pPage, object pPageParam, bool pPlayAnimation)
+        IEnumerator DoOpenPage(PageBase pPage, object pPageParam, bool pPlayAnimation, bool pIsBack = false)
         {
             if (!mActivePages.Contains(pPage))
             {
@@ -173,7 +173,7 @@ namespace Game.UISystem
             }
             mCurrentPage = pPage;
 
-            yield return pPage.OpenPage(pPageParam, pPlayAnimation, mActivePages.Count * PAGE_CANVAS_INTERVAL);
+            yield return pPage.OpenPage(pPageParam, pPlayAnimation, mActivePages.Count * PAGE_CANVAS_INTERVAL, pIsBack);
         }
 
         IEnumerator DoClosePage(PageBase pPage, bool pPlayAnimation)
@@ -262,7 +262,7 @@ namespace Game.UISystem
             }
             PageBase tLastFullPage = GetPage(tLastPageHistory.pageID);
 
-            yield return MultiTask.DoMultiTask(DoClosePage(mCurrentPage, true), DoOpenPage(tLastFullPage, tLastPageHistory.pageParam, true));
+            yield return MultiTask.DoMultiTask(DoClosePage(mCurrentPage, true), DoOpenPage(tLastFullPage, tLastPageHistory.pageParam, true, true));
             yield return RecoverCoverPages();
         }
 
