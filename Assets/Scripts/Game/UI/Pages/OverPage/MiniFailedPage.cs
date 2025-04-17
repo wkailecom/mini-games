@@ -122,14 +122,14 @@ namespace Game.MiniGame
 
         void OnClickBtnPlayProp()
         {
-            Close();
             mParam?.reviveAction.Invoke();
+            Close();
         }
 
         void OnClickBtnPlayCoin()
         {
-            Close();
             mParam?.reviveAction.Invoke();
+            Close();
         }
         #endregion
     }

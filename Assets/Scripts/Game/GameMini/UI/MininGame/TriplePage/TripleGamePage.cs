@@ -67,9 +67,8 @@ namespace Game.MiniGame
             _gmBtn2.onClick.AddListener(() => { MiniGameManager.Instance.TriggerEventGameOver(mGameType, false); });
             _gmBtnTime.onClick.AddListener(() =>
             {
-                //var beforePlayTime = TileGameArchive.GetTileGamePlayTime();
-                //var time = (float)((GameManager.Instance.ServerTime - playBeginTime).TotalSeconds + beforePlayTime);
-                //_gmBtnTime.transform.Find("Time").GetComponent<Text>().text = ((int)time).ToString();
+                //TriggerAddTime(30);
+                TripleMath.EventManager.Instance.OnClickHourglass?.Invoke(30);
             });
 
 #else
@@ -149,15 +148,17 @@ namespace Game.MiniGame
             leftTimePos = txtLeftTime.transform.position;
             isSuccessLock = false;
 
-            TripleMath.TripleMathManager.Instance.InitBoard(boardRoot);
-            var targetItemDic = TripleMath.TripleMathManager.Instance.GetTargetItemDic();
-            targetRoot.InitTarget(targetItemDic);
+            if (!IsBack)
+            {
+                TripleMath.TripleMathManager.Instance.InitBoard(boardRoot);
+                var targetItemDic = TripleMath.TripleMathManager.Instance.GetTargetItemDic();
+                targetRoot.InitTarget(targetItemDic);
 
-            RefreshFinishAll();
-            RefreshAdapter();
+                RefreshFinishAll();
+                RefreshAdapter();
+            }
 
-            TripleMath.EventManager.Instance.OnChangeClickState?.Invoke(true);
-            TripleMath.EventManager.Instance.OnPauseTime?.Invoke(false);
+            SetPauseTime(false);
             TripleMath.EventManager.Instance.OnStartCountDown?.Invoke();
         }
 
@@ -251,9 +252,7 @@ namespace Game.MiniGame
                 if (curLeftTime <= 2)
                 {
                     addTime = 20;
-                    var tEventData = EventManager.GetEventData<TripleMath_AddTime>(EventKey.TripleMath_AddTime);
-                    tEventData.time = addTime;
-                    EventManager.Trigger(tEventData);
+                    TriggerAddTime(addTime);
                 }
                 OnClickProp4_AddTime();
             }
@@ -412,6 +411,7 @@ namespace Game.MiniGame
 
         void SetPauseTime(bool pIsPause)
         {
+            TripleMath.EventManager.Instance.OnChangeClickState?.Invoke(!pIsPause);
             TripleMath.EventManager.Instance.OnPauseTime?.Invoke(pIsPause);
         }
 
@@ -521,13 +521,18 @@ namespace Game.MiniGame
             var tPropID = PropID.TripleAddTime;
             ModuleManager.Prop.ExpendProp(tPropID);
             var tAddTime = GameMethod.GetPropConfig(tPropID).param1.ToInt();
-            var tEventData = EventManager.GetEventData<TripleMath_AddTime>(EventKey.TripleMath_AddTime);
-            tEventData.time = tAddTime;
-            EventManager.Trigger(tEventData);
+            TriggerAddTime(tAddTime);
         }
         void OnAddTimeFinish(EventData pEventData)
         {
             mHourglassFinish = false;
+        }
+
+        void TriggerAddTime(int pTime)
+        {
+            var tEventData = EventManager.GetEventData<TripleMath_AddTime>(EventKey.TripleMath_AddTime);
+            tEventData.time = pTime;
+            EventManager.Trigger(tEventData);
         }
 
         #region 旧

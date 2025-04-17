@@ -1,3 +1,4 @@
+﻿using Config; 
 using UnityEngine;
 
 public class SafeAdapter : MonoBehaviour
@@ -5,13 +6,46 @@ public class SafeAdapter : MonoBehaviour
     //将想要匹配安全区域的地方设为true。
     [SerializeField] bool left;
     [SerializeField] bool right;
-    [SerializeField] bool top;
-    [SerializeField] bool bottom;
+    [SerializeField] bool top = true;
+    [SerializeField] bool bottom = true;
+    [SerializeField] bool isBanner = true;
 
-    private void Start()
+    RectTransform panel;
+
+    void Awake()
     {
+        panel = GetComponent<RectTransform>();
+        ApplySafeArea();
+    }
 
-        var panel = GetComponent<RectTransform>();
+    void OnEnable()
+    {
+        if (isBanner)
+        {
+            EventManager.Register(EventKey.PropCountChange, OnPropCountChange);
+            ApplyBannerAdapter();
+        }
+    }
+
+    void OnDisable()
+    {
+        if (isBanner)
+        {
+            EventManager.Unregister(EventKey.PropCountChange, OnPropCountChange);
+        }
+    }
+
+    void OnPropCountChange(EventData pEventData)
+    {
+        var tEventData = pEventData as PropCountChange;
+        if (tEventData.propID == PropID.RemoveAD)
+        {
+            ApplyBannerAdapter();
+        }
+    }
+
+    void ApplySafeArea()
+    {
         var area = Screen.safeArea;
 
         var anchorMin = area.position;
@@ -31,6 +65,17 @@ public class SafeAdapter : MonoBehaviour
 
         panel.anchorMin = anchorMin;
         panel.anchorMax = anchorMax;
+    }
 
+    void ApplyBannerAdapter()
+    {
+        if (GameMethod.HasRemoveAD())
+        {
+            panel.offsetMin = Vector2.zero;
+        }
+        else
+        {
+            panel.offsetMin = new Vector2(0, 150);
+        }
     }
 }

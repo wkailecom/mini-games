@@ -72,7 +72,7 @@ namespace Game.UI
             bool tIsCoinFirst = mParam?.shopGroup == ShopPageParam.ShopGroup.CoinFirst;
             _btnClose.gameObject.SetActive(tIsCoinFirst);
             _NodeBottomTab.gameObject.SetActive(!tIsCoinFirst);
-            mRectScroll.offsetMin = new Vector2(mRectScroll.offsetMin.x, tIsCoinFirst ? 0 : 360f);
+            mRectScroll.offsetMin = new Vector2(mRectScroll.offsetMin.x, tIsCoinFirst ? 0 : 210f);
 
             if (tIsCoinFirst)
             {
