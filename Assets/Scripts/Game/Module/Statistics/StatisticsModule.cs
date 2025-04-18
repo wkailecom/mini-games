@@ -292,5 +292,5 @@ public enum StatsID
 
 
     ADHealthTimes,     //观看激励获取体力次数 
-
+    ADShopFreeTimes,   //观看商店激励获取金币次数
 }

@@ -25,7 +25,7 @@ namespace Config
 		///<summary>
 		///商店免费奖励次数
 		///</summary>
-		public static int shopFreeCount = 10;
+		public static int shopFreeCount = 4;
 		///<summary>
 		///商店免费领取间隔(分钟)
 		///</summary>

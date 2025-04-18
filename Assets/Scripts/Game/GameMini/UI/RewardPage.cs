@@ -155,12 +155,12 @@ public class RewardPageParam
     public RewardPageParam(PropData pReward, PropSource pSource)
         : this(new List<PropData>() { pReward }, pSource) { }
 
-    public RewardPageParam(List<PropData> pRewards, PropSource pSource)
+    public RewardPageParam(List<PropData> pRewards, PropSource pSource, bool pClickToGet = false)
     {
         title = "SPLENDID!";
         rewards = pRewards;
         source = pSource;
-        needGet = false;
+        needGet = pClickToGet;
     }
 
     public void SetTitle(string pTextID)

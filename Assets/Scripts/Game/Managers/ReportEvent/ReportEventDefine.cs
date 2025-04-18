@@ -197,9 +197,7 @@ public static class ReportEventDefine
     public const string LevelDifficulty_Key = "sceneDifficulty";                 //关卡难度  0 无  easy 简单 medium 中等   hard 困难
     public const string IsWinStreak_Key = "isWinStreak";                         //是否处于连胜状态 TRUE 是 FALSE 否
     public const string RetryCount_Key = "restartCount";                         //当前关卡的重试次数
-
-    public static string UseLanguage_Value => ModuleManager.UserInfo.Data.Language.ToString();
-    public static string UseFontSize_Value => ModuleManager.UserInfo.Data.FontSize.ToString();
+     
     public static string GameMode_Value => GameManager.Instance.CurrentGameModeType.ToString();
     public static string SceneName_Value
     {

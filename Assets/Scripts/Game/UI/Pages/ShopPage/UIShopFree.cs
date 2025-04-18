@@ -20,6 +20,20 @@ public class UIShopFree : ShopBaseItem
     //public Animator animVideoIcon;
     PropData mPropData = new PropData(PropID.Coin, CommonDefine.shopFreeCoinCount);
     Transform mTranCountdown;
+
+    #region 广告记录
+    //string LastWatchTimeKey = "LastWatchTimeKey";
+    //public DateTime LastWatchTime
+    //{
+    //    get => new DateTime(DataTool.GetString(LastWatchTimeKey, "0").ToLong());
+    //    set => DataTool.SetString(LastWatchTimeKey, value.Ticks.ToString());
+    //}
+    //public static int CoolingTime => 5 * 60;
+    //public static int MaxWatchTimes => 3;
+    public static int TodayWatchTimes => ModuleManager.Statistics.GetValue(StatsID.ADShopFreeTimes, StatsGroup.TotalDay);
+    public static bool TodayWatchValid => TodayWatchTimes <= CommonDefine.shopFreeCount;
+    #endregion
+
     public override void Init(IAPProductConfig tProductConfig, Action<string> pOnClickBuy)
     {
         imgIcon.SetPropIcon(mPropData.ID);
@@ -30,7 +44,6 @@ public class UIShopFree : ShopBaseItem
 
     public override void OnShow()
     {
-        //EventManager.Register(EventKey.ChangeShopFreeRewards, OnChangeShopFreeRewards);
         EventManager.Register(EventKey.VideoADLoaded, OnVideoADLoaded);
         EventManager.Register(EventKey.VideoADRewarded, OnVideoADRewarded);
 
@@ -39,47 +52,52 @@ public class UIShopFree : ShopBaseItem
 
     public override void OnHide()
     {
-        //EventManager.Unregister(EventDataType.ChangeShopFreeRewards, OnChangeShopFreeRewards);
         EventManager.Unregister(EventKey.VideoADLoaded, OnVideoADLoaded);
         EventManager.Unregister(EventKey.VideoADRewarded, OnVideoADRewarded);
     }
 
     void RefreshUIState()
     {
-        var hasShopFree = true;
-        //hasShopFree = ModuleManager.Activity.HasShopFree();
-        //string tRemainCount = ADManager.Instance.ShopFreePropRemainTimes.ToString();
-        //txtRemainFree.text = tRemainCount;
-        //txtRemainVideo.text = tRemainCount;
-        if (hasShopFree)
+        var tTimeValid = ModuleManager.UserInfo.HasShopFree;//冷却完成
+        var tIsFree = TodayWatchTimes == 0;                 //一次未点击时免费,免费点击也当一次广告点击记录
+        var tTodayValid = TodayWatchValid;                  //今天次数是否用完
+
+        if (tTodayValid)
         {
-            btnFree.gameObject.SetActive(true);
-            btnVideo.gameObject.SetActive(false);
-            btnDisabled.gameObject.SetActive(false);
+            if (tIsFree)
+            {
+                btnFree.gameObject.SetActive(true);
+                btnVideo.gameObject.SetActive(false);
+                btnDisabled.gameObject.SetActive(false);
+            }
+            else
+            {
+                if (tTimeValid)
+                {
+                    btnFree.gameObject.SetActive(false);
+                    btnVideo.gameObject.SetActive(true);
+                    btnDisabled.gameObject.SetActive(false);
+                }
+                else
+                {
+                    btnFree.gameObject.SetActive(false);
+                    btnVideo.gameObject.SetActive(false);
+                    btnDisabled.gameObject.SetActive(true);
+
+                    txtCountdown.StartCountDown(ModuleManager.UserInfo.ShopFreeHarvestTime, "00:00", RefreshUIState);
+                }
+            }
         }
         else
         {
-            //btnFree.gameObject.SetActive(false);
-            //mTranCountdown.gameObject.SetActive(true);
-            //animVideoIcon.Play(ADManager.Instance.IsShopFreeVideoValid ? "loading" : "inactivation");
+            btnFree.gameObject.SetActive(false);
+            btnVideo.gameObject.SetActive(false);
+            btnDisabled.gameObject.SetActive(true);
 
-            //if (ADManager.Instance.IsShopFreeValid)
-            //{
-            //    btnVideo.gameObject.SetActive(true);
-            //    ModuleManager.Activity.StartShopFreeCountdow();
-            //}
-            //else
-            //{
-            //    btnVideo.gameObject.SetActive(false);
-            //}
-
-            //txtCountdown.StartCountDown(tFinishTime, () =>
-            //{
-            //    RefreshUIState();
-            //}, endStr: "00:00:00");
+            var tFinishTime = DateTime.Now.Date.AddDays(1);
+            txtCountdown.StartCountDown(tFinishTime, "00:00", RefreshUIState);
         }
     }
-
 
 
     void OnChangeShopFreeRewards(EventData pEventData)
@@ -101,17 +119,24 @@ public class UIShopFree : ShopBaseItem
 
     void OnClickBtnWatch()
     {
+        if (!ADManager.Instance.IsRewardVideoReady)
+        {
+            MessageHelp.Instance.ShowMessage("The current network environment is unstable. Please try again later.");
+            return;
+        }
         ADManager.Instance.PlayRewardVideo(ADShowReason.Video_GetCoin, (isf) =>
         {
             if (isf)
             {
-                PageManager.Instance.OpenPage(PageID.RewardPage, new RewardPageParam(mPropData, PropSource.ShopFree));
+                OnClickBtnFree();
             }
         });
     }
 
     void OnClickBtnFree()
     {
+        ModuleManager.Prop.AddProp(mPropData, PropSource.ShopFree);
+        ModuleManager.Statistics.AddValue(StatsID.ADShopFreeTimes, StatsGroup.TotalDay);
         PageManager.Instance.OpenPage(PageID.RewardPage, new RewardPageParam(mPropData, PropSource.ShopFree));
         ModuleManager.UserInfo.GatherShopFree();
         RefreshUIState();
