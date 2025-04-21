@@ -26,6 +26,7 @@ namespace Game.MiniGame
         public Button BtnProp2 => _btnProp2;
         public Button BtnProp3 => _btnProp3;
 
+        bool isFreeProp = false;     //金币复活不消耗道具
         bool vipIsEnable = false;    //vip道具选中
         bool isSuccessLock = false;  //完成动画中
         bool isCooling = false;      //冷却中
@@ -35,9 +36,9 @@ namespace Game.MiniGame
         {
             _btnBack.onClick.AddListener(OnClickBack);
             _btnShop.onClick.AddListener(OnClickShop);
-            _btnProp1.onClick.AddListener(OnClickRefresh);
-            _btnProp2.onClick.AddListener(OnClickVIP);
-            _btnProp3.onClick.AddListener(OnClickSort);
+            _btnProp1.onClick.AddListener(OnClickProp1_Refresh);
+            _btnProp2.onClick.AddListener(OnClickProp2_VIP);
+            _btnProp3.onClick.AddListener(OnClickProp3_Sort);
 
 #if UNITY_EDITOR || GM_MODE
             _gmBtn1.gameObject.SetActive(true);
@@ -57,7 +58,7 @@ namespace Game.MiniGame
             EventManager.Register(EventKey.BusOut_OnClickUnlockSlot, OnUnlockSlot);
             EventManager.Register(EventKey.BusOut_VIPComplete, OnVIPComplete);
             EventManager.Register(EventKey.BusOut_PassengerNumberChange, OnPassengerChange);
-            EventManager.Register(EventKey.BusOut_ReadyToSuccess, OnReadyToSuccess); 
+            EventManager.Register(EventKey.BusOut_ReadyToSuccess, OnReadyToSuccess);
             EventManager.Register(EventKey.BusOut_VIPMoveFinish, OnVIPMoveFinish);
             EventManager.Register(EventKey.BusOut_VehicleHit, OnVehicleHit);
             EventManager.Register(EventKey.BusOut_VehicleClick, OnVehicleClick);
@@ -80,7 +81,9 @@ namespace Game.MiniGame
 
         protected override void OnBeginOpen()
         {
+            isFreeProp = false;
             SetVIPEnable(false);
+
             mParam = PageParam as MiniGamePageParam;
             if (mParam == null)
             {
@@ -116,9 +119,9 @@ namespace Game.MiniGame
             {
                 PropID tUseProp = PropID.BusSortDepart;
                 var tIsValid = canUseSort;
-                PageManager.Instance.OpenPage(PageID.MiniFailedPage, new MiniFailedPageParam(tUseProp, tIsValid, () =>
+                PageManager.Instance.OpenPage(PageID.MiniFailedPage, new MiniFailedPageParam(tUseProp, tIsValid, (isProp) =>
                 {
-                    OnReviveDispose();
+                    OnReviveDispose(isProp);
                 }));
             }
         }
@@ -141,15 +144,6 @@ namespace Game.MiniGame
             vipIsEnable = pIsEnable;
             _btnProp2.transform.Find("Selected").gameObject.SetActive(pIsEnable);
             BusOut.EventManager.Instance.OnClickVIP?.Invoke(pIsEnable);
-        }
-
-        void OnReviveDispose()
-        {
-            var tPropID = PropID.BusSortDepart;
-            ModuleManager.Prop.ExpendProp(tPropID);
-            BusOut.EventManager.Instance.OnClickSort?.Invoke();
-
-            BusOut.EventManager.Instance.OnTriggerReplay?.Invoke();
         }
 
         IEnumerator StartColdDown()
@@ -198,7 +192,18 @@ namespace Game.MiniGame
             return false;
         }
 
-        void OnClickRefresh()
+        void OnReviveDispose(bool pIsProp)
+        {
+            isFreeProp = !pIsProp;
+            if (isFreeProp)
+            {
+                ModuleManager.Prop.ExpendProp(PropID.BusSortDepart);
+            }
+            BusOut.EventManager.Instance.OnClickSort?.Invoke();
+            BusOut.EventManager.Instance.OnTriggerReplay?.Invoke();
+        }
+
+        void OnClickProp1_Refresh()
         {
             AudioManager.Instance.PlaySound(SoundID.BtnClick);
             if (CanBreak()) return;
@@ -215,7 +220,7 @@ namespace Game.MiniGame
             }
         }
 
-        void OnClickVIP()
+        void OnClickProp2_VIP()
         {
             AudioManager.Instance.PlaySound(SoundID.BtnClick);
             if (CanBreak()) return;
@@ -244,7 +249,7 @@ namespace Game.MiniGame
             ModuleManager.Prop.ExpendProp(PropID.BusVIPSpot);
         }
 
-        void OnClickSort()
+        void OnClickProp3_Sort()
         {
             AudioManager.Instance.PlaySound(SoundID.BtnClick);
             if (CanBreak()) return;

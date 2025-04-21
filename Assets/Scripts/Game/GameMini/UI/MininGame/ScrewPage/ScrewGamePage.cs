@@ -30,9 +30,9 @@ namespace Game.MiniGame
         {
             _btnBack.onClick.AddListener(OnClickBack);
             _btnShop.onClick.AddListener(OnClickShop);
-            _btnProp1.onClick.AddListener(OnClickExtraSlot);
-            _btnProp2.onClick.AddListener(OnClickHammer);
-            _btnProp3.onClick.AddListener(OnClickExtraBox);
+            _btnProp1.onClick.AddListener(OnClickProp1_ExtraSlot);
+            _btnProp2.onClick.AddListener(OnClickProp2_Hammer);
+            _btnProp3.onClick.AddListener(OnClickProp3_ExtraBox);
 
 #if UNITY_EDITOR || GM_MODE
             _gmBtn1.gameObject.SetActive(true);
@@ -61,6 +61,7 @@ namespace Game.MiniGame
         {
             isFreeProp = false;
             SetHammerEnable(false);
+
             mParam = PageParam as MiniGamePageParam;
             if (mParam == null)
             {
@@ -96,9 +97,9 @@ namespace Game.MiniGame
             {
                 PropID tUseProp = PropID.ScrewExtraSlot;
                 var tIsValid = ScrewJam.EventManager.Instance.CheckCanExtraSlotUse.Invoke();
-                PageManager.Instance.OpenPage(PageID.MiniFailedPage, new MiniFailedPageParam(tUseProp, tIsValid, () =>
+                PageManager.Instance.OpenPage(PageID.MiniFailedPage, new MiniFailedPageParam(tUseProp, tIsValid, (isProp) =>
                 {
-                    OnClickReplace();
+                    OnReviveDispose(isProp);
                 }));
             }
         }
@@ -149,10 +150,11 @@ namespace Game.MiniGame
             if (isFreeProp)
             {
                 isFreeProp = false;
-                return;
             }
-
-            ModuleManager.Prop.ExpendProp(tEventData.propID);
+            else
+            {
+                ModuleManager.Prop.ExpendProp(tEventData.propID);
+            }
 
             if (tEventData.propID == PropID.ScrewExtraBox)
             {
@@ -164,28 +166,14 @@ namespace Game.MiniGame
             }
         }
 
-        void OnFreeExtraSlot()
+        void OnReviveDispose(bool pIsProp)
         {
-            isFreeProp = true;
+            isFreeProp = !pIsProp;
             ScrewJam.EventManager.Instance.OnClickAddHoleSlot?.Invoke();
             ScrewJam.EventManager.Instance.OnTriggerReplay?.Invoke();
         }
 
-        void OnClickReplace()
-        {
-            var tPropID = PropID.ScrewExtraSlot;
-            if (ModuleManager.Prop.HasProp(tPropID))
-            {
-                ScrewJam.EventManager.Instance.OnClickAddHoleSlot?.Invoke();
-                ScrewJam.EventManager.Instance.OnTriggerReplay?.Invoke();
-            }
-            else
-            {
-                OpenPropShop(tPropID);
-            }
-        }
-
-        void OnClickExtraSlot()
+        void OnClickProp1_ExtraSlot()
         {
             var tPropID = PropID.ScrewExtraSlot;
             if (ModuleManager.Prop.HasProp(tPropID))
@@ -194,13 +182,11 @@ namespace Game.MiniGame
             }
             else
             {
-                //GameMethod.TriggerUIAction(UIActionName.AdHints, UIPageName.PageGame, UIActionType.Click, ADType.Interstitial);
-                //OpenAdsPropPopup(tPropID);
                 OpenPropShop(tPropID);
             }
         }
 
-        void OnClickHammer()
+        void OnClickProp2_Hammer()
         {
             var tPropID = PropID.ScrewHammer;
             if (ModuleManager.Prop.HasProp(tPropID))
@@ -214,7 +200,7 @@ namespace Game.MiniGame
             }
         }
 
-        void OnClickExtraBox()
+        void OnClickProp3_ExtraBox()
         {
             var tPropID = PropID.ScrewExtraBox;
             if (ModuleManager.Prop.HasProp(tPropID))

@@ -5,7 +5,7 @@ using System;
 using Config;
 using Game;
 using Game.UISystem;
-using System.Linq;
+using System.Linq; 
 
 public class MiniGameModule : ModuleBase
 {
@@ -62,11 +62,15 @@ public class MiniGameModule : ModuleBase
     void OnMiniGameStart(EventData pEventData)
     {
         var tEventData = pEventData as MiniGameStart;
+        int pTypeId = (int)tEventData.modeType;
         if (tEventData.isNewGame)
         {
-            int pTypeId = (int)tEventData.modeType;
-
             SetIsNewGame(pTypeId, false);
+            SetRetryCount(pTypeId, 0);
+            Serialize(pTypeId);
+        }
+        else
+        {
             AddRetryCount(pTypeId);
             Serialize(pTypeId);
         }
@@ -80,7 +84,6 @@ public class MiniGameModule : ModuleBase
             int pTypeId = (int)tEventData.modeType;
 
             AddCurLevel(pTypeId);
-            SetRetryCount(pTypeId, 0);
             SetIsNewGame(pTypeId, true);
             Serialize(pTypeId);
         }
@@ -186,15 +189,17 @@ public class MiniGameModule : ModuleBase
     {
         pLevel = GetLoopLevel((int)pTypeId, pLevel);
         var tConfig = GetLevelConfig(pTypeId, pLevel);
-        var strArray = tConfig.Chessboard.Split(';');
-        return strArray[0].ToInt();
+        var strArray = tConfig.Chessboard.Split(',');
+        System.Random random = new System.Random(pLevel);
+        int result = random.Next(0, strArray.Length);
+        return strArray[result].ToInt();
     }
 
     public int[] GetLevelIDs(MiniGameType pTypeId, int pLevel, int pLevelCount)
     {
         pLevel = GetLoopLevel((int)pTypeId, pLevel);
         var tConfig = GetLevelConfig(pTypeId, pLevel);
-        var strArray = tConfig.Chessboard.Split(';');
+        var strArray = tConfig.Chessboard.Split(',');
         var tSeed = pLevel + pLevelCount + DateTime.Now.Month;
         System.Random random = new System.Random(tSeed);
         var strList = new List<string>(strArray);
@@ -240,7 +245,7 @@ public class MiniGameModule : ModuleBase
 
     public int GetTripleLevelTimes(MiniMapConfig pMapConfig, int tLevelID)
     {
-        var time = 50; 
+        var time = 50;
         foreach (var item in ConfigData.tripleLevelSeedConfig.DataList)
         {
             if (item.id == tLevelID)
@@ -257,7 +262,7 @@ public class MiniGameModule : ModuleBase
                 return time;
             }
         }
-        
+
         return time;
     }
 

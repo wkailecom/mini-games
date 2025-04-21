@@ -37,10 +37,10 @@ namespace Game.MiniGame
         }
 
         protected override void OnBeginOpen()
-        { 
+        {
             mParam = PageParam as MiniSucceedPageParam;
             AudioManager.Instance.PlaySound(SoundID.Tile_Level_Succeed);
-            _txtLevel.text = $"LEVEL {MiniGameManager.Instance.Level}";
+            _txtLevel.text = $"LEVEL {ModuleManager.MiniGame.GetCurLevel((int)MiniGameManager.Instance.GameType)}";
 
             if (mParam == null)
             {
@@ -91,7 +91,7 @@ namespace Game.MiniGame
 
 
         void OnClickBtnReturn()
-        { 
+        {
             MiniGameManager.Instance.UnloadCurTypeScene();
             PageManager.Instance.OpenPage(PageID.HomePage);
         }

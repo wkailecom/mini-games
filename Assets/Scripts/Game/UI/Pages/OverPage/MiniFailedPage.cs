@@ -18,6 +18,7 @@ namespace Game.MiniGame
         [SerializeField] private UIBtnPlayOn _btnPlayCoin;
 
         MiniFailedPageParam mParam;
+        int mReplayCoin;
         protected override void OnInit()
         {
             _btnClose.onClick.AddListener(OnClickBtnClose);
@@ -32,6 +33,7 @@ namespace Game.MiniGame
             //_btnAbandon.txtIcon.text = "-1";
             //_btnAbandon.imgIcon.SetPropIcon(PropID.Energy);  
             _txtLevel.text = $"LEVEL {MiniGameManager.Instance.Level}";
+            mReplayCoin = GetReplayCoin();
 
             mParam = PageParam as MiniFailedPageParam;
             if (mParam == null)
@@ -68,7 +70,7 @@ namespace Game.MiniGame
                 else
                 {
                     _btnPlayCoin.imgIcon.SetPropIcon(PropID.Coin);
-                    _btnPlayCoin.txtIcon.text = ModuleManager.MiniGame.GetCurLevelConfig().ReplayCoin.ToString();
+                    _btnPlayCoin.txtIcon.text = mReplayCoin.ToString();
                     _btnAbandon.gameObject.SetActive(false);
                     _btnPlayProp.gameObject.SetActive(false);
                     _btnPlayCoin.gameObject.SetActive(true);
@@ -87,6 +89,20 @@ namespace Game.MiniGame
             LayoutRebuilder.ForceRebuildLayoutImmediate(_failedRoot);
         }
 
+        int GetReplayCoin()
+        {
+            var tConfig = ModuleManager.MiniGame.GetCurLevelConfig();
+            var tRetryCount = ModuleManager.MiniGame.GetRetryCount((int)MiniGameManager.Instance.GameType);
+            return tRetryCount switch
+            {
+                0 => tConfig.ReplayCoin,
+                1 => tConfig.ReplayCoin1,
+                2 => tConfig.ReplayCoin2,
+                3 => tConfig.ReplayCoin3,
+                4 => tConfig.ReplayCoin4,
+                _ => tConfig.ReplayCoin4,
+            };
+        }
 
         string GetTripleDescribe(PropID pPropID)
         {
@@ -122,13 +138,17 @@ namespace Game.MiniGame
 
         void OnClickBtnPlayProp()
         {
-            mParam?.reviveAction.Invoke();
+            mParam?.reviveAction.Invoke(true);
             Close();
         }
 
         void OnClickBtnPlayCoin()
         {
-            mParam?.reviveAction.Invoke();
+            if (mParam != null)
+            {
+                ModuleManager.Prop.ExpendProp(PropID.Coin, mReplayCoin);
+                mParam?.reviveAction.Invoke(false);
+            }
             Close();
         }
         #endregion
@@ -138,8 +158,8 @@ namespace Game.MiniGame
     {
         public PropID usePropID;
         public bool isValid;
-        public Action reviveAction;
-        public MiniFailedPageParam(PropID pPropID, bool pIsValid, Action pAction)
+        public Action<bool> reviveAction;
+        public MiniFailedPageParam(PropID pPropID, bool pIsValid, Action<bool> pAction)
         {
             usePropID = pPropID;
             isValid = pIsValid;

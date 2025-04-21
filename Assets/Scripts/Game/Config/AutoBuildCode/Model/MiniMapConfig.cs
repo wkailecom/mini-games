@@ -42,10 +42,26 @@ namespace Config
 		///重玩花金币
 		/// </summary>
 		public int ReplayCoin { get; private set; }
+		/// <summary>
+		///续玩第1次需金币
+		/// </summary>
+		public int ReplayCoin1 { get; private set; }
+		/// <summary>
+		///续玩第2次需金币
+		/// </summary>
+		public int ReplayCoin2 { get; private set; }
+		/// <summary>
+		///续玩第3次需金币
+		/// </summary>
+		public int ReplayCoin3 { get; private set; }
+		/// <summary>
+		///续玩第4次需金币
+		/// </summary>
+		public int ReplayCoin4 { get; private set; }
 
 		public override void ParseData(string[] pData)
 		{
-			if (pData == null || pData.Length < 10)
+			if (pData == null || pData.Length < 14)
 			{
 				LogManager.LogError("MiniMapConfig.ParseData param wrong!");
 				return;
@@ -90,6 +106,22 @@ namespace Config
 			if (!string.IsNullOrEmpty(pData[9]))
 			{
 				ReplayCoin = int.Parse(pData[9]);
+			}
+			if (!string.IsNullOrEmpty(pData[10]))
+			{
+				ReplayCoin1 = int.Parse(pData[10]);
+			}
+			if (!string.IsNullOrEmpty(pData[11]))
+			{
+				ReplayCoin2 = int.Parse(pData[11]);
+			}
+			if (!string.IsNullOrEmpty(pData[12]))
+			{
+				ReplayCoin3 = int.Parse(pData[12]);
+			}
+			if (!string.IsNullOrEmpty(pData[13]))
+			{
+				ReplayCoin4 = int.Parse(pData[13]);
 			}
 		}
 	}

@@ -44,6 +44,7 @@ namespace Game.MiniGame
         public Button BtnProp3 => _btnProp3;
         public Button BtnProp4 => _btnProp4;
 
+        bool isFreeProp = false;
         bool isSuccessLock = false;
         bool isTimeRedEff = false;
         Vector3 leftTimePos;
@@ -137,6 +138,8 @@ namespace Game.MiniGame
 
         protected override void OnBeginOpen()
         {
+            isFreeProp = false;
+
             mParam = PageParam as MiniGamePageParam;
             if (mParam == null)
             {
@@ -214,17 +217,17 @@ namespace Game.MiniGame
             if (tFailReson == FailReson.TimeOut)
             {
                 tUseProp = PropID.TripleAddTime;
-                tIsValid = ModuleManager.Prop.HasProp(tUseProp);
+                tIsValid = true;
             }
             else if (tFailReson == FailReson.NoSoftLeft)
             {
                 tUseProp = PropID.TripleRevert;
-                tIsValid = ModuleManager.Prop.HasProp(tUseProp);
+                tIsValid = true;
             }
 
-            PageManager.Instance.OpenPage(PageID.MiniFailedPage, new MiniFailedPageParam(tUseProp, tIsValid, () =>
+            PageManager.Instance.OpenPage(PageID.MiniFailedPage, new MiniFailedPageParam(tUseProp, tIsValid, (isProp) =>
             {
-                OnReviveDispose(tUseProp);
+                OnReviveDispose(isProp, tUseProp);
             }));
         }
 
@@ -238,26 +241,6 @@ namespace Game.MiniGame
             InputLockManager.Instance.Lock("ReadyToSuccessTask");
             while (isSuccessLock) yield return null;
             InputLockManager.Instance.UnLock("ReadyToSuccessTask");
-        }
-
-        void OnReviveDispose(PropID pPropID)
-        {
-            var addTime = 0;
-            if (pPropID == PropID.TripleRevert)
-            {
-                OnClickProp2_Recall();
-            }
-            else if (pPropID == PropID.TripleAddTime)
-            {
-                if (curLeftTime <= 2)
-                {
-                    addTime = 20;
-                    TriggerAddTime(addTime);
-                }
-                OnClickProp4_AddTime();
-            }
-
-            TripleMath.EventManager.Instance.OnTriggerReplay?.Invoke(FailReson.NULL, addTime, false, 0);
         }
 
         void OnSubmitted(EventData pEventData)
@@ -369,11 +352,22 @@ namespace Game.MiniGame
 
         void RefreshAdapter()
         {
-            Vector3[] corners = new Vector3[4]; //0: 左下，1: 右下，2: 右上，3: 左上
+            //Camera uiCamera = GameObject.FindWithTag("UICamera").GetComponent<Camera>();
+            var uiCamera = TripleMath.TripleMathManager.Instance.uiCamera;
+
+            Vector3[] corners = new Vector3[4]; //0: 左下，1: 左上，2: 右上，3: 右上
             contentArea.GetWorldCorners(corners);
-            float topHeight = (corners[3].y + corners[2].y) / 2f;
-            float bottomHeight = (corners[1].y + corners[0].y) / 2f;
             float rate = 1;
+
+            // 上边中点
+            Vector3 topCenterWorld = (corners[1] + corners[2]) * 0.5f;
+            Vector3 topScreenPos = RectTransformUtility.WorldToScreenPoint(uiCamera, topCenterWorld);
+            float topHeight = Screen.height - topScreenPos.y;
+
+            // 下边中点
+            Vector3 bottomCenterWorld = (corners[0] + corners[3]) * 0.5f;
+            Vector3 bottomScreenPos = RectTransformUtility.WorldToScreenPoint(uiCamera, bottomCenterWorld);
+            float bottomHeight = bottomScreenPos.y; 
 
             TripleMath.EventManager.Instance.OnRefreshTopAndBottomHeight?.Invoke(topHeight * rate, bottomHeight * rate);
             arrowRoot.OnRefreshTopAndBottomHeight(topHeight * rate, bottomHeight * rate);
@@ -413,6 +407,31 @@ namespace Game.MiniGame
         {
             TripleMath.EventManager.Instance.OnChangeClickState?.Invoke(!pIsPause);
             TripleMath.EventManager.Instance.OnPauseTime?.Invoke(pIsPause);
+        }
+
+        void OnReviveDispose(bool pIsProp, PropID pPropID)
+        {
+            isFreeProp = !pIsProp;
+            var addTime = 0;
+            if (pPropID == PropID.TripleRevert)
+            {
+                //OnClickProp2_Recall();
+                var tCount = GameMethod.GetPropConfig(pPropID).param1.ToInt();
+                TripleMath.EventManager.Instance.OnClickRecell3Object?.Invoke(tCount);
+            }
+            else if (pPropID == PropID.TripleAddTime)
+            {
+                if (curLeftTime <= 2)
+                {
+                    addTime = 20;
+                    TriggerAddTime(addTime);
+                }
+                //OnClickProp4_AddTime();
+                var tAddTime = GameMethod.GetPropConfig(pPropID).param1.ToInt();
+                TripleMath.EventManager.Instance.OnClickHourglass?.Invoke(tAddTime);
+            }
+
+            TripleMath.EventManager.Instance.OnTriggerReplay?.Invoke(FailReson.NULL, addTime, false, 0);
         }
 
         void OnClickProp1_Broom()
@@ -458,7 +477,14 @@ namespace Game.MiniGame
         }
         void OnRecallComplete(EventData pEventData)
         {
-            ModuleManager.Prop.ExpendProp(PropID.TripleRevert);
+            if (isFreeProp)
+            {
+                isFreeProp = false;
+            }
+            else
+            {
+                ModuleManager.Prop.ExpendProp(PropID.TripleRevert);
+            }
         }
 
         void OnClickProp3_Hint()
@@ -519,7 +545,14 @@ namespace Game.MiniGame
         {
             mHourglassFinish = true;
             var tPropID = PropID.TripleAddTime;
-            ModuleManager.Prop.ExpendProp(tPropID);
+            if (isFreeProp)
+            {
+                isFreeProp = false;
+            }
+            else
+            {
+                ModuleManager.Prop.ExpendProp(tPropID);
+            }
             var tAddTime = GameMethod.GetPropConfig(tPropID).param1.ToInt();
             TriggerAddTime(tAddTime);
         }

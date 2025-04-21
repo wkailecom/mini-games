@@ -38,9 +38,9 @@ namespace Game.MiniGame
         {
             _btnBack.onClick.AddListener(OnClickBack);
             _btnShop.onClick.AddListener(OnClickShop);
-            _btnProp1.onClick.AddListener(OnClickShuffle);
-            _btnProp2.onClick.AddListener(OnClickRevert);
-            _btnProp3.onClick.AddListener(OnClickReplace);
+            _btnProp1.onClick.AddListener(OnClickProp1_Shuffle);
+            _btnProp2.onClick.AddListener(OnClickProp2_Revert);
+            _btnProp3.onClick.AddListener(OnClickProp3_Replace);
 
             for (int i = 0; i < _nodeRoot.childCount; i++)
             {
@@ -60,13 +60,16 @@ namespace Game.MiniGame
 
         protected override void RegisterEvents()
         {
-            EventManager.Register(EventKey.MiniGameSubSuccess, OnMiniGameSubSuccess);
             EventManager.Register(EventKey.MiniGameOver, OnMiniGameOver);
+
+            EventManager.Register(EventKey.MiniGameSubSuccess, OnMiniGameSubSuccess);
         }
 
         protected override void UnregisterEvents()
         {
-            EventManager.Register(EventKey.MiniGameSubSuccess, OnMiniGameSubSuccess);
+            EventManager.Unregister(EventKey.MiniGameOver, OnMiniGameOver);
+
+            EventManager.Unregister(EventKey.MiniGameSubSuccess, OnMiniGameSubSuccess); 
         }
 
         protected override void OnBeginOpen()
@@ -118,9 +121,9 @@ namespace Game.MiniGame
             {
                 PropID tUseProp = PropID.Jam3DReplace;
                 var tIsValid = GameLogic.JamManager.GetSingleton().Board.CanReplace();
-                PageManager.Instance.OpenPage(PageID.MiniFailedPage, new MiniFailedPageParam(tUseProp, tIsValid, () =>
+                PageManager.Instance.OpenPage(PageID.MiniFailedPage, new MiniFailedPageParam(tUseProp, tIsValid, (isProp) =>
                 {
-                    OnClickRevive();
+                    OnReviveDispose(isProp);
                 }));
             }
         }
@@ -152,24 +155,19 @@ namespace Game.MiniGame
 
         #region 道具事件
 
-        void OnClickRevive()
+        void OnReviveDispose(bool pIsProp)
         {
-            var tPropID = PropID.Jam3DReplace;
-            if (ModuleManager.Prop.HasProp(tPropID))
+            if (JamManager.GetSingleton().ContinueGame())
             {
-                if (JamManager.GetSingleton().ContinueGame())
+                AudioManager.Instance.PlaySound(SoundID.Mini_Prop_Recall);
+                if (pIsProp)
                 {
-                    ModuleManager.Prop.ExpendProp(tPropID);
-                    AudioManager.Instance.PlaySound(SoundID.Mini_Prop_Recall);
+                    ModuleManager.Prop.ExpendProp(PropID.Jam3DReplace);
                 }
-            }
-            else
-            {
-                OpenPropShop(tPropID);
             }
         }
 
-        void OnClickReplace()
+        void OnClickProp3_Replace()
         {
             var tPropID = PropID.Jam3DReplace;
             if (ModuleManager.Prop.HasProp(tPropID))
@@ -186,7 +184,7 @@ namespace Game.MiniGame
             }
         }
 
-        void OnClickRevert()
+        void OnClickProp2_Revert()
         {
             var tPropID = PropID.Jam3DRevert;
             if (ModuleManager.Prop.HasProp(tPropID))
@@ -203,7 +201,7 @@ namespace Game.MiniGame
             }
         }
 
-        void OnClickShuffle()
+        void OnClickProp1_Shuffle()
         {
             var tPropID = PropID.Jam3DShuffle;
             if (ModuleManager.Prop.HasProp(tPropID))

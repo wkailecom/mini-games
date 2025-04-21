@@ -22,7 +22,7 @@ namespace Game.MiniGame
         public Button BtnProp2 => _btnProp2;
         public Button BtnProp3 => _btnProp3;
 
-        bool isFreeProp = false; 
+        bool isFreeProp = false;
         MiniGamePageParam mParam;
         MiniGameType mGameType = MiniGameType.Tile;
         protected override void OnInit()
@@ -46,17 +46,18 @@ namespace Game.MiniGame
 
         protected override void RegisterEvents()
         {
-            EventManager.Register(EventKey.MiniGameOver, OnMiniGameOver); 
+            EventManager.Register(EventKey.MiniGameOver, OnMiniGameOver);
         }
 
         protected override void UnregisterEvents()
         {
-            EventManager.Unregister(EventKey.MiniGameOver, OnMiniGameOver); 
+            EventManager.Unregister(EventKey.MiniGameOver, OnMiniGameOver);
         }
 
         protected override void OnBeginOpen()
         {
-            isFreeProp = false; 
+            isFreeProp = false;
+
             mParam = PageParam as MiniGamePageParam;
             if (mParam == null)
             {
@@ -65,7 +66,7 @@ namespace Game.MiniGame
             }
 
             _txtLevel.text = $"LEVEL {mParam.level}";
-             
+
         }
 
         protected override void OnOpened()
@@ -75,7 +76,7 @@ namespace Game.MiniGame
 
         protected override void OnBeginClose()
         {
-            
+
         }
 
         void OnMiniGameOver(EventData pEventData)
@@ -91,9 +92,9 @@ namespace Game.MiniGame
             {
                 PropID tUseProp = PropID.Invalid;
                 var tIsValid = false;
-                PageManager.Instance.OpenPage(PageID.MiniFailedPage, new MiniFailedPageParam(tUseProp, tIsValid, () =>
+                PageManager.Instance.OpenPage(PageID.MiniFailedPage, new MiniFailedPageParam(tUseProp, tIsValid, (isProp) =>
                 {
-                    //OnClickRevive();
+                    OnReviveDispose(isProp);
                 }));
             }
         }
@@ -124,19 +125,25 @@ namespace Game.MiniGame
 
         #region 道具事件
 
+        void OnReviveDispose(bool pIsProp)
+        {
+            isFreeProp = !pIsProp;
+
+        }
+
         void OnClickProp1()
         {
-           
+
         }
 
         void OnClickProp2()
         {
-            
+
         }
 
         void OnClickProp3()
         {
-            
+
         }
 
 
@@ -145,9 +152,9 @@ namespace Game.MiniGame
         #region 引导
         private void TryShowGuide()
         {
-            
+
         }
-         
+
         #endregion
     }
 }
