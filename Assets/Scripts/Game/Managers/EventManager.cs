@@ -40,8 +40,8 @@ public enum EventKey
     SwitchUserGroup,
 
     MiniGameStart,
-    MiniGameRetry,
     MiniGameOver,
+    MiniGameRevive,
 
     #region Screw
     MiniGameUsePropComplete,
@@ -123,6 +123,7 @@ public static class EventManager
 
         AddEventData(EventKey.MiniGameStart, new MiniGameStart());
         AddEventData(EventKey.MiniGameOver, new MiniGameOver());
+        AddEventData(EventKey.MiniGameRevive, new MiniGameRevive());
         AddEventData(EventKey.MiniGameSubSuccess, new EventData((int)EventKey.MiniGameSubSuccess));
         AddEventData(EventKey.MiniGameUsePropComplete, new MiniGameUsePropComplete());
 
@@ -414,6 +415,19 @@ public class MiniGameOver : EventData
     }
 }
 
+public class MiniGameRevive : EventData
+{
+    public MiniGameRevive() : base((int)EventKey.MiniGameRevive) { }
+
+    public MiniGameType modeType; 
+    public int levelID;
+
+    public override void SetObjectFree()
+    {
+        base.SetObjectFree(); 
+    }
+}
+
 public class MiniGameUsePropComplete : EventData
 {
     public MiniGameUsePropComplete() : base((int)EventKey.MiniGameUsePropComplete) { }
@@ -464,7 +478,7 @@ public class BusOut_OnClickUnlockSlot : EventData
 public class TripleMath_Failed : EventData
 {
     public TripleMath_Failed() : base((int)EventKey.TripleMath_Failed) { }
-    public FailReson failReson; 
+    public FailReson failReson;
 
 }
 

@@ -342,6 +342,14 @@ public class MiniGameManager : Singleton<MiniGameManager>
         EventManager.Trigger(tEventData);
     }
 
+    public void TriggerEventGameRevive(MiniGameType pType)
+    {
+        var tEventData = EventManager.GetEventData<MiniGameRevive>(EventKey.MiniGameRevive);
+        tEventData.modeType = pType;
+        tEventData.levelID = mCacheLevel;
+        EventManager.Trigger(tEventData);
+    }
+
     void TriggerEventUsePropComplete(MiniGameType pType, PropID pPropID)
     {
         var tEventData = EventManager.GetEventData<MiniGameUsePropComplete>(EventKey.MiniGameUsePropComplete);

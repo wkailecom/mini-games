@@ -1,6 +1,8 @@
 ﻿using Config;
+using Game.UI;
 using Game.UISystem;
 using System;
+using System.Runtime.Remoting.Contexts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,6 +20,7 @@ namespace Game.MiniGame
         [SerializeField] private UIBtnPlayOn _btnPlayCoin;
 
         MiniFailedPageParam mParam;
+        MiniGameType mCacheType;
         int mReplayCoin;
         protected override void OnInit()
         {
@@ -42,12 +45,12 @@ namespace Game.MiniGame
                 return;
             }
 
-            var tGameType = MiniGameManager.Instance.GameType;
+            mCacheType = MiniGameManager.Instance.GameType;
             var tUsePropID = mParam.usePropID;
             bool tIsValid = mParam.isValid;
             if (tIsValid && tUsePropID != PropID.Invalid)
             {
-                _txtDescribe.text = tGameType switch
+                _txtDescribe.text = mCacheType switch
                 {
                     MiniGameType.Screw => $"Add 1 more hole and keep playing! ",
                     MiniGameType.Jam3d => $"Set aside some minions to free up space! ",
@@ -92,7 +95,7 @@ namespace Game.MiniGame
         int GetReplayCoin()
         {
             var tConfig = ModuleManager.MiniGame.GetCurLevelConfig();
-            var tRetryCount = ModuleManager.MiniGame.GetRetryCount((int)MiniGameManager.Instance.GameType);
+            var tRetryCount = ModuleManager.MiniGame.GetReviveCount((int)MiniGameManager.Instance.GameType);
             return tRetryCount switch
             {
                 0 => tConfig.ReplayCoin,
@@ -139,6 +142,7 @@ namespace Game.MiniGame
         void OnClickBtnPlayProp()
         {
             mParam?.reviveAction.Invoke(true);
+            MiniGameManager.Instance.TriggerEventGameRevive(mCacheType);
             Close();
         }
 
@@ -146,10 +150,22 @@ namespace Game.MiniGame
         {
             if (mParam != null)
             {
-                ModuleManager.Prop.ExpendProp(PropID.Coin, mReplayCoin);
-                mParam?.reviveAction.Invoke(false);
+                bool tIsf = ModuleManager.Prop.ExpendProp(PropID.Coin, mReplayCoin);
+                if (tIsf)
+                {
+                    mParam?.reviveAction.Invoke(false);
+                    MiniGameManager.Instance.TriggerEventGameRevive(mCacheType);
+                    Close();
+                }
+                else
+                {
+                    PageManager.Instance.OpenPage(PageID.ShopPage, new ShopPageParam(ShopPageParam.ShopGroup.CoinFirst));
+                }
             }
-            Close();
+            else
+            {
+                Close();
+            }
         }
         #endregion
     }

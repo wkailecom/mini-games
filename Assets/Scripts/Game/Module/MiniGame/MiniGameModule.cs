@@ -5,7 +5,7 @@ using System;
 using Config;
 using Game;
 using Game.UISystem;
-using System.Linq; 
+using System.Linq;
 
 public class MiniGameModule : ModuleBase
 {
@@ -23,6 +23,7 @@ public class MiniGameModule : ModuleBase
         EventManager.Register(EventKey.VideoADRewarded, OnVideoADRewarded);
         EventManager.Register(EventKey.MiniGameStart, OnMiniGameStart);
         EventManager.Register(EventKey.MiniGameOver, OnMiniGameOver);
+        EventManager.Register(EventKey.MiniGameRevive, OnMiniGameRevive);
 
         RefreshData();
         MiniGameManager.Instance.Init();
@@ -66,12 +67,13 @@ public class MiniGameModule : ModuleBase
         if (tEventData.isNewGame)
         {
             SetIsNewGame(pTypeId, false);
-            SetRetryCount(pTypeId, 0);
+            SetReset(pTypeId);
             Serialize(pTypeId);
         }
         else
         {
             AddRetryCount(pTypeId);
+            SetReviveCount(pTypeId, 0);
             Serialize(pTypeId);
         }
     }
@@ -87,6 +89,13 @@ public class MiniGameModule : ModuleBase
             SetIsNewGame(pTypeId, true);
             Serialize(pTypeId);
         }
+    }
+
+    void OnMiniGameRevive(EventData pEventData)
+    {
+        var tEventData = pEventData as MiniGameRevive;
+        int pTypeId = (int)tEventData.modeType;
+        AddReviveCount(pTypeId);
     }
 
     #endregion
@@ -118,6 +127,19 @@ public class MiniGameModule : ModuleBase
         GetGameData(pTypeId).CurLevel += pValue;
     }
 
+    public int GetReviveCount(int pTypeId)
+    {
+        return GetGameData(pTypeId).ReviveCount;
+    }
+    public void SetReviveCount(int pTypeId, int pValue)
+    {
+        GetGameData(pTypeId).ReviveCount = pValue;
+    }
+    public void AddReviveCount(int pTypeId, int pValue = 1)
+    {
+        GetGameData(pTypeId).ReviveCount += pValue;
+    }
+
     public int GetRetryCount(int pTypeId)
     {
         return GetGameData(pTypeId).RetryCount;
@@ -138,6 +160,10 @@ public class MiniGameModule : ModuleBase
     public void SetIsNewGame(int pTypeId, bool pValue)
     {
         GetGameData(pTypeId).IsNewGame = pValue;
+    }
+    public void SetReset(int pTypeId)
+    {
+        GetGameData(pTypeId).Reset();
     }
 
 
