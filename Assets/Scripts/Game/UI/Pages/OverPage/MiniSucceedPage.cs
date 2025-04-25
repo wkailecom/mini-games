@@ -20,6 +20,8 @@ namespace Game.MiniGame
         [SerializeField] private RectTransform _nodeReward;
         [SerializeField] private RectTransform _levelReward;
 
+        public Button BtnNext => _btnNext;
+
         List<UIRewardItem> mNodeItems;
         List<UIRewardItem> mLevelItems;
 
@@ -49,9 +51,8 @@ namespace Game.MiniGame
             }
 
             var tConfig = ModuleManager.MiniGame.GetCurLevelConfig();
-            var tRewards = ModuleManager.MiniGame.GetLevelReward(tConfig.LevelReward);
-            mNodeRewards = tRewards;
-            mLevelRewards = tRewards;
+            mLevelRewards = ModuleManager.MiniGame.GetLevelReward(tConfig.LevelReward);
+            mNodeRewards = ModuleManager.MiniTower.GetNodeReward(ModuleManager.MiniTower.CurFloor);
 
             if (mNodeRewards.Count > 0)
             {

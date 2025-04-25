@@ -22,14 +22,10 @@ namespace Config
 		TripleGamePage = 17,
 		GuidePage = 18,
 		MiniGuidePage = 19,
-		GamePage = 20,
-		OverPage = 21,
-		MiniMapPage = 22,
-		MiniRulePage = 23,
-		MiniGameOverPage = 24,
-		MiniRevivePopup = 25,
-		TowerMapPage = 26,
-		TowerRulePage = 27,
+		TowerMapPage = 20,
+		TowerRulePage = 21,
+		GamePage = 22,
+		OverPage = 23,
 		GMPage = 99,
 	}
 }

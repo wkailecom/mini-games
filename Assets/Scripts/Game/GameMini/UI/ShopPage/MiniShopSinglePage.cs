@@ -73,10 +73,10 @@ namespace Game.MiniGame
         void OnClickCloseBtn()
         {
             Close();
-            if (ADManager.Instance.IsRewardVideoReady)
-            {
-                PageManager.Instance.OpenPage(PageID.AdsPropPopup, new AdsPropPageParam(mParam.propID, null));
-            }
+            //if (ADManager.Instance.IsRewardVideoReady)
+            //{
+            //    PageManager.Instance.OpenPage(PageID.AdsPropPopup, new AdsPropPageParam(mParam.propID, null));
+            //}
         }
     }
 

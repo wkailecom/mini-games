@@ -324,7 +324,7 @@ namespace Game.MiniGame
 
         void OnClickBtnHelp()
         {
-            PageManager.Instance.OpenPage(PageID.MiniRulePage);
+            //PageManager.Instance.OpenPage(PageID.MiniRulePage);
         }
 
         void OnClickBtnClose()

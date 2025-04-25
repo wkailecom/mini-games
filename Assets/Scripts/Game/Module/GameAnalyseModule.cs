@@ -60,14 +60,14 @@ public class GameAnalyseModule : ModuleBase
     void OnPageBeginOpen(EventData pEventData)
     {
         var tEventData = pEventData as PageOperation;
-        if (tEventData.pageID == PageID.MiniMapPage)
-        {
-            GameVariable.CurSceneType = GameSceneType.MiniGame;
-        }
-        else if (tEventData.pageID == PageID.HomePage)
-        {
-            GameVariable.CurSceneType = GameSceneType.WordGame;
-        }
+        //if (tEventData.pageID == PageID.MiniMapPage)
+        //{
+        //    GameVariable.CurSceneType = GameSceneType.MiniGame;
+        //}
+        //else if (tEventData.pageID == PageID.HomePage)
+        //{
+        //    GameVariable.CurSceneType = GameSceneType.WordGame;
+        //}
     }
 
     void OnPageClosed(EventData pEventData)

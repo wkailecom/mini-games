@@ -15,6 +15,7 @@ namespace Game
         public const string CONFIG_ROOT_PATHB = "Configs/ConfigDataB";   //配置根目录B
         public const string CONFIG_ROOT_PATHC = "Configs/ConfigDataC";   //配置根目录C
         public const string CONFIG_ROOT_PATHD = "Configs/ConfigDataD";   //配置根目录D
+        public const string CUSTOM_CONFIG_ROOT_PATHD = "Configs/CustomConfig";   //配置自定义目录
 
         public const string ATLAS_PROPS_PATH = "Atlas/Props";            //图集：道具Icon路径
         public const string ATLAS_MINI_EVENT_PATH = "Atlas/MiniEnter";   //图集：不同小游戏图标

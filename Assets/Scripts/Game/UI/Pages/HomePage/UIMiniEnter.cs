@@ -30,6 +30,7 @@ public class UIMiniEnter : MonoBehaviour
     {
         mTypeConfig = pConfig;
 
+        BtnEnter.onClick.RemoveAllListeners();
         BtnEnter.onClick.AddListener(OnClickBtnEnter);
         mMiniGameType = (MiniGameType)pConfig.ID;
         ImgIcon.sprite = ResTool.LoadIcon(pConfig.coverIcon, GameConst.ATLAS_MINI_EVENT_PATH);

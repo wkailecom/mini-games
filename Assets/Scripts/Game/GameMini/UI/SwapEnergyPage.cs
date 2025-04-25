@@ -12,6 +12,7 @@ namespace Game.UI
     public class SwapEnergyPage : PageBase
     {
         public UIPropItem prop;
+        public Text buyName;
         public Button buyBtn;
         public Button closeBtn;
         public UICountDown timeCountDown;
@@ -28,7 +29,8 @@ namespace Game.UI
         protected override void OnBeginOpen()
         {
             //prop.SetData(mPropData);
-            prop.propCount.name = "Full";
+            prop.propCount.text = "Full";
+            buyName.text = CommonDefine.energyCoinCount.ToString();
             timeCountDown.StartCountDown(ModuleManager.UserInfo.HealthHarvestTime, "Full");
         }
 

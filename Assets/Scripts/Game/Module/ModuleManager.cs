@@ -7,6 +7,7 @@
     public static GuideModule Guide = new();
     public static MiniGameModule MiniGame = new();
     public static MiniFavorModule MiniFavor = new();
+    public static MiniTowerModule MiniTower = new();
 
     public static void Init()
     {
@@ -16,6 +17,7 @@
         Analyse.Init();
         MiniGame.Init();
         MiniFavor.Init();
+        MiniTower.Init();
         Guide.Init();
     }
 
@@ -27,6 +29,7 @@
         Analyse.Uninit();
         MiniGame.Uninit();
         MiniFavor.Uninit();
+        MiniTower.Uninit();
         Guide.Uninit();
     }
 }

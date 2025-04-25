@@ -39,7 +39,7 @@ namespace Game.UI
             _btnAD.btnBuy.onClick.AddListener(OnClickUIRemoveads);
 
             _btnShop.onClick.AddListener(OnOpenShop);
-
+            _btnEvent.onClick.AddListener(OnOpenEvent);
         }
 
         protected override void OnBeginOpen()
@@ -141,6 +141,11 @@ namespace Game.UI
         void OnClickUIRemoveads()
         {
             GameMethod.TriggerUIAction(UIActionName.RemoveAds, UIPageName.PageHome, UIActionType.Click);
+        }
+
+        void OnOpenEvent()
+        {
+            PageManager.Instance.OpenPage(PageID.TowerMapPage);
         }
 
 

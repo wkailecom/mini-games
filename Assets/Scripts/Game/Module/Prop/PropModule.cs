@@ -162,12 +162,12 @@ public class PropModule : ModuleBase
         var tEventData = pEventData as ADEvent;
         PropID tPropID = DataConvert.GetADPropID(tEventData.showReason);
 
-        if (tPropID != PropID.Invalid&& tPropID != PropID.Coin)
+        if (tPropID != PropID.Invalid)
         {
             if (tPropID != PropID.Coin)
-            { 
+            {
                 AddProp(tPropID, 1, PropSource.Rrewarded);
-            } 
+            }
         }
     }
 

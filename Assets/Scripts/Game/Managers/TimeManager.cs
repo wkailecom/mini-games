@@ -6,6 +6,8 @@ using UnityEngine;
 public class TimeManager : MonoSingleton<TimeManager>
 {
     public readonly static WaitForSeconds WaitOneSecond = new(1);
+    public DateTime ServerTime => DateTime.Now;
+
     DateTime cacheTime;
     DateTime cacheHourTime;
 

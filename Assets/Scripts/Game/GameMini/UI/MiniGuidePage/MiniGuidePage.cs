@@ -65,33 +65,33 @@ namespace Game.UI
                 //SetExplainPos(tHomePage.BtnLevel.transform, new Vector2(0, 350));
                 //SetExplainTxt("Let’s take a break from the main game and try out this fun mini-game!", false);
             }
-            else if (PageManager.Instance.IsOpen(PageID.MiniMapPage))
-            {
-                var tMiniMapPage = PageManager.Instance.GetPage<MiniMapPage>(PageID.MiniMapPage);
+            //else if (PageManager.Instance.IsOpen(PageID.MiniMapPage))
+            //{
+            //    var tMiniMapPage = PageManager.Instance.GetPage<MiniMapPage>(PageID.MiniMapPage);
 
-                var tBtnGame = tMiniMapPage.BtnGame.transform.GetChild(0);
-                SetClickPos(tBtnGame, false, false, true);
-                SetExplainPos(tBtnGame, new Vector2(0, 350));
+            //    var tBtnGame = tMiniMapPage.BtnGame.transform.GetChild(0);
+            //    SetClickPos(tBtnGame, false, false, true);
+            //    SetExplainPos(tBtnGame, new Vector2(0, 350));
 
-                var tName = MiniGameManager.Instance.GameType switch
-                {
-                    MiniGameType.Screw => "Screw Crush Mission",
-                    MiniGameType.Jam3d => "Jam Crush Mission",
-                    MiniGameType.Tile => "Tile Crush Mission",
-                    _ => "Crush Mission",
-                };
+            //    var tName = MiniGameManager.Instance.GameType switch
+            //    {
+            //        MiniGameType.Screw => "Screw Crush Mission",
+            //        MiniGameType.Jam3d => "Jam Crush Mission",
+            //        MiniGameType.Tile => "Tile Crush Mission",
+            //        _ => "Crush Mission",
+            //    };
 
-                var tExplainTxt = mGuideKey switch
-                {
-                    MiniGameConst.Guide_ScrewStart1 => $"Welcome.Commander!\n Click here to start your <#dd2dfa><b>{tName}</b></color>!",
-                    MiniGameConst.Guide_JamStart1 => $"Welcome.Commander!\n Click here to start your <#dd2dfa><b>{tName}</b></color>!",
-                    MiniGameConst.Guide_ScrewStart2 => $"Congrats!\r\nYou've completed the <#dd2dfa><b>{tName}</b></color>!\r\nMore levels to be discovered...",
-                    MiniGameConst.Guide_JamStart2 => $"Congrats!\r\nYou've completed the <#dd2dfa><b>{tName}</b></color>!\r\nMore levels to be discovered...",
-                    _ => "Welcome.Commander!\n Click here to start",
-                };
+            //    var tExplainTxt = mGuideKey switch
+            //    {
+            //        MiniGameConst.Guide_ScrewStart1 => $"Welcome.Commander!\n Click here to start your <#dd2dfa><b>{tName}</b></color>!",
+            //        MiniGameConst.Guide_JamStart1 => $"Welcome.Commander!\n Click here to start your <#dd2dfa><b>{tName}</b></color>!",
+            //        MiniGameConst.Guide_ScrewStart2 => $"Congrats!\r\nYou've completed the <#dd2dfa><b>{tName}</b></color>!\r\nMore levels to be discovered...",
+            //        MiniGameConst.Guide_JamStart2 => $"Congrats!\r\nYou've completed the <#dd2dfa><b>{tName}</b></color>!\r\nMore levels to be discovered...",
+            //        _ => "Welcome.Commander!\n Click here to start",
+            //    };
 
-                SetExplainTxt(tExplainTxt, false);
-            }
+            //    SetExplainTxt(tExplainTxt, false);
+            //}
             else if (PageManager.Instance.IsOpen(PageID.ScrewGamePage))
             {
                 var tScrewPage = PageManager.Instance.GetPage<ScrewGamePage>(PageID.ScrewGamePage);
@@ -268,11 +268,11 @@ namespace Game.UI
                     Close();
                 }
             }
-            else if (PageManager.Instance.IsOpen(PageID.MiniGameOverPage))
+            else if (PageManager.Instance.IsOpen(PageID.MiniSucceedPage))
             {
-                var tOverPage = PageManager.Instance.GetPage<MiniGameOverPage>(PageID.MiniGameOverPage);
+                var tOverPage = PageManager.Instance.GetPage<MiniSucceedPage>(PageID.MiniSucceedPage);
 
-                SetExplainPos(tOverPage.rewardItem.transform, new Vector2(0, -350));
+                SetExplainPos(tOverPage.BtnNext.transform, new Vector2(0, -350));
                 SetExplainTxt($"There're <color=#dd30f7>JUICY REWARDS</color> after <color=#dd30f7>EACH level</color>!", false);
 
                 _btnNext.gameObject.SetActive(true);

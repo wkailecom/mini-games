@@ -52,7 +52,7 @@ public class MiniGameModule : ModuleBase
         if (tEventData.ADType == ADType.RewardVideo)
         {
             var tPropID = DataConvert.GetADPropID(tEventData.showReason);
-            if (tPropID != PropID.Invalid)
+            if (tPropID != PropID.Invalid && tPropID != PropID.Coin)
             {
                 var tPageParam = new RewardPageParam(tPropID, 1, PropSource.Rrewarded);
                 PageManager.Instance.OpenPage(PageID.RewardPage, tPageParam);
