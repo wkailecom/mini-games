@@ -1,5 +1,7 @@
 ﻿using Config;
+using System;
 
+[Serializable]
 public class PropData
 {
     public PropID ID;

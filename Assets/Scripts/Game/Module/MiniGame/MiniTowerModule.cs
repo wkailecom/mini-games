@@ -33,7 +33,6 @@ public class MiniTowerInfo
     public void SyncFloor(bool pDrop)
     {
         RecFloor = CurFloor;
-        if (pDrop) LostNum = 0;
     }
 }
 
@@ -68,9 +67,6 @@ public class MiniTowerModule : ModuleBase
 
 
     DateTime firstStart;
-    public List<int> rewardFloor;
-    public Dictionary<int, List<PropData>> rewards;
-
 
     ///////////
 
@@ -79,6 +75,7 @@ public class MiniTowerModule : ModuleBase
     public int TotalFloor => mTowerInfo.Floor;
     public TowerInfo TowerInfo => mTowerInfo;
 
+    public Dictionary<int, List<PropData>> nodeRewards;
 
     int CurLostNum;
     public int CurBalloon => Math.Max(mTowerInfo.FailureNumber - CurLostNum, 0);
@@ -100,12 +97,23 @@ public class MiniTowerModule : ModuleBase
     void RefreshData()
     {
         firstStart = ModuleManager.UserInfo.FirstLoginTime;
-        rewardFloor = new List<int>();
-        rewards = new Dictionary<int, List<PropData>>();
+        nodeRewards = new Dictionary<int, List<PropData>>();
 
         mTowerConfig = ResTool.Load<TowerConfig>(GameConst.CUSTOM_CONFIG_ROOT_PATHD + "/TowerConfig");
         mTowerInfo = mTowerConfig.Modules[0];
         CurLostNum = mData.LostNum;
+
+        foreach (var item in mTowerInfo.Rewards)
+        {
+            if (nodeRewards.ContainsKey(item.Floor))
+            {
+                nodeRewards[item.Floor].AddRange(item.Items);
+            }
+            else
+            {
+                nodeRewards.Add(item.Floor, item.Items);
+            }
+        }
     }
 
     void OnMiniGameStart(EventData pEventData)
@@ -154,7 +162,7 @@ public class MiniTowerModule : ModuleBase
 
     int GetDropFloor(int pCurFloor)
     {
-        var tRewardFloor = new List<int>(rewards.Keys);
+        var tRewardFloor = new List<int>(nodeRewards.Keys);
         tRewardFloor.Sort();
         int tR = 1;
         foreach (var tFloor in tRewardFloor)
@@ -171,22 +179,19 @@ public class MiniTowerModule : ModuleBase
         return tR;
     }
 
-    public bool HasReward(int pFloor)
-    {
-        return rewards.ContainsKey(pFloor) && !mData.ReceiveFloor.Contains(pFloor);
-    }
-
     public List<PropData> GetNodeReward(int pFloor)
     {
-        return rewards.GetValue(pFloor) ?? new List<PropData>();
+        return nodeRewards.GetValue(pFloor) ?? new List<PropData>();
     }
 
-
-    public void SyncFloor(bool pDrop)
+    public bool HasReward(int pFloor)
     {
-        mData.SyncFloor(pDrop);
-        CurLostNum = mData.LostNum;
-        Serialize();
+        return nodeRewards.ContainsKey(pFloor) && !IsReceive(pFloor);
+    }
+
+    public bool IsReceive(int pFloor)
+    {
+        return mData.ReceiveFloor.Contains(pFloor);
     }
 
     public void ReceiveReward(int pFloor)
@@ -194,6 +199,33 @@ public class MiniTowerModule : ModuleBase
         mData.ReceiveFloor.Add(pFloor);
         Serialize();
     }
+
+    public void SyncFloor(bool pDrop)
+    {
+        mData.SyncFloor(pDrop);
+        if (pDrop)
+        {
+            mData.LostNum = 0;
+            CurLostNum = 0;
+        }
+        Serialize();
+    }
+
+    public void SyncBalloon()
+    {
+        if (CurBalloon == 0)
+        {
+            mData.LostNum = 0;
+            CurLostNum = 0;
+        }
+        else
+        {
+            mData.LostNum = CurLostNum;
+        }
+        Serialize();
+    }
+
+
 
     #region 序列化
 

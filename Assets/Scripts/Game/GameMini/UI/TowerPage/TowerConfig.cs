@@ -21,7 +21,8 @@ public class TowerInfo
     public int FailureNumber;           // 可失败次数
     [Tooltip("是否回退至起点")]
     public bool BackToOrigin;           // 是否回退至起点
-    public Dictionary<int, List<TowerRewardItem>> Rewards;
+
+    public List<TowerReward> Rewards;
 
     public TowerInfo()
     {
@@ -35,12 +36,5 @@ public class TowerInfo
 public class TowerReward
 {
     public int Floor;                     // 指定奖励层数
-    public List<TowerRewardItem> Items;   // 奖励内容（道具ID和数量）
-}
-
-[Serializable]
-public class TowerRewardItem
-{
-    public PropID ID;
-    public int Count;
+    public List<PropData> Items;          // 奖励内容（道具ID和数量）
 }

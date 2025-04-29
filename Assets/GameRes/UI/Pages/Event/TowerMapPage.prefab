@@ -70,24 +70,7 @@ MonoBehaviour:
   - {fileID: 5296022225820342364, guid: 1d3d40ad54211d34688cae5934b72010, type: 3}
   - {fileID: 5296022225820342364, guid: 5a48b2eabb159e84a8f904e3d41399ef, type: 3}
   _balloon: {fileID: 6740841643470354127}
-  treeNode: {fileID: 6513287650991912408, guid: 8f5365bb4ef6d834ab580b19a10abe4d, type: 3}
-  treeRoot: {fileID: 0}
-  branch: {fileID: 8303857091062685274, guid: 118c8d0a0006f0f4aa9906ada24d3231, type: 3}
-  floorNode: {fileID: 772998570244666455, guid: cb35968b5816dd64e902e918821f8523, type: 3}
-  floorRoot: {fileID: 0}
-  gift: {fileID: 8362433072483217141, guid: fb00d3d62d215ee46a85b7d65f9af5dc, type: 3}
-  balloon: {fileID: 6740841643470354127}
-  root: {fileID: 8304712808548100390}
-  defaultPos: {fileID: 5733127409208846737}
-  centerPos: {fileID: 8428434619817797985}
-  startHeight: 800
-  nodeInterval: 400
-  clouds:
-  - {fileID: 7060852561850294246, guid: d3843214ac46a0d4eb79155a7d1b4a00, type: 3}
-  - {fileID: 7060852561850294246, guid: 1d3d40ad54211d34688cae5934b72010, type: 3}
-  - {fileID: 7060852561850294246, guid: 5a48b2eabb159e84a8f904e3d41399ef, type: 3}
-  startBtnGroup: {fileID: 5420928859557592968}
-  tranGroup: {fileID: 0}
+  _balloonTranPos: {fileID: 0}
 --- !u!1 &147368555836203402
 GameObject:
   m_ObjectHideFlags: 0
@@ -1462,6 +1445,7 @@ GameObject:
   - component: {fileID: 3758721789971219922}
   - component: {fileID: 1493880016890018993}
   - component: {fileID: 2797864584228974041}
+  - component: {fileID: 3758851715393746722}
   - component: {fileID: 5420928859557592968}
   m_Layer: 5
   m_Name: BtnStart
@@ -1547,7 +1531,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 3
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -1572,6 +1556,27 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!95 &3758851715393746722
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6602532387595393600}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f4cb2762de5f41948a536daf3f5a86ca, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!225 &5420928859557592968
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1612,8 +1617,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3131348099030825573}
   - {fileID: 8125347634708786360}
+  - {fileID: 3131348099030825573}
   - {fileID: 8163110218575930758}
   m_Father: {fileID: 5735497802887707177}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2057,7 +2062,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 9133580590740627069, guid: 84dd5c3ce41c61b44b29b60b58ade27f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 978877609179541635}
   m_SourcePrefab: {fileID: 100100000, guid: 84dd5c3ce41c61b44b29b60b58ade27f, type: 3}
 --- !u!224 &8125347634708786360 stripped
 RectTransform:
@@ -2069,12 +2077,29 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9174290292656713574, guid: 84dd5c3ce41c61b44b29b60b58ade27f, type: 3}
   m_PrefabInstance: {fileID: 944394162647832781}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 8348502020842112688}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &8348502020842112688 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9133580590740627069, guid: 84dd5c3ce41c61b44b29b60b58ade27f, type: 3}
+  m_PrefabInstance: {fileID: 944394162647832781}
+  m_PrefabAsset: {fileID: 0}
+--- !u!225 &978877609179541635
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8348502020842112688}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &7199399370085879970
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2170,14 +2195,34 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5441880865489289423, guid: 233aa7f91a9fc4186a33f6b37cf4b73b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5886691762409353662}
   m_SourcePrefab: {fileID: 100100000, guid: 233aa7f91a9fc4186a33f6b37cf4b73b, type: 3}
+--- !u!1 &2912727548290912365 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5441880865489289423, guid: 233aa7f91a9fc4186a33f6b37cf4b73b, type: 3}
+  m_PrefabInstance: {fileID: 7199399370085879970}
+  m_PrefabAsset: {fileID: 0}
+--- !u!225 &5886691762409353662
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2912727548290912365}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!114 &3025654840505049462 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5337942717686968788, guid: 233aa7f91a9fc4186a33f6b37cf4b73b, type: 3}
   m_PrefabInstance: {fileID: 7199399370085879970}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2912727548290912365}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}

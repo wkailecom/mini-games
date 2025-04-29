@@ -1,7 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 using System.Collections;
+using System;
 
 public class ScrollRectNevigation : MonoBehaviour
 {
@@ -19,7 +20,37 @@ public class ScrollRectNevigation : MonoBehaviour
         content = scrollRect.content;
     }
 
-    public IEnumerator Nevigate(GameObject item, float pWaitTime)
+    public IEnumerator NevigateWhenWait(GameObject item, float pAnimTime)
+    {
+        var newNormalizedPosition = GetNormalizedPosition(item);
+        if (pAnimTime <= 0)
+        {
+            scrollRect.normalizedPosition = newNormalizedPosition;
+        }
+        else
+        {
+            tweener?.Kill();
+            tweener = DOTween.To(() => scrollRect.normalizedPosition, x => scrollRect.normalizedPosition = x, newNormalizedPosition, pAnimTime);//.OnComplete(()=> { });
+
+            yield return new WaitForSeconds(pAnimTime);
+        }
+    }
+
+    public void Nevigate(GameObject item, float pWaitTime, Action pAction = null)
+    {
+        var newNormalizedPosition = GetNormalizedPosition(item);
+        if (pWaitTime <= 0)
+        {
+            scrollRect.normalizedPosition = newNormalizedPosition;
+        }
+        else
+        {
+            tweener?.Kill();
+            tweener = DOTween.To(() => scrollRect.normalizedPosition, x => scrollRect.normalizedPosition = x, newNormalizedPosition, pWaitTime).OnComplete(() => { pAction?.Invoke(); });
+        }
+    }
+
+    private Vector2 GetNormalizedPosition(GameObject item)
     {
         var target = item.GetComponent<RectTransform>();
 
@@ -39,17 +70,7 @@ public class ScrollRectNevigation : MonoBehaviour
         newNormalizedPosition.x = Mathf.Clamp01(newNormalizedPosition.x);
         newNormalizedPosition.y = Mathf.Clamp01(newNormalizedPosition.y);
 
-        if (pWaitTime <= 0)
-        {
-            scrollRect.normalizedPosition = newNormalizedPosition;
-        }
-        else
-        {
-            tweener?.Kill();
-            tweener = DOTween.To(() => scrollRect.normalizedPosition, x => scrollRect.normalizedPosition = x, newNormalizedPosition, pWaitTime);//.OnComplete(()=> { });
-
-            yield return null;//new WaitForSeconds(pWaitTime);
-        }
+        return newNormalizedPosition;
     }
 
     private Vector3 ConvertLocalPosToWorldPos(RectTransform target)

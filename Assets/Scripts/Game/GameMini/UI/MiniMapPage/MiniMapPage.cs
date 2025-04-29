@@ -282,7 +282,7 @@ namespace Game.MiniGame
 
         IEnumerator SetNevigationLevel(GameObject pLevelItem, float pWaitTime = 0f)
         {
-            yield return _mapNevigation.Nevigate(pLevelItem, pWaitTime);
+            yield return _mapNevigation.NevigateWhenWait(pLevelItem, pWaitTime);
         }
 
         IEnumerator SetLevelPass(UILevelItem pLevelItem, bool pIsAnim = true)

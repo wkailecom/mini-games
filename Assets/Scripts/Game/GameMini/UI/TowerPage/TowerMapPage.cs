@@ -31,6 +31,7 @@ namespace Game.TileGame
         [SerializeField] private RectTransform[] _cloudItems;
 
         [SerializeField] private UIBalloon _balloon;
+        [SerializeField] private Transform _balloonTranPos;
 
         RectTransform balloonRect;
         ScrollRectNevigation nevigation;
@@ -40,6 +41,7 @@ namespace Game.TileGame
         int mTotalFloor;
 
         List<RectTransform> nodeList;
+        Dictionary<int, RectTransform> giftDic;
         Dictionary<int, List<PropData>> rewardDic;
 
         private TowerMapPageParam mParam;
@@ -51,6 +53,7 @@ namespace Game.TileGame
             _btnStart.onClick.AddListener(OnClickBtnStart);
 
             nodeList = new List<RectTransform>();
+            giftDic = new Dictionary<int, RectTransform>();
             rewardDic = new Dictionary<int, List<PropData>>();
             nevigation = _mapScroll.GetComponent<ScrollRectNevigation>();
             balloonRect = _balloon.GetComponent<RectTransform>();
@@ -60,45 +63,25 @@ namespace Game.TileGame
         {
             base.OnBeginOpen();
 
+            SetBtnShow(_btnClose, false);
+            SetBtnShow(_btnStart, false);
+
             //mParam = PageParam as TowerMapPageParam;
             //if (mParam == null)
             //{
             //    LogManager.LogError("TowerMapPage: invalid param");
             //    return;
-            //}
+            //} 
 
-            /////////////////////////// 
-            rewardDic.Clear();
-            for (int i = 0; i < 120; i++)
-            {
-                int result = Random.Range(0, 2);
-                if (result == 1)
-                {
-                    rewardDic.Add(i + 1, new List<PropData>()
-                    {
-                        new PropData(PropID.Coin,10),
-                        new PropData(PropID.ScrewExtraBox,20),
-                        new PropData(PropID.ScrewExtraBox,20),
-                        new PropData(PropID.ScrewExtraBox,20),
-                        new PropData(PropID.BusExtraSpot,4),
-                        new PropData(PropID.ScrewExtraBox,20),
-                    });
-                }
-            }
-            //foreach (var item in ModuleManager.MiniTower.TowerInfo.Rewards)
-            //{
-            //    rewardDic.Add(item.Floor, new List<PropData>());
-            //}
-            /////////////////////////
-            ///
+            //mCurFloor = 30;
+            //mRecFloor = 120;
+            mCurFloor = ModuleManager.MiniTower.CurFloor;
+            mRecFloor = ModuleManager.MiniTower.RecFloor;
+            mTotalFloor = ModuleManager.MiniTower.TotalFloor;
+            rewardDic = ModuleManager.MiniTower.nodeRewards;
 
-            mCurFloor = 30;
-            mRecFloor = 120;
-            mTotalFloor = 120;
-            //mCurFloor = ModuleManager.MiniTower.CurFloor;
-            //mRecFloor = ModuleManager.MiniTower.RecFloor;
-            //mTotalFloor = ModuleManager.MiniTower.TotalFloor;
-
+            nodeList.Clear();
+            giftDic.Clear();
             var tTrunkHeight = _trunkItem.sizeDelta.y;
             float tStartHeight = 800;
             float tNodeInterval = 400;
@@ -133,6 +116,7 @@ namespace Game.TileGame
 
                     var tGift = Instantiate(_giftItem, _nodeRoot);
                     tGift.anchoredPosition = new Vector3(250, tBranch.anchoredPosition.y, 0);
+                    giftDic.Add(tFloor, tGift);
 
                     var tBtn = tGift.GetComponentInChildren<Button>(true);
                     var tAnim = tGift.GetComponentInChildren<Animator>(true);
@@ -156,7 +140,7 @@ namespace Game.TileGame
                         });
                     });
 
-                    bool tIsReceive = false;
+                    bool tIsReceive = ModuleManager.MiniTower.IsReceive(tFloor);
                     if (tIsReceive)
                     {
                         if (tFloor == mTotalFloor)
@@ -184,27 +168,60 @@ namespace Game.TileGame
                 }
             }
 
+            var tRecBalloon = ModuleManager.MiniTower.RecBalloon;
             var tTargetNode = GetNode(mRecFloor);
-            StartCoroutine(nevigation.Nevigate(tTargetNode.gameObject, 0));
+            nevigation.Nevigate(tTargetNode.gameObject, 0);
             _balloon.transform.position = new Vector2(0, tTargetNode.position.y);
-
-            _balloon.SetCount(ModuleManager.MiniTower.CurBalloon, ModuleManager.MiniTower.CurBalloon);
+            _balloon.SetCount(tRecBalloon, tRecBalloon);
 
         }
 
-
         protected override void OnOpened()
         {
-            var tTargetNode = GetNode(mCurFloor);
-            StartCoroutine(nevigation.Nevigate(tTargetNode.gameObject, 3));
-            _balloon.transform.DOLocalMoveY(tTargetNode.localPosition.y, 3).OnComplete(() =>
+            StartCoroutine(UpdateFloor());
+        }
+
+        IEnumerator UpdateFloor()
+        {
+            var tCurBalloon = ModuleManager.MiniTower.CurBalloon;
+            var tRecBalloon = ModuleManager.MiniTower.RecBalloon;
+            var tWaitTime = 2;
+
+            if (mCurFloor > mRecFloor)//上升
             {
-                //_balloon.SetCount(ModuleManager.MiniTower.CurBalloon, ModuleManager.MiniTower.RecBalloon);
+                var tTargetNode = GetNode(mCurFloor);
+                nevigation.Nevigate(tTargetNode.gameObject, tWaitTime);
+                _balloon.transform.DOLocalMoveY(tTargetNode.localPosition.y, tWaitTime);
+                yield return new WaitForSeconds(tWaitTime);
 
-                _balloon.SetCount(2, 3);
+                ModuleManager.MiniTower.SyncFloor(false);
+                yield return CheckReward();
+            }
+            else if (mCurFloor < mRecFloor)//下降
+            {
+                _balloon.SetCount(tCurBalloon, tRecBalloon);
+                yield return new WaitForSeconds(0.5f);
+                var tTargetNode = GetNode(mCurFloor);
+                nevigation.Nevigate(tTargetNode.gameObject, tWaitTime);
+                _balloon.transform.DOLocalMoveY(tTargetNode.localPosition.y, tWaitTime);
+                yield return new WaitForSeconds(tWaitTime);
 
+                ModuleManager.MiniTower.SyncFloor(true);
+                _balloon.SetCount(ModuleManager.MiniTower.CurBalloon, ModuleManager.MiniTower.CurBalloon);
+            }
+            else
+            {
+                _balloon.SetCount(tCurBalloon, tRecBalloon);
+                yield return new WaitForSeconds(0.5f);
+                ModuleManager.MiniTower.SyncBalloon();
+                _balloon.SetCount(ModuleManager.MiniTower.CurBalloon, ModuleManager.MiniTower.CurBalloon);
+            }
 
-            });
+            if (mParam.openFrom == TowerMapPageParam.OpenFrom.ManualClick)
+            {
+                SetBtnShow(_btnClose, true);
+                SetBtnShow(_btnStart, true);
+            }
         }
 
         void RandomCreateCloud()
@@ -227,6 +244,30 @@ namespace Game.TileGame
             if (pFloor >= nodeList.Count) return nodeList[^1];
 
             return nodeList[pFloor - 1];
+        }
+
+        IEnumerator CheckReward()
+        {
+            var tHasReward = ModuleManager.MiniTower.HasReward(mCurFloor);
+            if (tHasReward)
+            {
+                if (giftDic.TryGetValue(mCurFloor, out var tGift))
+                {
+                    var tAnim = tGift.GetComponentInChildren<Animator>(true);
+                    tAnim.enabled = true;
+                    if (mCurFloor == mTotalFloor)
+                    {
+                        tAnim.SetInteger("SpecialOpen", 1);
+                    }
+                    else
+                    {
+                        tAnim.SetInteger("NormalOpen", 1);
+                    }
+                    //tAnim.SetTrigger("Open"); 
+                    yield return new WaitForSeconds(0.8f);
+                }
+                ModuleManager.MiniTower.ReceiveReward(mCurFloor);
+            }
         }
 
         #region 复用
@@ -268,6 +309,24 @@ namespace Game.TileGame
         //}
         #endregion
 
+        void SetBtnShow(Button pBtn, bool pIsShow)
+        {
+            var tBtnGroup = pBtn.GetComponent<CanvasGroup>();
+            if (pIsShow)
+            {
+                pBtn.enabled = false;
+                tBtnGroup.alpha = 0;
+                DOTween.Sequence().Append(tBtnGroup.DOFade(1, 0.5f)).OnComplete(() =>
+                {
+                    pBtn.enabled = true;
+                });
+            }
+            else
+            {
+                tBtnGroup.alpha = 0;
+                pBtn.enabled = false;
+            }
+        }
 
         #region UI事件
 
@@ -278,11 +337,13 @@ namespace Game.TileGame
 
         void OnClickBtnClose()
         {
-            if (mParam?.openFrom == TowerMapPageParam.OpenFrom.ReturnByInGame)
-            {
-                var tConfig = ModuleManager.MiniGame.GetTypeConfig((int)MiniGameManager.Instance.GameType);
-                PageManager.Instance.OpenPage(PageID.MiniEnterPage, new MiniEnterPageParam(tConfig));
-            }
+            Close();
+
+            //if (mParam?.openFrom == TowerMapPageParam.OpenFrom.ReturnByInGame)
+            //{
+            //    var tConfig = ModuleManager.MiniGame.GetTypeConfig((int)MiniGameManager.Instance.GameType);
+            //    PageManager.Instance.OpenPage(PageID.MiniEnterPage, new MiniEnterPageParam(tConfig));
+            //}
             //if (CheckReward())
             //{
             //    //StartCoroutine(ConfirmGetReward());
