@@ -66,6 +66,8 @@ namespace Game.MiniGame
 
             SetBtnShow(_btnClose, false);
             SetBtnShow(_btnStart, false);
+            var tActivity = ModuleManager.MiniTower.CalcCurrentActivity();
+            _timeCountDown.StartCountDown(tActivity.endTime, "FINISHED", Close);
 
             mParam = PageParam as TowerMapPageParam;
             if (mParam == null)

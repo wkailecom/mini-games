@@ -4,15 +4,6 @@ using UnityEngine;
 using System;
 using Config;
 using Game;
-using Game.UISystem;
-using System.Linq;
-
-public enum TowerTopState
-{
-    Prepare,
-    Running,
-    End,
-}
 
 public class MiniTowerInfo
 {
@@ -36,39 +27,41 @@ public class MiniTowerInfo
     }
 }
 
+public enum TowerActivityState
+{
+    Prepare,
+    Running,
+    End,
+}
+
+public class TowerActivity
+{
+    public int ID;
+    public DateTime startTime;
+    public DateTime endTime;
+    public TowerActivityState ActivityState
+    {
+        get
+        {
+            if (TimeManager.Instance.ServerTime >= startTime && TimeManager.Instance.ServerTime <= endTime) return TowerActivityState.Running;
+            if (TimeManager.Instance.ServerTime < startTime) return TowerActivityState.Prepare;
+            return TowerActivityState.End;
+        }
+    }
+
+    public TimeSpan RemainToStart { get { return startTime - TimeManager.Instance.ServerTime; } }
+    public TimeSpan RemainToEnd { get { return endTime - TimeManager.Instance.ServerTime; } }
+
+    public TowerActivity(int pId, DateTime pStart, DateTime pEnd)
+    {
+        ID = pId; startTime = pStart; endTime = pEnd;
+    }
+}
+
 
 public class MiniTowerModule : ModuleBase
 {
     const string RECORD_KEY = "RecordMiniTowerInfo";
-
-    public class TowerActivity
-    {
-        public int ID;
-        public DateTime startTime;
-        public DateTime endTime;
-        public TowerTopState ActivityState
-        {
-            get
-            {
-                if (TimeManager.Instance.ServerTime >= startTime && TimeManager.Instance.ServerTime <= endTime) return TowerTopState.Running;
-                if (TimeManager.Instance.ServerTime < startTime) return TowerTopState.Prepare;
-                return TowerTopState.End;
-            }
-        }
-
-        public TimeSpan RemainToStart { get { return startTime - TimeManager.Instance.ServerTime; } }
-        public TimeSpan RemainToEnd { get { return endTime - TimeManager.Instance.ServerTime; } }
-
-        public TowerActivity(int pId, DateTime pStart, DateTime pEnd)
-        {
-            ID = pId; startTime = pStart; endTime = pEnd;
-        }
-    }
-
-
-    DateTime firstStart;
-
-    ///////////
 
     public int CurFloor => mData.CurFloor;
     public int RecFloor => mData.RecFloor;
@@ -96,7 +89,6 @@ public class MiniTowerModule : ModuleBase
 
     void RefreshData()
     {
-        firstStart = ModuleManager.UserInfo.FirstLoginTime;
         nodeRewards = new Dictionary<int, List<PropData>>();
 
         mTowerConfig = ResTool.Load<TowerConfig>(GameConst.CUSTOM_CONFIG_ROOT_PATHD + "/TowerConfig");
@@ -134,8 +126,10 @@ public class MiniTowerModule : ModuleBase
 
     public TowerActivity CalcCurrentActivity()
     {
-        TimeSpan ts = TimeManager.Instance.ServerTime.Date - firstStart.Date;
-        var startDate = new DateTime(firstStart.Year, firstStart.Month, firstStart.Day);
+        var firstStart = ModuleManager.UserInfo.FirstLoginTime;
+        var startDate = firstStart.Date;
+        TimeSpan ts = TimeManager.Instance.ServerTime.Date - startDate;
+
         int curActivityId = ts.Days / 7 + 1;//当前应该第几场(即将开始的或正在进行的)
         DateTime start = curActivityId == 1 ? firstStart : startDate + new TimeSpan(7 * (curActivityId - 1), 10, 0, 0);
         DateTime end = startDate + new TimeSpan(7 * curActivityId, 0, 0, 0);
@@ -144,7 +138,8 @@ public class MiniTowerModule : ModuleBase
 
     public bool ActivityValid()
     {
-        return true;
+        var tActivity = CalcCurrentActivity();
+        return tActivity.ActivityState == TowerActivityState.Running;
     }
 
     bool CanDrop()

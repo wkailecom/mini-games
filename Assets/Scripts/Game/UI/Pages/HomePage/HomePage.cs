@@ -46,6 +46,7 @@ namespace Game.UI
         {
             AudioManager.Instance.PlayMusic(MusicID.bgm_main);
 
+            _btnEvent.gameObject.SetActive(ModuleManager.MiniTower.ActivityValid());
             EnterControl();
 
             GuideShow(mIsGuideLevel);
