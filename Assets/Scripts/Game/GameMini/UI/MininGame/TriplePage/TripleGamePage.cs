@@ -194,7 +194,7 @@ namespace Game.MiniGame
             isSuccessLock = false;
             if (tEventData.isSuccess)
             {
-                PageManager.Instance.OpenPage(PageID.MiniSucceedPage, new MiniSucceedPageParam());
+                //PageManager.Instance.OpenPage(PageID.MiniSucceedPage, new MiniSucceedPageParam());
             }
             else
             {
