@@ -255,6 +255,7 @@ public class MiniGameManager : Singleton<MiniGameManager>
     }
 
     #endregion
+
     public void StartGame(MiniGameType pGameType, int pLevel)
     {
         mCacheLevel = pLevel;
@@ -320,6 +321,31 @@ public class MiniGameManager : Singleton<MiniGameManager>
         }
     }
 
+    public void RetryGame()
+    {
+        StartGame(mCacheType, mCacheLevel);
+    }
+
+    public void NextGame()
+    {
+        int tTypeId = (int)mCacheType;
+        if (mCacheType == MiniGameType.Invalid)
+        {
+            tTypeId = ModuleManager.MiniFavor.GetShowSort()[0];//没有记录取第一个游戏
+        }
+        var tCurLevel = ModuleManager.MiniGame.GetCurLevel(tTypeId);
+        StartGame((MiniGameType)tTypeId, tCurLevel);
+    }
+
+    public void DiscardGame()
+    {
+        ModuleManager.Prop.ExpendProp(PropID.Energy);
+        //PageManager.Instance.OpenPage(PageID.HomePage);
+        UnloadCurTypeScene();
+
+        //关卡未完成
+        TriggerEventLevelOver(mCacheType, false);
+    }
 
     void TriggerEventGameStart(MiniGameType pType, int levelID)
     {
@@ -339,6 +365,21 @@ public class MiniGameManager : Singleton<MiniGameManager>
         tEventData.modeType = pType;
         tEventData.levelID = mCacheLevel;
         tEventData.isSuccess = pIsSuccess;
+        EventManager.Trigger(tEventData);
+
+        if (pIsSuccess)
+        {
+            //关卡完成
+            TriggerEventLevelOver(pType, true);
+        }
+    }
+
+    void TriggerEventLevelOver(MiniGameType pType, bool pIsComplete)
+    {
+        var tEventData = EventManager.GetEventData<MiniLevelOver>(EventKey.MiniLevelOver);
+        tEventData.modeType = pType;
+        tEventData.isSuccess = pIsComplete;
+        tEventData.levelID = mCacheLevel;
         EventManager.Trigger(tEventData);
     }
 

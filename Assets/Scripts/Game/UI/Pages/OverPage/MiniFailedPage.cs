@@ -22,6 +22,7 @@ namespace Game.MiniGame
         MiniFailedPageParam mParam;
         MiniGameType mCacheType;
         int mReplayCoin;
+        bool mIsUsePropValid;
         protected override void OnInit()
         {
             _btnClose.onClick.AddListener(OnClickBtnClose);
@@ -47,8 +48,9 @@ namespace Game.MiniGame
 
             mCacheType = MiniGameManager.Instance.GameType;
             var tUsePropID = mParam.usePropID;
-            bool tIsValid = mParam.isValid;
-            if (tIsValid && tUsePropID != PropID.Invalid)
+            bool tIsValid = mParam.isValid && tUsePropID != PropID.Invalid;
+            mIsUsePropValid = tIsValid && ModuleManager.Prop.HasProp(tUsePropID);
+            if (mIsUsePropValid)
             {
                 _txtDescribe.text = mCacheType switch
                 {
@@ -59,34 +61,22 @@ namespace Game.MiniGame
                     MiniGameType.Triple => GetTripleDescribe(tUsePropID),
                     _ => $"Use an item to continue the game!",
                 };
-                _btnClose.gameObject.SetActive(true);
 
-                var tHasProp = ModuleManager.Prop.HasProp(tUsePropID);
-                if (tHasProp)
-                {
-                    _btnPlayProp.imgIcon.SetPropIcon(tUsePropID);
-                    _btnPlayProp.txtIcon.text = "USE 1";
-                    _btnAbandon.gameObject.SetActive(false);
-                    _btnPlayProp.gameObject.SetActive(true);
-                    _btnPlayCoin.gameObject.SetActive(false);
-                }
-                else
-                {
-                    _btnPlayCoin.imgIcon.SetPropIcon(PropID.Coin);
-                    _btnPlayCoin.txtIcon.text = mReplayCoin.ToString();
-                    _btnAbandon.gameObject.SetActive(false);
-                    _btnPlayProp.gameObject.SetActive(false);
-                    _btnPlayCoin.gameObject.SetActive(true);
-                }
+                _btnPlayProp.imgIcon.SetPropIcon(tUsePropID);
+                _btnPlayProp.txtIcon.text = "USE 1";
+                _btnClose.gameObject.SetActive(true);
+                _btnAbandon.gameObject.SetActive(false);
+                _btnPlayProp.gameObject.SetActive(true);
+                _btnPlayCoin.gameObject.SetActive(false);
             }
             else
             {
                 _txtDescribe.text = "Oops! Your backup area is full. \r\nPlease restart the level and have another go!";
 
-                _btnClose.gameObject.SetActive(false);
-                _btnAbandon.gameObject.SetActive(true);
+                _btnClose.gameObject.SetActive(true);
+                _btnAbandon.gameObject.SetActive(false);
                 _btnPlayProp.gameObject.SetActive(false);
-                _btnPlayCoin.gameObject.SetActive(false);
+                _btnPlayCoin.gameObject.SetActive(true);
             }
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(_failedRoot);
@@ -125,7 +115,10 @@ namespace Game.MiniGame
 
         void OnClickBtnClose()
         {
-            _txtDescribe.text = "Oops! Your backup area is full. \r\nPlease restart the level and have another go!";
+            if (!mIsUsePropValid)
+            {
+                _txtDescribe.text = "Oops! Your backup area is full. \r\nPlease restart the level and have another go!";
+            }
 
             _btnClose.gameObject.SetActive(false);
             _btnAbandon.gameObject.SetActive(true);
@@ -134,9 +127,7 @@ namespace Game.MiniGame
 
         void OnClickBtnAbandon()
         {
-            ModuleManager.Prop.ExpendProp(PropID.Energy);
-            PageManager.Instance.OpenPage(PageID.HomePage);
-            MiniGameManager.Instance.UnloadCurTypeScene();
+            MiniGameManager.Instance.DiscardGame();
         }
 
         void OnClickBtnPlayProp()
@@ -153,9 +144,8 @@ namespace Game.MiniGame
                 bool tIsf = ModuleManager.Prop.ExpendProp(PropID.Coin, mReplayCoin);
                 if (tIsf)
                 {
-                    mParam?.reviveAction.Invoke(false);
-                    MiniGameManager.Instance.TriggerEventGameRevive(mCacheType);
                     Close();
+                    MiniGameManager.Instance.RetryGame();
                 }
                 else
                 {

@@ -1,13 +1,14 @@
 ﻿using Config;
 using DG.Tweening;
-using Game.MiniGame;
 using Game.UISystem;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
-namespace Game.TileGame
+namespace Game.MiniGame
 {
     public class TowerMapPage : PageBase
     {
@@ -31,7 +32,7 @@ namespace Game.TileGame
         [SerializeField] private RectTransform[] _cloudItems;
 
         [SerializeField] private UIBalloon _balloon;
-        [SerializeField] private Transform _balloonTranPos;
+        [SerializeField] private Transform _balloonDefaultPos;
 
         RectTransform balloonRect;
         ScrollRectNevigation nevigation;
@@ -66,12 +67,13 @@ namespace Game.TileGame
             SetBtnShow(_btnClose, false);
             SetBtnShow(_btnStart, false);
 
-            //mParam = PageParam as TowerMapPageParam;
-            //if (mParam == null)
-            //{
-            //    LogManager.LogError("TowerMapPage: invalid param");
-            //    return;
-            //} 
+            mParam = PageParam as TowerMapPageParam;
+            if (mParam == null)
+            {
+                SetBtnShow(_btnClose, true);
+                LogManager.LogError("TowerMapPage: invalid param");
+                return;
+            }
 
             //mCurFloor = 30;
             //mRecFloor = 120;
@@ -168,7 +170,15 @@ namespace Game.TileGame
                 }
             }
 
+            var tCurBalloon = ModuleManager.MiniTower.CurBalloon;
             var tRecBalloon = ModuleManager.MiniTower.RecBalloon;
+
+            //当前<记录，存在破裂并且需要上升，直接定位到上升位置 
+            if (tCurBalloon < tRecBalloon && mCurFloor > mRecFloor)
+            {
+                mRecFloor = mCurFloor;
+                ModuleManager.MiniTower.SyncFloor(false);
+            }
             var tTargetNode = GetNode(mRecFloor);
             nevigation.Nevigate(tTargetNode.gameObject, 0);
             _balloon.transform.position = new Vector2(0, tTargetNode.position.y);
@@ -183,9 +193,22 @@ namespace Game.TileGame
 
         IEnumerator UpdateFloor()
         {
+            InputLockManager.Instance.Lock("UpdateFloor");
+
             var tCurBalloon = ModuleManager.MiniTower.CurBalloon;
             var tRecBalloon = ModuleManager.MiniTower.RecBalloon;
+            var tMaxBalloon = ModuleManager.MiniTower.TowerInfo.FailureNumber;
             var tWaitTime = 2;
+
+            if (tCurBalloon != tRecBalloon)
+            {
+                if (tCurBalloon < tRecBalloon) // 存在破裂
+                {
+                    _balloon.SetCount(tCurBalloon, tRecBalloon);
+                    yield return new WaitForSeconds(1f);
+                }
+                ModuleManager.MiniTower.SyncBalloon();
+            }
 
             if (mCurFloor > mRecFloor)//上升
             {
@@ -199,29 +222,31 @@ namespace Game.TileGame
             }
             else if (mCurFloor < mRecFloor)//下降
             {
-                _balloon.SetCount(tCurBalloon, tRecBalloon);
-                yield return new WaitForSeconds(0.5f);
                 var tTargetNode = GetNode(mCurFloor);
                 nevigation.Nevigate(tTargetNode.gameObject, tWaitTime);
                 _balloon.transform.DOLocalMoveY(tTargetNode.localPosition.y, tWaitTime);
                 yield return new WaitForSeconds(tWaitTime);
 
                 ModuleManager.MiniTower.SyncFloor(true);
-                _balloon.SetCount(ModuleManager.MiniTower.CurBalloon, ModuleManager.MiniTower.CurBalloon);
+                if (tCurBalloon == 0)
+                {
+                    _balloon.ReOpen();
+                    yield return new WaitForSeconds(1f);
+                }
             }
-            else
-            {
-                _balloon.SetCount(tCurBalloon, tRecBalloon);
-                yield return new WaitForSeconds(0.5f);
-                ModuleManager.MiniTower.SyncBalloon();
-                _balloon.SetCount(ModuleManager.MiniTower.CurBalloon, ModuleManager.MiniTower.CurBalloon);
-            }
+            InputLockManager.Instance.UnLock("UpdateFloor");
 
-            if (mParam.openFrom == TowerMapPageParam.OpenFrom.ManualClick)
+            if (mParam?.openFrom == TowerMapPageParam.OpenFrom.EnterClick)
             {
                 SetBtnShow(_btnClose, true);
                 SetBtnShow(_btnStart, true);
             }
+            else
+            {
+                mParam?.closeAction?.Invoke();
+                Close();
+            }
+
         }
 
         void RandomCreateCloud()
@@ -338,32 +363,11 @@ namespace Game.TileGame
         void OnClickBtnClose()
         {
             Close();
-
-            //if (mParam?.openFrom == TowerMapPageParam.OpenFrom.ReturnByInGame)
-            //{
-            //    var tConfig = ModuleManager.MiniGame.GetTypeConfig((int)MiniGameManager.Instance.GameType);
-            //    PageManager.Instance.OpenPage(PageID.MiniEnterPage, new MiniEnterPageParam(tConfig));
-            //}
-            //if (CheckReward())
-            //{
-            //    //StartCoroutine(ConfirmGetReward());
-            //}
-            //else
-            //    Close();
-            //PageManager.Instance.OpenPage(PageID.HomePage);
         }
 
         void OnClickBtnStart()
         {
-            //if (isRewarding) { return; }
-            //if (CheckReward())
-            //{
-            //    StartCoroutine(ConfirmGetReward());
-            //}
-            //else if (TileGameManager.Instance.towerTop.IsOpen)
-            //    TileGameManager.Instance.EnterLevel();
-            //else
-            //    Close();
+            MiniGameManager.Instance.NextGame();
         }
         #endregion
     }
@@ -373,16 +377,18 @@ namespace Game.TileGame
         public enum OpenFrom
         {
             LevelSuccess,
-            ReturnByInGame,
-            ManualClick,
+            LevelFail,
+            ExitLevel,
+            EnterClick,
         }
 
-        public bool manual;
-        public OpenFrom openFrom;//
+        public OpenFrom openFrom;  //打开来源
+        public Action closeAction; //关闭回调
 
-        public TowerMapPageParam(OpenFrom pFrom)
+        public TowerMapPageParam(OpenFrom pFrom, Action pAction = null)
         {
             openFrom = pFrom;
+            closeAction = pAction;
         }
     }
 }

@@ -6,6 +6,8 @@ using Config;
 using Game;
 using Game.UISystem;
 using System.Linq;
+using Game.UI;
+using Game.MiniGame;
 
 public class MiniGameModule : ModuleBase
 {
@@ -24,6 +26,7 @@ public class MiniGameModule : ModuleBase
         EventManager.Register(EventKey.MiniGameStart, OnMiniGameStart);
         EventManager.Register(EventKey.MiniGameOver, OnMiniGameOver);
         EventManager.Register(EventKey.MiniGameRevive, OnMiniGameRevive);
+        EventManager.Register(EventKey.MiniLevelOver, OnMiniLevelOver);
 
         RefreshData();
         MiniGameManager.Instance.Init();
@@ -78,17 +81,79 @@ public class MiniGameModule : ModuleBase
         }
     }
 
-    void OnMiniGameOver(EventData pEventData)
+    void OnMiniLevelOver(EventData pEventData)
     {
-        var tEventData = pEventData as MiniGameOver;
-        if (tEventData.isSuccess)
-        {
-            int pTypeId = (int)tEventData.modeType;
+        var tEventData = pEventData as MiniLevelOver;
+        int pTypeId = (int)tEventData.modeType;
 
+        if (tEventData.isSuccess)
+        { 
             AddCurLevel(pTypeId);
             SetIsNewGame(pTypeId, true);
             Serialize(pTypeId);
         }
+
+        ModuleManager.MiniTower.TowerUpdate(tEventData.isSuccess);
+        if (tEventData.isSuccess)
+        {
+            var tActivityValid = ModuleManager.MiniTower.ActivityValid();
+            if (tActivityValid && ModuleManager.MiniTower.HasReward(ModuleManager.MiniTower.CurFloor))
+            {
+                var tPageParam = new TowerMapPageParam(TowerMapPageParam.OpenFrom.LevelSuccess, () =>
+                {
+                    PageManager.Instance.OpenPage(PageID.MiniSucceedPage, new MiniSucceedPageParam());
+                }); 
+                PageManager.Instance.OpenPage(PageID.TowerMapPage, tPageParam);
+            }
+            else
+            {
+                PageManager.Instance.OpenPage(PageID.MiniSucceedPage, new MiniSucceedPageParam());
+            }
+        }
+        else
+        {
+            var tPageParam = new TowerMapPageParam(TowerMapPageParam.OpenFrom.ExitLevel, () =>
+            {
+                PageManager.Instance.OpenPage(PageID.HomePage);
+            });
+
+            //var tPageParam1 = new TowerMapPageParam(TowerMapPageParam.OpenFrom.LevelFail, () =>
+            //{
+            //    var tCurConfig = ModuleManager.MiniGame.GetTypeConfig(pTypeId);
+            //    PageManager.Instance.OpenPage(PageID.MiniEnterPage, new MiniEnterPageParam(tCurConfig));
+            //});
+            PageManager.Instance.OpenPage(PageID.TowerMapPage, tPageParam);
+        }
+    }
+
+    void OnMiniGameOver(EventData pEventData)
+    {
+        //var tEventData = pEventData as MiniGameOver;
+        //if (tEventData.isSuccess)
+        //{
+        //    OnGameSuccess?.Invoke(tEventData.modeType);
+        //}
+        //else
+        //{
+        //    OnGameFailed?.Invoke(tEventData.modeType);
+        //}
+
+
+        /*
+         * 退出游戏 ——> 关卡未完成
+         * 
+         * 游戏成功
+         * 关卡完成 ——> 是否活动 ——> 爬塔-成功页/成功页
+         * 
+         * 游戏失败
+         * 获取死亡页参数，复活道具，是否有效，复活逻辑
+         * 道具复活 ——> 执行复活逻辑()
+         * 金币重试 ——> 执行重试游戏(不消耗体力)
+         * 放弃选择 ——> 关卡未完成
+         * 
+         * 关卡未完成 ——> 是否活动 ——> 爬塔-首页/首页 
+         * 
+         */
     }
 
     void OnMiniGameRevive(EventData pEventData)

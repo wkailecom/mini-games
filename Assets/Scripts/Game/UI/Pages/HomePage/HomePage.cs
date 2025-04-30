@@ -1,5 +1,5 @@
 ﻿using Config;
-using Game.MiniGame;
+using Game.MiniGame; 
 using Game.UISystem;
 using System;
 using System.Collections;
@@ -145,7 +145,7 @@ namespace Game.UI
 
         void OnOpenEvent()
         {
-            PageManager.Instance.OpenPage(PageID.TowerMapPage);
+            PageManager.Instance.OpenPage(PageID.TowerMapPage, new TowerMapPageParam(TowerMapPageParam.OpenFrom.EnterClick));
         }
 
 

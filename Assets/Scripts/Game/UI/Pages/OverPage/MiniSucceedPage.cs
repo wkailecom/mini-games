@@ -99,9 +99,7 @@ namespace Game.MiniGame
 
         void OnClickBtnNext()
         {
-            var tGameType = MiniGameManager.Instance.GameType;
-            var tCurLevel = ModuleManager.MiniGame.GetCurLevel((int)tGameType);
-            MiniGameManager.Instance.StartGame(tGameType, tCurLevel);
+            MiniGameManager.Instance.NextGame();
         }
 
         void OnClickSavePhoto()

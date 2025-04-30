@@ -89,7 +89,7 @@ public class MiniTowerModule : ModuleBase
     {
         Deserialize();
 
-        EventManager.Register(EventKey.MiniGameOver, OnMiniGameOver);
+        //EventManager.Register(EventKey.MiniGameComplete, OnMiniGameComplete);
 
         RefreshData();
     }
@@ -116,23 +116,11 @@ public class MiniTowerModule : ModuleBase
         }
     }
 
-    void OnMiniGameStart(EventData pEventData)
+    public void TowerUpdate(bool pIsComplete)
     {
-        var tEventData = pEventData as MiniGameStart;
-        int pTypeId = (int)tEventData.modeType;
-
-    }
-
-    void OnMiniGameOver(EventData pEventData)
-    {
-        var tEventData = pEventData as MiniGameOver;
-        if (tEventData.isSuccess)
+        if (pIsComplete)
         {
             mData.CurFloor++;
-            if (HasReward(mData.CurFloor))
-            {
-                PageManager.Instance.OpenPage(PageID.TowerMapPage);
-            }
         }
         else
         {
@@ -142,7 +130,6 @@ public class MiniTowerModule : ModuleBase
                 mData.CurFloor = GetDropFloor(CurFloor);
             }
         }
-
     }
 
     public TowerActivity CalcCurrentActivity()
@@ -153,6 +140,11 @@ public class MiniTowerModule : ModuleBase
         DateTime start = curActivityId == 1 ? firstStart : startDate + new TimeSpan(7 * (curActivityId - 1), 10, 0, 0);
         DateTime end = startDate + new TimeSpan(7 * curActivityId, 0, 0, 0);
         return new TowerActivity(curActivityId, start, end); ;//curActivityId 正在进行
+    }
+
+    public bool ActivityValid()
+    {
+        return true;
     }
 
     bool CanDrop()

@@ -39,9 +39,10 @@ public enum EventKey
     StartNewHour,
     SwitchUserGroup,
 
-    MiniGameStart,
-    MiniGameOver,
-    MiniGameRevive,
+    MiniGameStart,    // 关卡开始
+    MiniGameOver,     // 游戏结束 (游戏成功/失败)
+    MiniLevelOver,    // 关卡结束 (关卡完成/未完成)
+    MiniGameRevive,   // 游戏
 
     #region Screw
     MiniGameUsePropComplete,
@@ -123,6 +124,7 @@ public static class EventManager
 
         AddEventData(EventKey.MiniGameStart, new MiniGameStart());
         AddEventData(EventKey.MiniGameOver, new MiniGameOver());
+        AddEventData(EventKey.MiniLevelOver, new MiniLevelOver());
         AddEventData(EventKey.MiniGameRevive, new MiniGameRevive());
         AddEventData(EventKey.MiniGameSubSuccess, new EventData((int)EventKey.MiniGameSubSuccess));
         AddEventData(EventKey.MiniGameUsePropComplete, new MiniGameUsePropComplete());
@@ -415,16 +417,32 @@ public class MiniGameOver : EventData
     }
 }
 
-public class MiniGameRevive : EventData
+public class MiniLevelOver : EventData
 {
-    public MiniGameRevive() : base((int)EventKey.MiniGameRevive) { }
+    public MiniLevelOver() : base((int)EventKey.MiniLevelOver) { }
 
-    public MiniGameType modeType; 
+    public MiniGameType modeType;
+    public bool isSuccess;
     public int levelID;
 
     public override void SetObjectFree()
     {
-        base.SetObjectFree(); 
+        base.SetObjectFree();
+
+        isSuccess = false;
+    }
+}
+
+public class MiniGameRevive : EventData
+{
+    public MiniGameRevive() : base((int)EventKey.MiniGameRevive) { }
+
+    public MiniGameType modeType;
+    public int levelID;
+
+    public override void SetObjectFree()
+    {
+        base.SetObjectFree();
     }
 }
 

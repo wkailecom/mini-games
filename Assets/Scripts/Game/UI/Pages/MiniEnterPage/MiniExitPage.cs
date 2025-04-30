@@ -36,15 +36,25 @@ namespace Game.MiniGame
         {
             if (mIsClickLeft)
             {
-                ModuleManager.Prop.ExpendProp(PropID.Energy);
-                PageManager.Instance.OpenPage(PageID.HomePage);
-                MiniGameManager.Instance.UnloadCurTypeScene(); 
+                ExitGame();
             }
             else
             {
-                mIsClickLeft = true;
-                _txtDescribe.text = "You'll lose one balloon once you give up. You have 1 balloon(s) now.";
+                if (ModuleManager.MiniTower.ActivityValid())
+                {
+                    _txtDescribe.text = $"You'll lose one balloon once you give up. You have {ModuleManager.MiniTower.CurBalloon} balloon(s) now.";
+                    mIsClickLeft = true;
+                }
+                else
+                {
+                    ExitGame();
+                }
             }
+        }
+
+        void ExitGame()
+        {
+            MiniGameManager.Instance.DiscardGame();
         }
 
         void OnClickBtnRight()
