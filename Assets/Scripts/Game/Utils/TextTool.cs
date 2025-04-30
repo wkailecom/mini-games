@@ -3,10 +3,10 @@ using System;
 
 public static class TextTool
 {
-    //public static string GetText(string pTextID, params object[] pArgs)
-    //{
-    //    return LanguageManager.GetFormatText(pTextID, pArgs);
-    //}
+    public static string GetText(string pTextID, params object[] pArgs)
+    {
+        return LanguageManager.GetFormatText(pTextID, pArgs);
+    }
 
     public static string FormatText(string pFormat, params object[] pArgs)
     {
@@ -18,9 +18,9 @@ public static class TextTool
         return string.Format(pFormat, pArgs);
     }
 
-    //public static string Progress(string pNumerator, string pDenominator) => GetText("Com_Progress", pNumerator, pDenominator); // {0}/{1}
+    public static string Progress(string pNumerator, string pDenominator) => GetText("Com_Progress", pNumerator, pDenominator); // {0}/{1}
 
-    //public static string TimeCountdown(int pSeconds) => GetText("Com_TimeStyle", (pSeconds / 60).ToString("D2"), (pSeconds % 60).ToString("D2")); //{0}:{1}
+    public static string TimeCountdown(int pSeconds) => GetText("Com_TimeStyle", (pSeconds / 60).ToString("D2"), (pSeconds % 60).ToString("D2")); //{0}:{1}
 
     public static string GetPercent(string pValue) => $"{pValue}%";
 
@@ -51,5 +51,5 @@ public static class TextTool
         IntToPercent,       // int转换为百分比，例如：25 => 25%
         Float2,             // float保留两位小数
     }
-     
+
 }

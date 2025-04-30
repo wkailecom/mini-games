@@ -26,7 +26,7 @@ namespace Game
             InitAppliaction();
             AppInfoManager.Instance.Init();
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;//默认文化区域 先获取后改为默认 
-            //LanguageManager.Instance.Init();
+            LanguageManager.Instance.Init();
             Vibration.Init();
             GameVariable.IsDebugMode = AppInfoManager.Instance.IsDebug;
             LogManager.EnableLog = AppInfoManager.Instance.IsDebug;

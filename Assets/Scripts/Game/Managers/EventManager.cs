@@ -10,6 +10,7 @@ public enum EventKey
 {
     ApplicationFocus,
     ApplicationPause,
+    ChangeLanguage,
 
     PageBeginOpen,
     PageOpened,
@@ -95,6 +96,7 @@ public static class EventManager
     {
         AddEventData(EventKey.ApplicationFocus, new ApplicationFocus());
         AddEventData(EventKey.ApplicationPause, new ApplicationPause());
+        AddEventData(EventKey.ChangeLanguage, new EventData((int)EventKey.ChangeLanguage));
 
         AddEventData(EventKey.PageBeginOpen, new PageOperation(EventKey.PageBeginOpen));
         AddEventData(EventKey.PageOpened, new PageOperation(EventKey.PageOpened));
