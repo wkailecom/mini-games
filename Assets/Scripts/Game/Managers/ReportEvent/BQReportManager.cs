@@ -45,11 +45,11 @@ public static class BQReportManager
 
         EventManager.Register(EventKey.UIAction, OnUIAction);
         EventManager.Register(EventKey.PageBeginOpen, OnPageBeginOpen);
-        EventManager.Register(EventKey.GameStart, OnGameStart);
-        EventManager.Register(EventKey.GameOver, OnGameOver);
+        //EventManager.Register(EventKey.GameStart, OnGameStart);
+        //EventManager.Register(EventKey.GameOver, OnGameOver);
 
         EventManager.Register(EventKey.MiniGameStart, OnMiniGameStart);
-        EventManager.Register(EventKey.MiniGameOver, OnMiniGameOver);
+        EventManager.Register(EventKey.MiniLevelOver, OnMiniGameOver);
 
         ReportUserActive();
     }
@@ -189,7 +189,7 @@ public static class BQReportManager
 
     static void OnMiniGameOver(EventData pEventData)
     {
-        var tEventData = pEventData as MiniGameOver;
+        var tEventData = pEventData as MiniLevelOver;
 
         if (tEventData.isSuccess)
         {

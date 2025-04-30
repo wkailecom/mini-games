@@ -367,7 +367,7 @@ namespace Game.MiniGame
             // 下边中点
             Vector3 bottomCenterWorld = (corners[0] + corners[3]) * 0.5f;
             Vector3 bottomScreenPos = RectTransformUtility.WorldToScreenPoint(uiCamera, bottomCenterWorld);
-            float bottomHeight = bottomScreenPos.y; 
+            float bottomHeight = bottomScreenPos.y;
 
             TripleMath.EventManager.Instance.OnRefreshTopAndBottomHeight?.Invoke(topHeight * rate, bottomHeight * rate);
             arrowRoot.OnRefreshTopAndBottomHeight(topHeight * rate, bottomHeight * rate);
@@ -407,6 +407,7 @@ namespace Game.MiniGame
         {
             TripleMath.EventManager.Instance.OnChangeClickState?.Invoke(!pIsPause);
             TripleMath.EventManager.Instance.OnPauseTime?.Invoke(pIsPause);
+            MiniGameManager.Instance.SetPlayTime(pIsPause);
         }
 
         void OnReviveDispose(bool pIsProp, PropID pPropID)
@@ -613,7 +614,17 @@ namespace Game.MiniGame
         #region 引导
         private void TryShowGuide()
         {
-
+            var tLevel = ModuleManager.MiniGame.GetCurLevel((int)mGameType);
+            if (!DataTool.GetBool(MiniGameConst.Guide_TripleRules) && tLevel == 1)
+            {
+                DataTool.SetBool(MiniGameConst.Guide_TripleRules, true);
+                PageManager.Instance.OpenPage(PageID.MiniGuidePage, MiniGameConst.Guide_TripleRules);
+            }
+            else if (!DataTool.GetBool(MiniGameConst.Guide_TripleProps) && tLevel == 2)
+            {
+                DataTool.SetBool(MiniGameConst.Guide_TripleProps, true);
+                PageManager.Instance.OpenPage(PageID.MiniGuidePage, MiniGameConst.Guide_TripleProps);
+            }
         }
 
         #endregion

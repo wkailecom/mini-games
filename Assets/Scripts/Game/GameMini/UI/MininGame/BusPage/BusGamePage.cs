@@ -97,12 +97,26 @@ namespace Game.MiniGame
 
         protected override void OnOpened()
         {
+            SetPauseTime(false);
             TryShowGuide();
         }
-
         protected override void OnBeginClose()
         {
+            SetPauseTime(true);
+        }
+        public override void OnCoveredByOtherPage()
+        {
+            SetPauseTime(true);
+        }
+        public override void OnCoverPageRemove()
+        {
+            SetPauseTime(false);
+        }
 
+        void SetPauseTime(bool pIsPause)
+        {
+            BusOut.EventManager.Instance.OnChangeClickState?.Invoke(!pIsPause);
+            MiniGameManager.Instance.SetPlayTime(pIsPause);
         }
 
         void OnMiniGameOver(EventData pEventData)
@@ -311,7 +325,17 @@ namespace Game.MiniGame
         #region 引导
         private void TryShowGuide()
         {
-
+            var tLevel = ModuleManager.MiniGame.GetCurLevel((int)mGameType);
+            if (!DataTool.GetBool(MiniGameConst.Guide_BusRules) && tLevel == 1)
+            {
+                DataTool.SetBool(MiniGameConst.Guide_BusRules, true);
+                PageManager.Instance.OpenPage(PageID.MiniGuidePage, MiniGameConst.Guide_BusRules);
+            }
+            else if (!DataTool.GetBool(MiniGameConst.Guide_BusProps) && tLevel == 2)
+            {
+                DataTool.SetBool(MiniGameConst.Guide_BusProps, true);
+                PageManager.Instance.OpenPage(PageID.MiniGuidePage, MiniGameConst.Guide_BusProps);
+            } 
         }
 
         #endregion

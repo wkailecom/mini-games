@@ -71,12 +71,20 @@ namespace Game.MiniGame
 
         protected override void OnOpened()
         {
+            SetPauseTime(false);
             TryShowGuide();
         }
-
         protected override void OnBeginClose()
         {
-
+            SetPauseTime(true);
+        }
+        public override void OnCoveredByOtherPage()
+        {
+            SetPauseTime(true);
+        }
+        public override void OnCoverPageRemove()
+        {
+            SetPauseTime(false);
         }
 
         void OnMiniGameOver(EventData pEventData)
@@ -97,6 +105,11 @@ namespace Game.MiniGame
                     OnReviveDispose(isProp);
                 }));
             }
+        }
+
+        void SetPauseTime(bool pIsPause)
+        { 
+            MiniGameManager.Instance.SetPlayTime(pIsPause);
         }
 
         #region UI事件
@@ -152,7 +165,17 @@ namespace Game.MiniGame
         #region 引导
         private void TryShowGuide()
         {
-
+            var tLevel = ModuleManager.MiniGame.GetCurLevel((int)mGameType);
+            if (!DataTool.GetBool(MiniGameConst.Guide_TileRules) && tLevel == 1)
+            {
+                DataTool.SetBool(MiniGameConst.Guide_TileRules, true);
+                PageManager.Instance.OpenPage(PageID.MiniGuidePage, MiniGameConst.Guide_TileRules);
+            }
+            else if (!DataTool.GetBool(MiniGameConst.Guide_TileProps) && tLevel == 2)
+            {
+                DataTool.SetBool(MiniGameConst.Guide_TileProps, true);
+                PageManager.Instance.OpenPage(PageID.MiniGuidePage, MiniGameConst.Guide_TileProps);
+            }
         }
 
         #endregion

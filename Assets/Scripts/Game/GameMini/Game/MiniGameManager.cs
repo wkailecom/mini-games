@@ -7,8 +7,8 @@ using LLFramework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class MiniGameManager : Singleton<MiniGameManager>
 {
@@ -349,14 +349,15 @@ public class MiniGameManager : Singleton<MiniGameManager>
 
     void TriggerEventGameStart(MiniGameType pType, int levelID)
     {
+        StartPlayTime(true, false);
+        AudioManager.Instance.PlayMusic(MusicID.bgm_mini_game);
+        AudioManager.Instance.PlaySound(SoundID.Tile_Level_Begin);
+
         var tEventData = EventManager.GetEventData<MiniGameStart>(EventKey.MiniGameStart);
         tEventData.modeType = pType;
         tEventData.levelID = levelID;
         tEventData.isNewGame = ModuleManager.MiniGame.IsNewGame((int)pType);
         EventManager.Trigger(tEventData);
-
-        AudioManager.Instance.PlayMusic(MusicID.bgm_mini_game);
-        AudioManager.Instance.PlaySound(SoundID.Tile_Level_Begin);
     }
 
     public void TriggerEventGameOver(MiniGameType pType, bool pIsSuccess)
@@ -393,6 +394,8 @@ public class MiniGameManager : Singleton<MiniGameManager>
 
     void TriggerEventUsePropComplete(MiniGameType pType, PropID pPropID)
     {
+        StopPlayTime();
+
         var tEventData = EventManager.GetEventData<MiniGameUsePropComplete>(EventKey.MiniGameUsePropComplete);
         tEventData.modeType = pType;
         tEventData.propID = pPropID;
@@ -482,6 +485,50 @@ public class MiniGameManager : Singleton<MiniGameManager>
 
     #endregion
 
+    #region 用时统计
+    public int TakeTime { get; private set; }        //用时(秒)
+
+    readonly Stopwatch sw = new();
+    void StartPlayTime(bool pIsInit = false, bool pIsStart = true)
+    {
+        if (pIsInit)
+        {
+            TakeTime = 0;
+            sw.Restart();
+        }
+
+        if (pIsStart)
+        {
+            sw.Restart();
+        }
+    }
+    void StopPlayTime()
+    {
+        sw.Stop();
+
+        TakeTime += (int)sw.Elapsed.TotalSeconds;
+        ModuleManager.Statistics.AddPlayTime((int)sw.Elapsed.TotalSeconds);
+        sw.Reset();
+    }
+    void ResetPlayTime()
+    {
+        TakeTime = 0;
+    }
+
+    public void SetPlayTime(bool pIsStop)
+    {
+        if (pIsStop)
+        {
+            StopPlayTime();
+        }
+        else
+        {
+            StartPlayTime(false, true);
+        }
+    }
+
+
+    #endregion
     #region GM方法
 
     #endregion

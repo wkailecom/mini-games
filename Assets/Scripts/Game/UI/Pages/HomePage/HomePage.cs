@@ -54,7 +54,7 @@ namespace Game.UI
 
         public override void OnCoverPageRemove()
         {
-            base.OnCoverPageRemove();
+             
         }
 
         protected override void RegisterEvents()

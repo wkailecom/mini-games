@@ -69,7 +69,7 @@ namespace Game.MiniGame
         {
             EventManager.Unregister(EventKey.MiniGameOver, OnMiniGameOver);
 
-            EventManager.Unregister(EventKey.MiniGameSubSuccess, OnMiniGameSubSuccess); 
+            EventManager.Unregister(EventKey.MiniGameSubSuccess, OnMiniGameSubSuccess);
         }
 
         protected override void OnBeginOpen()
@@ -92,7 +92,20 @@ namespace Game.MiniGame
 
         protected override void OnOpened()
         {
+            SetPauseTime(false);
             TryShowGuide();
+        }
+        protected override void OnBeginClose()
+        {
+            SetPauseTime(true);
+        }
+        public override void OnCoveredByOtherPage()
+        {
+            SetPauseTime(true);
+        }
+        public override void OnCoverPageRemove()
+        {
+            SetPauseTime(false);
         }
 
         void SetNode(int pIndex)
@@ -128,6 +141,10 @@ namespace Game.MiniGame
             }
         }
 
+        void SetPauseTime(bool pIsPause)
+        {
+            MiniGameManager.Instance.SetPlayTime(pIsPause);
+        }
 
         #region UI事件
 

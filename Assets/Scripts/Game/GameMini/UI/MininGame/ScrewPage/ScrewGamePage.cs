@@ -70,18 +70,24 @@ namespace Game.MiniGame
             }
 
             _txtLevel.text = $"LEVEL {mParam.level}";
-
-            ScrewJam.EventManager.Instance.OnChangeClickState?.Invoke(true);
         }
 
         protected override void OnOpened()
         {
+            SetPauseTime(false);
             TryShowGuide();
         }
-
         protected override void OnBeginClose()
         {
-            ScrewJam.EventManager.Instance.OnChangeClickState?.Invoke(false);
+            SetPauseTime(true);
+        }
+        public override void OnCoveredByOtherPage()
+        {
+            SetPauseTime(true);
+        }
+        public override void OnCoverPageRemove()
+        {
+            SetPauseTime(false);
         }
 
         void OnMiniGameOver(EventData pEventData)
@@ -91,7 +97,7 @@ namespace Game.MiniGame
 
             if (tEventData.isSuccess)
             {
-               // PageManager.Instance.OpenPage(PageID.MiniSucceedPage, new MiniSucceedPageParam());
+                // PageManager.Instance.OpenPage(PageID.MiniSucceedPage, new MiniSucceedPageParam());
             }
             else
             {
@@ -110,6 +116,11 @@ namespace Game.MiniGame
             _btnProp2.transform.Find("Selected").gameObject.SetActive(pIsEnable);
         }
 
+        void SetPauseTime(bool pIsPause)
+        {
+            ScrewJam.EventManager.Instance.OnChangeClickState?.Invoke(!pIsPause);
+            MiniGameManager.Instance.SetPlayTime(pIsPause);
+        }
 
         #region UI事件
 
